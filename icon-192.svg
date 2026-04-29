@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
+  <!-- Background -->
+  <rect width="192" height="192" rx="42" fill="#78290f"/>
+  <!-- Subtle texture layer -->
+  <rect width="192" height="192" rx="42" fill="url(#grain)" opacity="0.04"/>
+
+  <!-- Open book -->
+  <!-- Left page -->
+  <path d="M34 68 C34 64 37 61 41 61 L93 61 L93 130 L41 130 C37 130 34 127 34 123 Z" fill="none" stroke="#f8f2e4" stroke-width="3" stroke-linejoin="round"/>
+  <!-- Right page -->
+  <path d="M99 61 L151 61 C155 61 158 64 158 68 L158 123 C158 127 155 130 151 130 L99 130 Z" fill="none" stroke="#f8f2e4" stroke-width="3" stroke-linejoin="round"/>
+  <!-- Spine line -->
+  <line x1="96" y1="61" x2="96" y2="130" stroke="#f8f2e4" stroke-width="2.5"/>
+  <!-- Left page lines -->
+  <line x1="46" y1="80" x2="87" y2="80" stroke="#c8a45a" stroke-width="1.8" stroke-linecap="round"/>
+  <line x1="46" y1="91" x2="87" y2="91" stroke="#c8a45a" stroke-width="1.8" stroke-linecap="round"/>
+  <line x1="46" y1="102" x2="87" y2="102" stroke="#c8a45a" stroke-width="1.8" stroke-linecap="round"/>
+  <line x1="46" y1="113" x2="74" y2="113" stroke="#c8a45a" stroke-width="1.8" stroke-linecap="round"/>
+  <!-- Right page lines -->
+  <line x1="105" y1="80" x2="146" y2="80" stroke="#f8f2e4" stroke-width="1.8" stroke-linecap="round" opacity="0.5"/>
+  <line x1="105" y1="91" x2="146" y2="91" stroke="#f8f2e4" stroke-width="1.8" stroke-linecap="round" opacity="0.5"/>
+  <line x1="105" y1="102" x2="146" y2="102" stroke="#f8f2e4" stroke-width="1.8" stroke-linecap="round" opacity="0.5"/>
+  <line x1="105" y1="113" x2="132" y2="113" stroke="#f8f2e4" stroke-width="1.8" stroke-linecap="round" opacity="0.5"/>
+</svg>
