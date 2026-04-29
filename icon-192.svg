@@ -1,24 +1,26 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
   <!-- Background -->
-  <rect width="192" height="192" rx="42" fill="#78290f"/>
-  <!-- Subtle texture layer -->
-  <rect width="192" height="192" rx="42" fill="url(#grain)" opacity="0.04"/>
+  <rect width="192" height="192" rx="42" fill="#8f2310"/>
 
-  <!-- Open book -->
-  <!-- Left page -->
-  <path d="M34 68 C34 64 37 61 41 61 L93 61 L93 130 L41 130 C37 130 34 127 34 123 Z" fill="none" stroke="#f8f2e4" stroke-width="3" stroke-linejoin="round"/>
-  <!-- Right page -->
-  <path d="M99 61 L151 61 C155 61 158 64 158 68 L158 123 C158 127 155 130 151 130 L99 130 Z" fill="none" stroke="#f8f2e4" stroke-width="3" stroke-linejoin="round"/>
-  <!-- Spine line -->
-  <line x1="96" y1="61" x2="96" y2="130" stroke="#f8f2e4" stroke-width="2.5"/>
-  <!-- Left page lines -->
-  <line x1="46" y1="80" x2="87" y2="80" stroke="#c8a45a" stroke-width="1.8" stroke-linecap="round"/>
-  <line x1="46" y1="91" x2="87" y2="91" stroke="#c8a45a" stroke-width="1.8" stroke-linecap="round"/>
-  <line x1="46" y1="102" x2="87" y2="102" stroke="#c8a45a" stroke-width="1.8" stroke-linecap="round"/>
-  <line x1="46" y1="113" x2="74" y2="113" stroke="#c8a45a" stroke-width="1.8" stroke-linecap="round"/>
-  <!-- Right page lines -->
-  <line x1="105" y1="80" x2="146" y2="80" stroke="#f8f2e4" stroke-width="1.8" stroke-linecap="round" opacity="0.5"/>
-  <line x1="105" y1="91" x2="146" y2="91" stroke="#f8f2e4" stroke-width="1.8" stroke-linecap="round" opacity="0.5"/>
-  <line x1="105" y1="102" x2="146" y2="102" stroke="#f8f2e4" stroke-width="1.8" stroke-linecap="round" opacity="0.5"/>
-  <line x1="105" y1="113" x2="132" y2="113" stroke="#f8f2e4" stroke-width="1.8" stroke-linecap="round" opacity="0.5"/>
+  <!-- Book stack, centered: total height ~78px (y=57 to y=135), center=96 ✓ -->
+
+  <!-- Bottom book (widest, tallest) -->
+  <rect x="28" y="113" width="136" height="22" rx="3" fill="#f5dfc0" opacity="0.95"/>
+  <rect x="28" y="113" width="12"  height="22" rx="2" fill="#e0c090" opacity="0.9"/>
+  <rect x="28" y="113" width="136" height="3"  rx="1" fill="#eedab0" opacity="0.45"/>
+
+  <!-- Middle book -->
+  <rect x="34" y="87"  width="118" height="28" rx="3" fill="#fdf0e0" opacity="0.95"/>
+  <rect x="34" y="87"  width="12"  height="28" rx="2" fill="#e8c888" opacity="0.9"/>
+  <rect x="34" y="87"  width="118" height="3"  rx="1" fill="#fdfaf0" opacity="0.45"/>
+  <line x1="52" y1="97"  x2="138" y2="97"  stroke="#d0a860" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+  <line x1="52" y1="104" x2="118" y2="104" stroke="#d0a860" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+
+  <!-- Top book (narrowest) -->
+  <rect x="44" y="57"  width="100" height="32" rx="3" fill="#fff8f0" opacity="0.97"/>
+  <rect x="44" y="57"  width="12"  height="32" rx="2" fill="#e8c070" opacity="0.9"/>
+  <rect x="44" y="57"  width="100" height="3"  rx="1" fill="#ffffff"  opacity="0.4"/>
+  <line x1="64" y1="69"  x2="132" y2="69"  stroke="#b08030" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+  <line x1="64" y1="76"  x2="120" y2="76"  stroke="#b08030" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+  <line x1="64" y1="83"  x2="108" y2="83"  stroke="#b08030" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
 </svg>

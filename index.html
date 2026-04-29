@@ -9,7 +9,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="application-name" content="Commonplace">
 <meta name="description" content="A personal reading journal — track books, collect quotes, and take notes.">
-<meta name="theme-color" content="#78290f">
+<meta name="theme-color" content="#8f2310">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="icon-192.svg">
@@ -17,36 +17,36 @@
 <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
 <style>
   :root {
-    /* ── Brick — the dominant color ── */
-    --brick:      #78290f;   /* sidebar, header, hero — the frame */
-    --brick-deep: #551e09;   /* nav bar, deeper anchor */
-    --brick-mid:  #9a3a18;   /* hover highlights on brick surfaces */
-    --brick-pale: #f7ede8;   /* brick-tinted light surface */
-    --brick-soft: #d4a090;   /* brick-tinted border */
+    /* ── Brick — vivid, saturated red ── */
+    --brick:      #8f2310;   /* more red, less brown — the dominant chrome */
+    --brick-deep: #6a1808;   /* nav bar, deeper anchor */
+    --brick-mid:  #b53318;   /* hover highlights — brighter red */
+    --brick-pale: #faeee9;   /* brick-tinted light surface */
+    --brick-soft: #dc9a88;   /* brick-tinted border */
 
-    /* ── Gold — the accent ── */
-    --gold:       #c8a45a;   /* active states, progress, quote marks, tabs */
-    --gold-deep:  #a07c38;   /* gold hover, darker gold */
-    --gold-pale:  #f8f2e4;   /* gold-tinted light background */
-    --gold-soft:  #e0c98a;   /* gold-tinted border */
+    /* ── Gold — brighter, more luminous ── */
+    --gold:       #d4a835;   /* more saturated gold — active states, progress, tabs */
+    --gold-deep:  #a87c20;   /* gold hover, darker */
+    --gold-pale:  #fdf6e3;   /* gold-tinted light background */
+    --gold-soft:  #e8cc70;   /* gold-tinted border */
 
-    /* ── Aged paper ground ── */
-    --paper:      #f6f0e4;   /* page background — warm, slightly aged */
-    --paper-warm: #ede3d0;   /* card hover, inset surfaces */
-    --paper-mid:  #d8cdb8;   /* progress track, medium surface */
-    --parchment:  #c4b49a;   /* strong border */
+    /* ── Paper — cleaner warm white ── */
+    --paper:      #faf4ec;   /* page background — warmer, brighter */
+    --paper-warm: #f0e8d8;   /* card hover, inset surfaces */
+    --paper-mid:  #ddd0bc;   /* progress track */
+    --parchment:  #c8b89a;   /* strong border */
 
     /* ── Iron ink ── */
-    --ink:        #1a140c;   /* primary text — near-black, warm */
-    --ink-soft:   #332820;   /* secondary text */
-    --ink-muted:  #6e5c48;   /* labels, metadata */
-    --ink-faint:  #aa9880;   /* placeholders, hints */
+    --ink:        #1a140c;
+    --ink-soft:   #332820;
+    --ink-muted:  #6e5c48;
+    --ink-faint:  #aa9880;
 
     /* ── Surfaces ── */
     --card:       #ffffff;
     --card-warm:  #fdfaf6;
-    --border:     #d0c4b0;
-    --border-soft:#e4dace;
+    --border:     #d4c8b0;
+    --border-soft:#e8dece;
     --shadow:     rgba(26,20,12,0.07);
     --shadow-md:  rgba(26,20,12,0.14);
 
@@ -162,14 +162,18 @@
     #sidebar { display: none; }
     #mobile-topbar {
       display: flex; align-items: center; justify-content: space-between;
-      background: var(--brick); padding: 0 1rem; height: 50px;
+      background: var(--brick); padding: 0 0.75rem; height: 50px;
       padding-top: env(safe-area-inset-top);
       height: calc(50px + env(safe-area-inset-top));
       position: sticky; top: 0; z-index: 100; flex-shrink: 0;
+      position: relative;
     }
     #mobile-topbar h1 {
-      font-family: var(--font-head); font-size: 1.2rem;
-      letter-spacing: 0.08em; color: var(--gold-pale);
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 1.4rem; font-style: italic;
+      letter-spacing: 0.05em; color: var(--gold-pale);
+      position: absolute; left: 50%; transform: translateX(-50%);
+      white-space: nowrap; pointer-events: none;
     }
     #mobile-topbar-actions { display: flex; gap: 2px; }
     #mobile-tabbar {
@@ -194,7 +198,6 @@
   }
   @media (max-width: 480px) {
     .form-row, .form-row-3 { grid-template-columns: 1fr; }
-    .reading-hero { flex-direction: column; }
     .modal-backdrop { padding: 0; align-items: flex-end; }
     .modal { border-radius: var(--radius-lg) var(--radius-lg) 0 0; max-width: 100%; }
   }
@@ -290,12 +293,16 @@
   }
   .cover-lg { width: 116px; height: 172px; }
   .cover-xl { width: 150px; height: 222px; }
+  .cover-hero { width: 100px; height: 148px; }
+  @media (max-width: 780px) {
+    .cover-hero { width: 72px; height: 106px; }
+  }
 
   /* Cover palette — brick, warm earth, aged leather, dark oak */
-  .cp-0 { background: linear-gradient(175deg, #78290f 0%, #4a1808 100%); }
+  .cp-0 { background: linear-gradient(175deg, #8f2310 0%, #6a1808 100%); }
   .cp-1 { background: linear-gradient(175deg, #3a1e10 0%, #1e0e06 100%); }
   .cp-2 { background: linear-gradient(175deg, #6b3a1a 0%, #3e1e08 100%); }
-  .cp-3 { background: linear-gradient(175deg, #9a3a18 0%, #5e2010 100%); }
+  .cp-3 { background: linear-gradient(175deg, #b53318 0%, #7a2010 100%); }
   .cp-4 { background: linear-gradient(175deg, #2e1e14 0%, #18100a 100%); }
   .cp-5 { background: linear-gradient(175deg, #5a2e1a 0%, #321808 100%); }
   .cp-6 { background: linear-gradient(175deg, #3e2210 0%, #221208 100%); }
@@ -334,10 +341,10 @@
   }
   .shelf-plank {
     height: 22px;
-    background: linear-gradient(180deg, #b88060 0%, #8a5030 40%, #623820 100%);
+    background: linear-gradient(180deg, #c07858 0%, #984030 40%, #722010 100%);
     border-radius: 0 0 3px 3px;
     box-shadow: 0 4px 12px rgba(26,20,12,0.3), inset 0 1px 0 rgba(255,255,255,0.12);
-    border: 1px solid #5a2818; border-top: none; margin-bottom: 4px;
+    border: 1px solid #621808; border-top: none; margin-bottom: 4px;
   }
   .shelf-plank-shadow {
     height: 6px;
@@ -356,15 +363,28 @@
   }
   .book-spine:hover .spine-tooltip { opacity: 1; transform: translateX(-50%) translateY(0px); pointer-events: none; }
   .spine-title {
-    writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg);
-    font-family: var(--font-head); color: rgba(255,255,255,0.92); text-align: center;
-    overflow: hidden; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: horizontal;
-    flex: 1; padding: 0 3px; letter-spacing: 0.04em;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    font-family: var(--font-head);
+    color: rgba(255,255,255,0.92);
+    text-align: center;
+    overflow: hidden;
+    flex: 1;
+    padding: 0 3px;
+    letter-spacing: 0.04em;
+    word-break: break-word;
   }
   .spine-author {
-    writing-mode: vertical-rl; transform: rotate(180deg);
-    font-family: var(--font-body); color: rgba(255,255,255,0.6); font-style: italic;
-    padding: 0 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    font-family: var(--font-body);
+    color: rgba(255,255,255,0.6);
+    font-style: italic;
+    padding: 0 3px;
+    overflow: hidden;
+    flex-shrink: 0;
   }
   .spine-status-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; margin: 4px auto 2px; }
   .spine-tooltip {
@@ -464,14 +484,14 @@
   /* ── CURRENTLY READING HERO ── */
   .reading-hero {
     background: var(--brick); color: var(--gold-pale);
-    border-radius: var(--radius-lg); padding: 1.5rem;
-    margin-bottom: 1.5rem; display: flex; gap: 1.25rem; align-items: flex-start;
+    border-radius: var(--radius-lg); padding: 1.25rem;
+    margin-bottom: 1.5rem; display: flex; flex-direction: row; gap: 1rem; align-items: flex-start;
     box-shadow: 0 3px 16px var(--shadow-md);
   }
   .reading-hero-info { flex: 1; min-width: 0; }
   .reading-hero-label { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(248,230,210,0.55); margin-bottom: 6px; }
-  .reading-hero-title { font-family: var(--font-head); font-size: 1.3rem; color: var(--gold-pale); line-height: 1.3; }
-  .reading-hero-author { font-size: 0.9rem; color: rgba(248,230,210,0.7); font-style: italic; margin-top: 3px; }
+  .reading-hero-title { font-family: var(--font-head); font-size: 1.15rem; color: var(--gold-pale); line-height: 1.3; }
+  .reading-hero-author { font-size: 0.875rem; color: rgba(248,230,210,0.7); font-style: italic; margin-top: 3px; }
 
   /* ── AI PANEL ── */
   .ai-panel { background: var(--gold-pale); border: 1px solid var(--gold-soft); border-left: 3px solid var(--gold); border-radius: 0 var(--radius-lg) var(--radius-lg) 0; padding: 1rem; margin-top: 1rem; }
@@ -553,7 +573,7 @@
       <div class="snav-divider"></div>
       <button class="snav-item" data-view="journal" onclick="showView('journal')">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></svg>
-        Quotes &amp; Notes
+        Notebook
       </button>
       <div class="snav-divider"></div>
       <button class="snav-item" data-view="stats" onclick="showView('stats')">
@@ -579,18 +599,13 @@
 
   <!-- MOBILE TOP BAR -->
   <div id="mobile-topbar">
+    <button class="btn-icon-cream" onclick="openSearch()" style="flex-shrink:0">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    </button>
     <h1>Commonplace</h1>
-    <div id="mobile-topbar-actions">
-      <button class="btn-icon-cream" onclick="openSearch()">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      </button>
-      <button class="btn-icon-cream" onclick="openAddBook()">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      </button>
-      <button class="btn-icon-cream" onclick="showBackupMenu()">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      </button>
-    </div>
+    <button class="btn-icon-cream" onclick="openAddBook()" style="flex-shrink:0">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
   </div>
 
   <!-- MOBILE BOTTOM TAB BAR -->
@@ -609,7 +624,7 @@
     </button>
     <button class="tab-btn" data-view="journal" onclick="showView('journal')">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></svg>
-      Journal
+      Notebook
     </button>
     <button class="tab-btn" data-view="more" onclick="toggleOverflowDrawer()">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="5" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1" fill="currentColor" stroke="none"/></svg>
@@ -627,6 +642,11 @@
     <button class="drawer-item" data-view="stats" onclick="showView('stats');closeOverflowDrawer()">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
       Stats
+    </button>
+    <div style="height:1px;background:rgba(255,255,255,0.08);margin:0.25rem 1.5rem"></div>
+    <button class="drawer-item" onclick="closeOverflowDrawer();showBackupMenu()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Backup &amp; Import
     </button>
   </div>
 
@@ -968,7 +988,7 @@
 
 <!-- UPDATE PROGRESS MODAL -->
 <div id="modal-progress" class="modal-backdrop hidden">
-  <div class="modal" style="max-width:400px">
+  <div class="modal" style="max-width:420px">
     <div class="modal-header">
       <div class="modal-title">Update Progress</div>
       <button class="btn-icon" onclick="closeModal('modal-progress')">
@@ -979,10 +999,18 @@
       <input type="hidden" id="progress-book-id">
       <div id="progress-book-info" style="margin-bottom:1rem;font-style:italic;color:var(--ink-muted);font-size:0.9rem"></div>
       <div class="form-group">
+        <label>Date Started</label>
+        <input type="date" id="progress-start-date">
+      </div>
+      <div class="form-group">
         <label>Current Page</label>
         <input type="number" id="progress-page" placeholder="Enter page number" min="0">
       </div>
       <div id="progress-bar-preview" style="margin-top:0.75rem"></div>
+      <div id="progress-finish-wrap" class="form-group" style="margin-top:0.75rem;display:none">
+        <label>Date Finished</label>
+        <input type="date" id="progress-finish-date">
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('modal-progress')">Cancel</button>
@@ -1151,9 +1179,13 @@ function loadDB() {
       // Migrate legacy dateRead → readDates
       (data.books || []).forEach(b => {
         if (!b.readDates) {
-          b.readDates = b.dateRead ? [{ date: b.dateRead, note: '' }] : [];
+          b.readDates = b.dateRead ? [{ startDate: null, date: b.dateRead, note: '' }] : [];
           delete b.dateRead;
         }
+        // Ensure all readDates entries have startDate field
+        b.readDates.forEach(r => { if (!('startDate' in r)) r.startDate = null; });
+        // Ensure currently-reading books have startDate field
+        if (b.status === 'reading' && !('startDate' in b)) b.startDate = null;
       });
       return data;
     }
@@ -1226,7 +1258,7 @@ function renderCover(book, sizeClass = '') {
   const pal = coverPalette(book.title);
   const surname = book.author.split(',')[0].trim().split(' ').pop();
   // Scale font based on title length and cover size
-  const isLg = sizeClass.includes('lg') || sizeClass.includes('xl');
+  const isLg = sizeClass.includes('lg') || sizeClass.includes('xl') || sizeClass.includes('hero');
   const titleFontSize = isLg
     ? (book.title.length > 20 ? '0.62rem' : '0.78rem')
     : (book.title.length > 20 ? '0.44rem' : '0.54rem');
@@ -1252,7 +1284,7 @@ function renderHome() {
       const pct = book.pages ? Math.round((book.currentPage / book.pages) * 100) : 0;
       return `
         <div class="reading-hero" onclick="openDetail('${book.id}')">
-          ${renderCover(book, 'cover-lg')}
+          ${renderCover(book, 'cover-hero')}
           <div class="reading-hero-info">
             <div class="reading-hero-label">Currently Reading</div>
             <div class="reading-hero-title">${escHtml(book.title)}</div>
@@ -2003,19 +2035,35 @@ function openDetail(bookId) {
     book.purchaseDate ? ['Date acquired', new Date(book.purchaseDate).toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'})] : null,
   ].filter(Boolean);
 
-  // Build read dates HTML
+  // Build reading dates HTML
   const readDates = book.readDates || [];
   let readDatesHtml = '';
+
+  // Currently reading — show start date with edit button
+  if (book.status === 'reading') {
+    const sd = book.startDate ? fmtDate(book.startDate) : 'not recorded';
+    readDatesHtml += `<tr>
+      <td style="color:var(--ink-muted);padding:5px 0;width:45%;vertical-align:top;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.04em">Started</td>
+      <td style="padding:5px 0">
+        <span id="start-date-display">${escHtml(sd)}</span>
+        <button class="btn-ghost" style="font-size:0.75rem;padding:2px 6px;margin-left:6px;vertical-align:middle" onclick="editStartDate('${book.id}')">edit</button>
+      </td>
+    </tr>`;
+  }
+
   if (readDates.length > 0) {
-    readDatesHtml = `<tr><td style="color:var(--ink-muted);padding:5px 0;width:45%;vertical-align:top;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.04em">${readDates.length > 1 ? 'Times Read' : 'Date Read'}</td><td style="padding:5px 0">`;
-    if (readDates.length === 1) {
-      readDatesHtml += escHtml(fmtDate(readDates[0].date));
-      if (readDates[0].note) readDatesHtml += `<div style="font-size:0.82rem;color:var(--ink-muted);margin-top:2px;font-style:italic">${escHtml(readDates[0].note)}</div>`;
-    } else {
-      readDatesHtml += readDates.map((r, i) =>
-        `<div style="margin-bottom:3px"><span style="font-size:0.75rem;color:var(--ink-faint);margin-right:6px">#${i+1}</span>${escHtml(fmtDate(r.date))}${r.note ? `<span style="font-size:0.82rem;color:var(--ink-muted);margin-left:8px;font-style:italic">${escHtml(r.note)}</span>` : ''}</div>`
-      ).join('');
-    }
+    const label = readDates.length > 1 ? 'Reading History' : 'Date Read';
+    readDatesHtml += `<tr><td style="color:var(--ink-muted);padding:5px 0;width:45%;vertical-align:top;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.04em">${label}</td><td style="padding:5px 0">`;
+    readDates.forEach((r, i) => {
+      const startStr = r.startDate ? fmtDate(r.startDate) : null;
+      const finishStr = r.date ? fmtDate(r.date) : null;
+      const range = startStr && finishStr ? `${startStr} → ${finishStr}` : (finishStr || startStr || 'unknown');
+      readDatesHtml += `<div style="margin-bottom:4px">
+        ${readDates.length > 1 ? `<span style="font-size:0.72rem;color:var(--ink-faint);margin-right:6px">#${i+1}</span>` : ''}
+        ${escHtml(range)}
+        ${r.note ? `<div style="font-size:0.82rem;color:var(--ink-muted);font-style:italic">${escHtml(r.note)}</div>` : ''}
+      </div>`;
+    });
     readDatesHtml += `</td></tr>`;
   }
 
@@ -2051,7 +2099,7 @@ function openDetail(bookId) {
     ${readDatesHtml}
     </table>
     ${book.notes ? `<div style="margin-top:1rem;padding:0.75rem;background:var(--paper-warm);border-radius:var(--radius);font-size:0.9rem;font-style:italic;color:var(--ink-soft)">${escHtml(book.notes)}</div>` : ''}
-    ${book.status === 'read' ? `<button class="btn btn-secondary" style="margin-top:1rem;font-size:0.85rem" onclick="markReadAgain('${book.id}')">+ Mark as read again</button>` : ''}
+    ${book.status === 'read' ? `<button class="btn btn-secondary" style="margin-top:1rem;font-size:0.85rem" onclick="markReadAgain('${book.id}')">+ Read again</button>` : ''}
   </div>
 
   <!-- QUOTES TAB -->
@@ -2109,17 +2157,29 @@ function editCurrentBook() {
   openAddBook(currentDetailBookId);
 }
 
-function markReadAgain(bookId) {
+function editStartDate(bookId) {
   const book = db.books.find(b => b.id === bookId);
   if (!book) return;
-  if (!book.readDates) book.readDates = [];
-  book.readDates.push({ date: Date.now(), note: '' });
-  book.currentPage = 0; // reset progress for the new reading
-  book.status = 'read'; // stays read
+  const current = book.startDate ? toInputDate(book.startDate) : toInputDate(Date.now());
+  const val = prompt('Edit start date (YYYY-MM-DD):', current);
+  if (val === null) return; // cancelled
+  const ts = val.trim() ? new Date(val.trim()).getTime() : null;
+  if (val.trim() && isNaN(ts)) { alert('Invalid date. Please use YYYY-MM-DD format.'); return; }
+  book.startDate = ts || null;
   saveDB();
-  openDetail(bookId); // refresh detail view
+  openDetail(bookId);
+}
+  const book = db.books.find(b => b.id === bookId);
+  if (!book) return;
+  // Switch back to reading so user can track it again, with a fresh startDate
+  book.status = 'reading';
+  book.currentPage = 0;
+  book.startDate = Date.now();
+  saveDB();
+  openDetail(bookId);
   if (currentView === 'shelf') renderShelf();
   if (currentView === 'stats') renderStats();
+  if (currentView === 'home') renderHome();
 }
 
 function deleteCurrentBook() {
@@ -2684,10 +2744,14 @@ function saveBook() {
       book.notes = document.getElementById('book-notes').value.trim();
       if (pendingCoverData) book.cover = pendingCoverData;
       if (status === 'read' && book.currentPage < pages) book.currentPage = pages;
+      if (status === 'reading' && !book.startDate) book.startDate = Date.now();
       if (status === 'read' && !wasRead) {
         if (!book.readDates) book.readDates = [];
-        book.readDates.push({ date: Date.now(), note: '' });
+        book.readDates.push({ startDate: book.startDate || null, date: Date.now(), note: '' });
+        book.startDate = null;
       }
+      // If moved away from reading, clear startDate
+      if (status !== 'reading' && status !== 'read') book.startDate = null;
     }
   } else {
     const book = {
@@ -2708,7 +2772,8 @@ function saveBook() {
       cover: pendingCoverData || null,
       notes: document.getElementById('book-notes').value.trim(),
       added: Date.now(),
-      readDates: status === 'read' ? [{ date: Date.now(), note: '' }] : [],
+      startDate: status === 'reading' ? Date.now() : null,
+      readDates: status === 'read' ? [{ startDate: null, date: Date.now(), note: '' }] : [],
     };
     db.books.push(book);
   }
@@ -2729,9 +2794,30 @@ function openProgress(bookId) {
   document.getElementById('progress-book-id').value = bookId;
   document.getElementById('progress-book-info').textContent = book.title + (book.pages ? ' · ' + book.pages + ' pages' : '');
   document.getElementById('progress-page').value = book.currentPage || '';
+  // Populate start date
+  const startEl = document.getElementById('progress-start-date');
+  startEl.value = book.startDate ? toInputDate(book.startDate) : toInputDate(Date.now());
+  // Show finish date only if already at last page
+  const finishWrap = document.getElementById('progress-finish-wrap');
+  const finishEl = document.getElementById('progress-finish-date');
+  finishEl.value = toInputDate(Date.now());
+  finishWrap.style.display = (book.pages && book.currentPage >= book.pages) ? 'block' : 'none';
   updateProgressPreview(book);
   document.getElementById('modal-progress').classList.remove('hidden');
 }
+
+// Show/hide finish date when page input changes
+document.addEventListener('input', e => {
+  if (e.target.id === 'progress-page') {
+    const bookId = document.getElementById('progress-book-id').value;
+    const book = db.books.find(b => b.id === bookId);
+    if (!book) return;
+    updateProgressPreview(book);
+    const page = parseInt(e.target.value) || 0;
+    const finishWrap = document.getElementById('progress-finish-wrap');
+    if (finishWrap) finishWrap.style.display = (book.pages && page >= book.pages) ? 'block' : 'none';
+  }
+});
 
 function updateProgressPreview(book) {
   const pageEl = document.getElementById('progress-page');
@@ -2741,29 +2827,34 @@ function updateProgressPreview(book) {
   document.getElementById('progress-bar-preview').innerHTML = `<div class="progress-label"><span>p.${page} of ${book.pages}</span><span>${pct}%</span></div><div class="progress-track"><div class="progress-fill ${pct===100?'complete':''}" style="width:${pct}%"></div></div>`;
 }
 
-document.addEventListener('input', e => {
-  if (e.target.id === 'progress-page') {
-    const bookId = document.getElementById('progress-book-id').value;
-    const book = db.books.find(b => b.id === bookId);
-    if (book) updateProgressPreview(book);
-  }
-});
-
 function saveProgress() {
   const bookId = document.getElementById('progress-book-id').value;
   const book = db.books.find(b => b.id === bookId);
   if (!book) return;
   const page = parseInt(document.getElementById('progress-page').value) || 0;
+
+  // Read start date from modal
+  const startVal = document.getElementById('progress-start-date').value;
+  const startTs = startVal ? new Date(startVal).getTime() : (book.startDate || Date.now());
+
   book.currentPage = page;
+  book.startDate = startTs;
+
   if (book.pages && page >= book.pages) {
     book.status = 'read';
     if (!book.readDates) book.readDates = [];
-    // Only push a new entry if the last one isn't today (avoid duplicates on re-save)
-    const today = new Date().toDateString();
+    // Read finish date from modal if shown
+    const finishVal = document.getElementById('progress-finish-date').value;
+    const finishTs = finishVal ? new Date(finishVal).getTime() : Date.now();
+    const today = new Date(finishTs).toDateString();
     const lastRead = book.readDates.length ? new Date(book.readDates[book.readDates.length-1].date).toDateString() : null;
-    if (lastRead !== today) book.readDates.push({ date: Date.now(), note: '' });
+    if (lastRead !== today) {
+      book.readDates.push({ startDate: startTs, date: finishTs, note: '' });
+    }
+    book.startDate = null;
+  } else if (page > 0) {
+    book.status = 'reading';
   }
-  else if (page > 0) book.status = 'reading';
 
   db.readingLog.push({ bookId, page, date: Date.now(), note: '' });
   saveDB();
@@ -3034,9 +3125,11 @@ function importData(event) {
       // Migrate any legacy dateRead fields in the imported data
       (imported.books || []).forEach(b => {
         if (!b.readDates) {
-          b.readDates = b.dateRead ? [{ date: b.dateRead, note: '' }] : [];
+          b.readDates = b.dateRead ? [{ startDate: null, date: b.dateRead, note: '' }] : [];
           delete b.dateRead;
         }
+        b.readDates.forEach(r => { if (!('startDate' in r)) r.startDate = null; });
+        if (b.status === 'reading' && !('startDate' in b)) b.startDate = null;
       });
 
       // Merge books by ID (update existing, add new)
@@ -3123,6 +3216,13 @@ function escHtml(str) {
 function fmtDate(ts) {
   if (!ts) return '';
   return new Date(ts).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+// Returns a date string in YYYY-MM-DD format for <input type="date">
+function toInputDate(ts) {
+  if (!ts) return '';
+  const d = new Date(ts);
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
 }
 
 // Close modals on backdrop click
