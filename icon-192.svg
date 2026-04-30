@@ -1,26 +1,30 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
-  <!-- Background -->
-  <rect width="192" height="192" rx="42" fill="#8f2310"/>
+  <!-- Background — deep forest green -->
+  <rect width="192" height="192" rx="42" fill="#1e3a2f"/>
+  <radialGradient id="g" cx="50%" cy="45%" r="55%">
+    <stop offset="0%" stop-color="#2a5040" stop-opacity="0.7"/>
+    <stop offset="100%" stop-color="#0e2018" stop-opacity="0"/>
+  </radialGradient>
+  <rect width="192" height="192" rx="42" fill="url(#g)"/>
 
-  <!-- Book stack, centered: total height ~78px (y=57 to y=135), center=96 ✓ -->
-
-  <!-- Bottom book (widest, tallest) -->
-  <rect x="28" y="113" width="136" height="22" rx="3" fill="#f5dfc0" opacity="0.95"/>
-  <rect x="28" y="113" width="12"  height="22" rx="2" fill="#e0c090" opacity="0.9"/>
-  <rect x="28" y="113" width="136" height="3"  rx="1" fill="#eedab0" opacity="0.45"/>
+  <!-- Book stack in warm cream/terracotta tones -->
+  <!-- Bottom book -->
+  <rect x="28" y="113" width="136" height="22" rx="3" fill="#f0e8d8" opacity="0.92"/>
+  <rect x="28" y="113" width="12"  height="22" rx="2" fill="#c45e35" opacity="0.9"/>
+  <rect x="28" y="113" width="136" height="3"  rx="1" fill="#fdf6ee" opacity="0.4"/>
 
   <!-- Middle book -->
-  <rect x="34" y="87"  width="118" height="28" rx="3" fill="#fdf0e0" opacity="0.95"/>
-  <rect x="34" y="87"  width="12"  height="28" rx="2" fill="#e8c888" opacity="0.9"/>
-  <rect x="34" y="87"  width="118" height="3"  rx="1" fill="#fdfaf0" opacity="0.45"/>
-  <line x1="52" y1="97"  x2="138" y2="97"  stroke="#d0a860" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
-  <line x1="52" y1="104" x2="118" y2="104" stroke="#d0a860" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+  <rect x="34" y="87"  width="118" height="28" rx="3" fill="#f5f0e8" opacity="0.95"/>
+  <rect x="34" y="87"  width="12"  height="28" rx="2" fill="#1e3a2f" opacity="0.85"/>
+  <rect x="34" y="87"  width="118" height="3"  rx="1" fill="#ffffff"  opacity="0.35"/>
+  <line x1="52" y1="97"  x2="138" y2="97"  stroke="#c4b89e" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+  <line x1="52" y1="104" x2="118" y2="104" stroke="#c4b89e" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
 
-  <!-- Top book (narrowest) -->
-  <rect x="44" y="57"  width="100" height="32" rx="3" fill="#fff8f0" opacity="0.97"/>
-  <rect x="44" y="57"  width="12"  height="32" rx="2" fill="#e8c070" opacity="0.9"/>
-  <rect x="44" y="57"  width="100" height="3"  rx="1" fill="#ffffff"  opacity="0.4"/>
-  <line x1="64" y1="69"  x2="132" y2="69"  stroke="#b08030" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
-  <line x1="64" y1="76"  x2="120" y2="76"  stroke="#b08030" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
-  <line x1="64" y1="83"  x2="108" y2="83"  stroke="#b08030" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+  <!-- Top book -->
+  <rect x="44" y="57"  width="100" height="32" rx="3" fill="#ece5d8" opacity="0.97"/>
+  <rect x="44" y="57"  width="12"  height="32" rx="2" fill="#c45e35" opacity="0.85"/>
+  <rect x="44" y="57"  width="100" height="3"  rx="1" fill="#ffffff"  opacity="0.35"/>
+  <line x1="64" y1="69"  x2="132" y2="69"  stroke="#a89880" stroke-width="1.5" stroke-linecap="round" opacity="0.8"/>
+  <line x1="64" y1="76"  x2="120" y2="76"  stroke="#a89880" stroke-width="1.5" stroke-linecap="round" opacity="0.8"/>
+  <line x1="64" y1="83"  x2="108" y2="83"  stroke="#a89880" stroke-width="1.5" stroke-linecap="round" opacity="0.8"/>
 </svg>

@@ -9,7 +9,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="application-name" content="Commonplace">
 <meta name="description" content="A personal reading journal — track books, collect quotes, and take notes.">
-<meta name="theme-color" content="#8f2310">
+<meta name="theme-color" content="#1e3a2f">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="icon-192.svg">
@@ -17,38 +17,41 @@
 <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
 <style>
   :root {
-    /* ── Brick — vivid, saturated red ── */
-    --brick:      #8f2310;   /* more red, less brown — the dominant chrome */
-    --brick-deep: #6a1808;   /* nav bar, deeper anchor */
-    --brick-mid:  #b53318;   /* hover highlights — brighter red */
-    --brick-pale: #faeee9;   /* brick-tinted light surface */
-    --brick-soft: #dc9a88;   /* brick-tinted border */
+    /* ── Chrome — deep forest green ── */
+    --chrome:       #1e3a2f;   /* sidebar, header, reading hero */
+    --chrome-deep:  #142a21;   /* nav bar, darker anchor */
+    --chrome-lift:  #2a5040;   /* hover states on chrome surfaces */
+    --chrome-text:  #e8f0ec;   /* text on chrome backgrounds */
+    --chrome-muted: rgba(200,224,210,0.5); /* secondary text on chrome */
 
-    /* ── Gold — brighter, more luminous ── */
-    --gold:       #d4a835;   /* more saturated gold — active states, progress, tabs */
-    --gold-deep:  #a87c20;   /* gold hover, darker */
-    --gold-pale:  #fdf6e3;   /* gold-tinted light background */
-    --gold-soft:  #e8cc70;   /* gold-tinted border */
+    /* ── Accent — terracotta ── */
+    --accent:       #c45e35;   /* buttons, progress, active states, quote marks */
+    --accent-deep:  #9e4420;   /* hover on accent */
+    --accent-pale:  #faf0eb;   /* accent-tinted light surface */
+    --accent-soft:  #e0a888;   /* accent-tinted border */
 
-    /* ── Paper — cleaner warm white ── */
-    --paper:      #faf4ec;   /* page background — warmer, brighter */
-    --paper-warm: #f0e8d8;   /* card hover, inset surfaces */
-    --paper-mid:  #ddd0bc;   /* progress track */
-    --parchment:  #c8b89a;   /* strong border */
+    /* ── Warm highlight — used for nav active marker, tab underlines ── */
+    --highlight:    #e8c87a;   /* soft gold — just for structural accents on chrome */
 
-    /* ── Iron ink ── */
-    --ink:        #1a140c;
-    --ink-soft:   #332820;
-    --ink-muted:  #6e5c48;
-    --ink-faint:  #aa9880;
+    /* ── Page ground — classic warm cream ── */
+    --paper:        #f5f0e8;   /* page background */
+    --paper-warm:   #ece5d8;   /* card hover, inset */
+    --paper-mid:    #d8cfbf;   /* progress track, dividers */
+    --parchment:    #c4b89e;   /* strong border */
+
+    /* ── Ink ── */
+    --ink:          #18140e;   /* primary text */
+    --ink-soft:     #302820;   /* secondary text */
+    --ink-muted:    #6a5c48;   /* labels */
+    --ink-faint:    #a89880;   /* hints, placeholders */
 
     /* ── Surfaces ── */
-    --card:       #ffffff;
-    --card-warm:  #fdfaf6;
-    --border:     #d4c8b0;
-    --border-soft:#e8dece;
-    --shadow:     rgba(26,20,12,0.07);
-    --shadow-md:  rgba(26,20,12,0.14);
+    --card:         #ffffff;
+    --card-warm:    #fdfaf5;
+    --border:       #d0c4ac;
+    --border-soft:  #e4dace;
+    --shadow:       rgba(24,20,14,0.07);
+    --shadow-md:    rgba(24,20,14,0.14);
 
     --font-head: 'Marcellus', Georgia, serif;
     --font-body: 'EB Garamond', Georgia, serif;
@@ -77,7 +80,7 @@
   /* ── SIDEBAR ── */
   #sidebar {
     width: 220px; min-height: 100vh;
-    background: var(--brick);
+    background: var(--chrome);
     display: flex; flex-direction: column; flex-shrink: 0;
     position: sticky; top: 0; height: 100vh; overflow: hidden; z-index: 100;
   }
@@ -88,8 +91,8 @@
     flex-shrink: 0;
   }
   #sidebar-wordmark h1 {
-    font-family: var(--font-head); font-size: 1.5rem;
-    letter-spacing: 0.1em; color: var(--gold-pale); line-height: 1;
+    font-family: var(--font-head); font-size: 1.5rem; font-weight: 400;
+    letter-spacing: 0.1em; color: var(--chrome-text); line-height: 1;
   }
   #sidebar-nav {
     flex: 1; padding: 0.6rem 0; overflow-y: auto; scrollbar-width: none;
@@ -99,21 +102,21 @@
     display: flex; align-items: center; gap: 12px;
     padding: 0.6rem 1.35rem;
     cursor: pointer; border: none; background: none; width: 100%; text-align: left;
-    color: rgba(248,230,210,0.55);
+    color: var(--chrome-muted);
     font-family: var(--font-body); font-size: 1rem; letter-spacing: 0.02em;
     border-left: 3px solid transparent;
     transition: color 0.15s, background 0.15s, border-color 0.15s;
   }
-  .snav-item:hover { color: var(--gold-pale); background: rgba(255,255,255,0.07); }
+  .snav-item:hover { color: var(--chrome-text); background: rgba(255,255,255,0.07); }
   .snav-item.active {
-    color: var(--gold-pale);
+    color: var(--chrome-text);
     background: rgba(0,0,0,0.15);
-    border-left-color: var(--gold);
+    border-left-color: var(--highlight);
   }
   .snav-item svg { flex-shrink: 0; opacity: 0.65; }
   .snav-item.active svg { opacity: 1; }
   .snav-badge {
-    margin-left: auto; background: var(--brick-deep); color: var(--gold-pale);
+    margin-left: auto; background: var(--chrome-deep); color: var(--chrome-text);
     font-size: 0.65rem; padding: 1px 6px; border-radius: 10px;
     font-family: var(--font-body); letter-spacing: 0;
   }
@@ -126,11 +129,11 @@
   }
   .sidebar-action-btn {
     flex: 1; background: rgba(0,0,0,0.15); border: none; border-radius: var(--radius);
-    color: rgba(248,230,210,0.6); cursor: pointer; padding: 9px 0;
+    color: var(--chrome-muted); cursor: pointer; padding: 9px 0;
     display: flex; align-items: center; justify-content: center;
     transition: background 0.15s, color 0.15s;
   }
-  .sidebar-action-btn:hover { background: rgba(0,0,0,0.25); color: var(--gold-pale); }
+  .sidebar-action-btn:hover { background: rgba(255,255,255,0.12); color: var(--chrome-text); }
 
   /* ── MAIN CONTENT ── */
   #main { flex: 1; padding: 1.75rem 2rem; max-width: 880px; min-width: 0; }
@@ -142,17 +145,17 @@
   /* ── OVERFLOW DRAWER ── */
   #overflow-drawer {
     display: none; position: fixed; bottom: 60px; right: 0; left: 0;
-    background: var(--brick-deep); border-top: 1px solid rgba(255,255,255,0.1);
+    background: var(--chrome-deep); border-top: 1px solid rgba(255,255,255,0.1);
     z-index: 200; padding: 0.5rem 0; animation: slideUpDrawer 0.18s ease;
   }
   #overflow-drawer.open { display: block; }
   @keyframes slideUpDrawer { from { transform: translateY(100%); opacity:0; } to { transform: translateY(0); opacity:1; } }
   .drawer-item {
     display: flex; align-items: center; gap: 12px; padding: 0.75rem 1.5rem;
-    color: rgba(248,230,210,0.75); font-family: var(--font-body); font-size: 1rem;
+    color: rgba(200,224,210,0.75); font-family: var(--font-body); font-size: 1rem;
     cursor: pointer; border: none; background: none; width: 100%;
   }
-  .drawer-item.active { color: var(--gold-pale); }
+  .drawer-item.active { color: var(--chrome-text); }
   .drawer-item:hover { background: rgba(255,255,255,0.06); }
   #drawer-backdrop { display: none; position: fixed; inset: 0; z-index: 199; }
   #drawer-backdrop.open { display: block; }
@@ -162,7 +165,7 @@
     #sidebar { display: none; }
     #mobile-topbar {
       display: flex; align-items: center; justify-content: space-between;
-      background: var(--brick); padding: 0 0.75rem; height: 50px;
+      background: var(--chrome); padding: 0 0.75rem; height: 50px;
       padding-top: env(safe-area-inset-top);
       height: calc(50px + env(safe-area-inset-top));
       position: sticky; top: 0; z-index: 100; flex-shrink: 0;
@@ -170,15 +173,15 @@
     }
     #mobile-topbar h1 {
       font-family: 'EB Garamond', Georgia, serif;
-      font-size: 1.4rem; font-style: italic;
-      letter-spacing: 0.05em; color: var(--gold-pale);
+      font-size: 1.4rem; font-style: italic; font-weight: 400;
+      letter-spacing: 0.05em; color: var(--chrome-text);
       position: absolute; left: 50%; transform: translateX(-50%);
       white-space: nowrap; pointer-events: none;
     }
     #mobile-topbar-actions { display: flex; gap: 2px; }
     #mobile-tabbar {
       display: flex; position: fixed; bottom: 0; left: 0; right: 0;
-      background: var(--brick-deep); border-top: 1px solid rgba(255,255,255,0.1);
+      background: var(--chrome-deep); border-top: 1px solid rgba(255,255,255,0.1);
       z-index: 100;
       height: calc(60px + env(safe-area-inset-bottom));
       padding-bottom: env(safe-area-inset-bottom);
@@ -186,12 +189,12 @@
     .tab-btn {
       flex: 1; display: flex; flex-direction: column; align-items: center;
       justify-content: center; gap: 3px; background: none; border: none;
-      cursor: pointer; color: rgba(248,230,210,0.45);
+      cursor: pointer; color: rgba(200,224,210,0.4);
       font-family: var(--font-body); font-size: 0.62rem; letter-spacing: 0.03em;
       transition: color 0.15s; padding: 0;
     }
-    .tab-btn.active { color: var(--gold); }
-    .tab-btn:hover { color: var(--gold-pale); }
+    .tab-btn.active { color: #c8e8d0; }
+    .tab-btn:hover { color: var(--chrome-text); }
     .tab-btn svg { flex-shrink: 0; }
     #app { flex-direction: column; }
     #main { padding: 1rem; padding-bottom: calc(76px + env(safe-area-inset-bottom)); max-width: 100%; }
@@ -214,18 +217,18 @@
     cursor: pointer; border: 1px solid transparent;
     transition: all 0.15s; display: inline-flex; align-items: center; gap: 6px;
   }
-  .btn-primary { background: var(--brick); color: var(--gold-pale); border-color: var(--brick); }
-  .btn-primary:hover { background: var(--brick-mid); border-color: var(--brick-mid); }
+  .btn-primary { background: var(--accent); color: var(--chrome-text); border-color: var(--accent); }
+  .btn-primary:hover { background: var(--accent-deep); border-color: var(--accent-deep); }
   .btn-secondary { background: transparent; color: var(--ink-soft); border-color: var(--border); }
   .btn-secondary:hover { background: var(--paper-warm); }
-  .btn-danger { background: transparent; color: var(--brick); border-color: var(--parchment); }
-  .btn-danger:hover { background: var(--brick-pale); border-color: var(--brick); }
+  .btn-danger { background: transparent; color: var(--accent); border-color: var(--parchment); }
+  .btn-danger:hover { background: var(--accent-pale); border-color: var(--accent); }
   .btn-ghost { background: none; border: none; color: var(--ink-muted); cursor: pointer; font-family: var(--font-body); font-size: 0.875rem; padding: 0.35rem 0.5rem; border-radius: var(--radius); }
   .btn-ghost:hover { background: var(--paper-warm); color: var(--ink); }
   .btn-icon { background: none; border: none; cursor: pointer; color: var(--ink-muted); padding: 6px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
   .btn-icon:hover { background: var(--paper-warm); color: var(--ink); }
-  .btn-icon-cream { background: none; border: none; cursor: pointer; color: rgba(248,230,210,0.65); padding: 6px; border-radius: var(--radius); display: flex; align-items: center; transition: color 0.15s; }
-  .btn-icon-cream:hover { color: var(--gold-pale); }
+  .btn-icon-cream { background: none; border: none; cursor: pointer; color: rgba(200,224,210,0.65); padding: 6px; border-radius: var(--radius); display: flex; align-items: center; transition: color 0.15s; }
+  .btn-icon-cream:hover { color: var(--chrome-text); }
 
   /* ── FORMS ── */
   .form-group { margin-bottom: 1rem; }
@@ -237,8 +240,8 @@
     transition: border-color 0.15s;
   }
   .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
-    outline: none; border-color: var(--gold);
-    box-shadow: 0 0 0 2px rgba(200,164,90,0.18);
+    outline: none; border-color: var(--chrome-lift);
+    box-shadow: 0 0 0 2px rgba(30,58,47,0.12);
   }
   .form-group textarea { resize: vertical; min-height: 80px; line-height: 1.55; }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
@@ -263,20 +266,20 @@
     padding: 2px 8px; border-radius: 20px; font-family: var(--font-body);
     text-transform: uppercase;
   }
-  .badge-reading { background: var(--brick-pale); color: var(--brick);  border: 1px solid var(--brick-soft); }
-  .badge-read    { background: var(--gold-pale);  color: var(--gold-deep); border: 1px solid var(--gold-soft); }
+  .badge-reading { background: var(--accent-pale); color: var(--accent);  border: 1px solid var(--accent-soft); }
+  .badge-read    { background: #e8f0e8; color: #1e3a2f; border: 1px solid #b0ccb8; }
   .badge-toread  { background: var(--paper-warm); color: var(--ink-muted); border: 1px solid var(--border); }
   .badge-unread  { background: var(--paper-warm); color: var(--ink-muted); border: 1px solid var(--border); }
-  .badge-notes   { background: var(--gold-pale);  color: var(--gold-deep); border: 1px solid var(--gold-soft); }
-  .badge-owned   { background: var(--gold-pale);  color: var(--gold-deep); border: 1px solid var(--gold-soft); }
+  .badge-notes   { background: #eef0f5; color: #2a3a5a; border: 1px solid #b8c8d8; }
+  .badge-owned   { background: #e8efe8; color: #1e3a2f; border: 1px solid #b0ccb8; }
   .badge-wishlist{ background: var(--paper-warm); color: var(--ink-muted); border: 1px solid var(--border); }
 
   /* ── PROGRESS BAR ── */
   .progress-wrap { margin: 0.5rem 0; }
   .progress-label { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--ink-muted); margin-bottom: 4px; }
   .progress-track { background: var(--paper-mid); border-radius: 20px; height: 8px; overflow: hidden; }
-  .progress-fill { height: 100%; border-radius: 20px; background: linear-gradient(90deg, var(--brick) 0%, var(--gold) 100%); transition: width 0.4s ease; }
-  .progress-fill.complete { background: var(--gold-deep); }
+  .progress-fill { height: 100%; border-radius: 20px; background: linear-gradient(90deg, var(--accent-deep) 0%, var(--accent) 100%); transition: width 0.4s ease; }
+  .progress-fill.complete { background: var(--chrome); }
 
   /* ── BOOK COVERS ── */
   .cover {
@@ -299,14 +302,14 @@
   }
 
   /* Cover palette — brick, warm earth, aged leather, dark oak */
-  .cp-0 { background: linear-gradient(175deg, #8f2310 0%, #6a1808 100%); }
-  .cp-1 { background: linear-gradient(175deg, #3a1e10 0%, #1e0e06 100%); }
-  .cp-2 { background: linear-gradient(175deg, #6b3a1a 0%, #3e1e08 100%); }
-  .cp-3 { background: linear-gradient(175deg, #b53318 0%, #7a2010 100%); }
-  .cp-4 { background: linear-gradient(175deg, #2e1e14 0%, #18100a 100%); }
-  .cp-5 { background: linear-gradient(175deg, #5a2e1a 0%, #321808 100%); }
-  .cp-6 { background: linear-gradient(175deg, #3e2210 0%, #221208 100%); }
-  .cp-7 { background: linear-gradient(175deg, #8a4820 0%, #5a2e10 100%); }
+  .cp-0 { background: linear-gradient(175deg, #1e3a2f 0%, #0e2018 100%); }
+  .cp-1 { background: linear-gradient(175deg, #c45e35 0%, #8a3a18 100%); }
+  .cp-2 { background: linear-gradient(175deg, #2a5040 0%, #16301e 100%); }
+  .cp-3 { background: linear-gradient(175deg, #5a3820 0%, #381e0c 100%); }
+  .cp-4 { background: linear-gradient(175deg, #183828 0%, #0a2018 100%); }
+  .cp-5 { background: linear-gradient(175deg, #8a4820 0%, #582808 100%); }
+  .cp-6 { background: linear-gradient(175deg, #3a3020 0%, #201a0e 100%); }
+  .cp-7 { background: linear-gradient(175deg, #4a2a38 0%, #2a1220 100%); }
 
   /* ── VIEW TOGGLE ── */
   .view-toggle { display: flex; gap: 2px; background: var(--paper-warm); border: 1px solid var(--border); border-radius: var(--radius); padding: 2px; }
@@ -341,10 +344,10 @@
   }
   .shelf-plank {
     height: 22px;
-    background: linear-gradient(180deg, #c07858 0%, #984030 40%, #722010 100%);
+    background: linear-gradient(180deg, #8a7050 0%, #6a5030 40%, #4a3818 100%);
     border-radius: 0 0 3px 3px;
     box-shadow: 0 4px 12px rgba(26,20,12,0.3), inset 0 1px 0 rgba(255,255,255,0.12);
-    border: 1px solid #621808; border-top: none; margin-bottom: 4px;
+    border: 1px solid #3a2e18; border-top: none; margin-bottom: 4px;
   }
   .shelf-plank-shadow {
     height: 6px;
@@ -390,7 +393,7 @@
   .spine-tooltip {
     position: absolute; bottom: calc(100% + 10px); left: 50%;
     transform: translateX(-50%) translateY(4px);
-    background: var(--brick-deep); color: var(--gold-pale);
+    background: var(--chrome); color: var(--chrome-text);
     padding: 6px 10px; border-radius: var(--radius); font-size: 0.78rem;
     font-family: var(--font-body); opacity: 0; transition: opacity 0.15s, transform 0.15s;
     pointer-events: none; z-index: 10; box-shadow: 0 3px 10px rgba(0,0,0,0.2);
@@ -398,7 +401,7 @@
   }
   .spine-tooltip::after {
     content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
-    border: 5px solid transparent; border-top-color: var(--brick-deep);
+    border: 5px solid transparent; border-top-color: var(--chrome-deep);
   }
   .shelf-year-label {
     font-family: var(--font-head); font-size: 0.8rem; letter-spacing: 0.08em;
@@ -414,7 +417,7 @@
     transition: box-shadow 0.15s, border-color 0.15s, background 0.15s;
     box-shadow: 0 1px 3px var(--shadow);
   }
-  .book-item:hover { box-shadow: 0 3px 12px var(--shadow-md); border-color: var(--gold-soft); background: var(--card-warm); }
+  .book-item:hover { box-shadow: 0 3px 12px var(--shadow-md); border-color: var(--chrome-lift); background: var(--card-warm); }
   .book-item + .book-item { margin-top: 0.75rem; }
   .book-item-info { flex: 1; min-width: 0; }
   .book-item-title { font-family: var(--font-head); font-size: 1rem; color: var(--ink); line-height: 1.3; }
@@ -426,14 +429,14 @@
 
   /* ── MODAL ── */
   .modal-backdrop {
-    position: fixed; inset: 0; background: rgba(20,12,6,0.65);
+    position: fixed; inset: 0; background: rgba(10,20,14,0.65);
     z-index: 200; display: flex; align-items: flex-start; justify-content: center;
     padding: 2rem 1rem; overflow-y: auto;
   }
   .modal {
     background: var(--paper); border-radius: var(--radius-lg);
     border: 1px solid var(--parchment); width: 100%; max-width: 560px;
-    box-shadow: 0 8px 40px rgba(20,12,6,0.25); animation: slideUp 0.2s ease;
+    box-shadow: 0 8px 40px rgba(10,20,14,0.25); animation: slideUp 0.2s ease;
   }
   @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
   .modal-header {
@@ -452,12 +455,12 @@
     color: var(--ink-muted); cursor: pointer; margin-bottom: -1px;
     transition: color 0.15s, border-color 0.15s;
   }
-  .tab.active { color: var(--ink); border-bottom-color: var(--gold); }
+  .tab.active { color: var(--ink); border-bottom-color: var(--accent); }
   .tab:hover { color: var(--ink); }
 
   /* ── QUOTE ITEM ── */
   .quote-item {
-    border-left: 3px solid var(--gold); padding: 0.75rem 1rem;
+    border-left: 3px solid var(--accent); padding: 0.75rem 1rem;
     background: var(--card-warm); border-radius: 0 var(--radius) var(--radius) 0;
     border-top: 1px solid var(--border-soft); border-right: 1px solid var(--border-soft); border-bottom: 1px solid var(--border-soft);
     margin-bottom: 0.75rem; position: relative;
@@ -483,38 +486,38 @@
 
   /* ── CURRENTLY READING HERO ── */
   .reading-hero {
-    background: var(--brick); color: var(--gold-pale);
+    background: var(--chrome); color: var(--chrome-text);
     border-radius: var(--radius-lg); padding: 1.25rem;
     margin-bottom: 1.5rem; display: flex; flex-direction: row; gap: 1rem; align-items: flex-start;
     box-shadow: 0 3px 16px var(--shadow-md);
   }
   .reading-hero-info { flex: 1; min-width: 0; }
-  .reading-hero-label { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(248,230,210,0.55); margin-bottom: 6px; }
-  .reading-hero-title { font-family: var(--font-head); font-size: 1.15rem; color: var(--gold-pale); line-height: 1.3; }
-  .reading-hero-author { font-size: 0.875rem; color: rgba(248,230,210,0.7); font-style: italic; margin-top: 3px; }
+  .reading-hero-label { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(200,224,210,0.55); margin-bottom: 6px; }
+  .reading-hero-title { font-family: var(--font-head); font-size: 1.15rem; color: var(--chrome-text); line-height: 1.3; }
+  .reading-hero-author { font-size: 0.875rem; color: rgba(200,224,210,0.7); font-style: italic; margin-top: 3px; }
 
   /* ── AI PANEL ── */
-  .ai-panel { background: var(--gold-pale); border: 1px solid var(--gold-soft); border-left: 3px solid var(--gold); border-radius: 0 var(--radius-lg) var(--radius-lg) 0; padding: 1rem; margin-top: 1rem; }
-  .ai-label { font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--gold-deep); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .ai-panel { background: #eef4f0; border: 1px solid #b8d4c0; border-left: 3px solid var(--chrome-lift); border-radius: 0 var(--radius-lg) var(--radius-lg) 0; padding: 1rem; margin-top: 1rem; }
+  .ai-label { font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--chrome); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
   .ai-response { font-size: 0.95rem; line-height: 1.7; color: var(--ink-soft); white-space: pre-wrap; }
   .ai-loading { color: var(--ink-muted); font-style: italic; font-size: 0.9rem; }
 
   /* ── STATS ── */
   .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.75rem; margin-bottom: 1.5rem; }
   .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1rem; text-align: center; }
-  .stat-number { font-family: var(--font-head); font-size: 1.8rem; color: var(--brick); }
+  .stat-number { font-family: var(--font-head); font-size: 1.8rem; color: var(--chrome); }
   .stat-label { font-size: 0.72rem; color: var(--ink-muted); letter-spacing: 0.06em; text-transform: uppercase; margin-top: 2px; }
 
   /* ── READING LOG ── */
   .log-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0; border-bottom: 1px solid var(--border-soft); font-size: 0.875rem; }
   .log-date { color: var(--ink-muted); min-width: 90px; font-size: 0.8rem; }
-  .log-pages { font-family: var(--font-head); color: var(--brick-mid); }
+  .log-pages { font-family: var(--font-head); color: var(--accent); }
 
   /* ── FILTER BAR ── */
   .filter-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.25rem; }
   .filter-btn { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 4px 14px; font-size: 0.85rem; font-family: var(--font-body); cursor: pointer; color: var(--ink-muted); transition: all 0.15s; }
-  .filter-btn.active { background: var(--brick); color: var(--gold-pale); border-color: var(--brick); }
-  .filter-btn:hover:not(.active) { border-color: var(--gold-soft); color: var(--ink); background: var(--gold-pale); }
+  .filter-btn.active { background: var(--accent); color: var(--chrome-text); border-color: var(--accent); }
+  .filter-btn:hover:not(.active) { border-color: var(--accent-soft); color: var(--ink); background: var(--chrome-text); }
 
   /* ── COVER UPLOAD ── */
   .cover-upload-area {
@@ -522,7 +525,7 @@
     padding: 1.5rem; text-align: center; cursor: pointer;
     transition: border-color 0.15s, background 0.15s; color: var(--ink-muted); font-size: 0.875rem;
   }
-  .cover-upload-area:hover { border-color: var(--gold); background: var(--gold-pale); }
+  .cover-upload-area:hover { border-color: var(--chrome-lift); background: #eef4f0; }
 
   /* ── EMPTY STATE ── */
   .empty-state { text-align: center; padding: 3rem 1.5rem; color: var(--ink-muted); }
@@ -1129,7 +1132,7 @@
       <div style="display:flex;gap:8px;margin-bottom:1rem">
         <input type="text" id="batch-isbn-input"
           placeholder="Scan or type ISBN, press Enter…"
-          style="flex:1;padding:0.55rem 0.85rem;font-family:var(--font-body);font-size:1.05rem;color:var(--ink);background:white;border:2px solid var(--gold);border-radius:var(--radius);outline:none"
+          style="flex:1;padding:0.55rem 0.85rem;font-family:var(--font-body);font-size:1.05rem;color:var(--ink);background:white;border:2px solid var(--highlight);border-radius:var(--radius);outline:none"
           onkeydown="if(event.key==='Enter'){event.preventDefault();batchAddISBN()}">
         <button class="btn btn-primary" onclick="batchAddISBN()" style="flex-shrink:0">Add</button>
       </div>
@@ -1290,14 +1293,14 @@ function renderHome() {
             <div class="reading-hero-title">${escHtml(book.title)}</div>
             <div class="reading-hero-author">${escHtml(book.author)}</div>
             <div style="margin-top:0.75rem">
-              <div class="progress-label" style="color:rgba(248,230,210,0.75)">
+              <div class="progress-label" style="color:rgba(200,224,210,0.8)">
                 <span>Page ${book.currentPage}${book.pages ? ' of ' + book.pages : ''}</span>
                 <span>${pct}%</span>
               </div>
-              <div class="progress-track" style="background:rgba(0,0,0,0.25)"><div class="progress-fill ${pct===100?'complete':''}" style="width:${pct}%;background:var(--gold)"></div></div>
+              <div class="progress-track" style="background:rgba(0,0,0,0.25)"><div class="progress-fill ${pct===100?'complete':''}" style="width:${pct}%;background:var(--highlight)"></div></div>
             </div>
             <div style="margin-top:0.75rem">
-              <button class="btn" style="background:rgba(0,0,0,0.2);color:var(--gold-pale);border:1px solid rgba(248,230,210,0.35);font-size:0.85rem;padding:0.35rem 0.85rem" onclick="event.stopPropagation();openProgress('${book.id}')">Update Progress</button>
+              <button class="btn" style="background:rgba(255,255,255,0.12);color:var(--chrome-text);border:1px solid rgba(200,224,210,0.35);font-size:0.85rem;padding:0.35rem 0.85rem" onclick="event.stopPropagation();openProgress('${book.id}')">Update Progress</button>
             </div>
           </div>
         </div>`;
@@ -1724,7 +1727,7 @@ function renderReading() {
             <div class="progress-wrap" style="margin-top:0.75rem">
               <div class="progress-label">
                 <span>Page ${book.currentPage}${book.pages ? ' of ' + book.pages : ''}</span>
-                <span style="font-weight:500;color:var(--brick-mid)">${pct}%</span>
+                <span style="font-weight:500;color:var(--accent-deep)">${pct}%</span>
               </div>
               <div class="progress-track" style="height:10px"><div class="progress-fill ${pct===100?'complete':''}" style="width:${pct}%"></div></div>
             </div>
@@ -1934,13 +1937,13 @@ function renderStats() {
 
   if (goal) {
     const onTrackMsg = booksNeeded === 0
-      ? `<span style="color:var(--gold-deep);font-weight:500">Goal reached! 🎉</span>`
+      ? `<span style="color:var(--accent-deep);font-weight:500">Goal reached! 🎉</span>`
       : `<span style="color:var(--ink-muted)">${booksNeeded} book${booksNeeded!==1?'s':''} remaining · <strong>${perMonth}</strong>/month to stay on track</span>`;
 
     html += `<div style="margin-bottom:6px">
       <div class="progress-label">
         <span style="font-size:0.85rem">${readThisYear} of ${goal} books</span>
-        <span style="font-size:0.85rem;color:var(--brick)">${goalPct}%</span>
+        <span style="font-size:0.85rem;color:var(--accent)">${goalPct}%</span>
       </div>
       <div class="progress-track" style="height:12px;border-radius:6px">
         <div class="progress-fill ${goalPct>=100?'complete':''}" style="width:${goalPct}%;border-radius:6px"></div>
@@ -1976,7 +1979,7 @@ function renderStats() {
       const isThis = parseInt(yr) === thisYear;
       html += `<div style="margin-bottom:0.6rem">
         <div style="display:flex;justify-content:space-between;font-size:0.875rem;margin-bottom:3px">
-          <span>${yr}${isThis?' <span style="font-size:0.75rem;color:var(--brick-mid);font-style:italic">this year</span>':''}</span>
+          <span>${yr}${isThis?' <span style="font-size:0.75rem;color:var(--accent-deep);font-style:italic">this year</span>':''}</span>
           <span style="color:var(--ink-muted)">${count} book${count!==1?'s':''}</span>
         </div>
         <div class="progress-track"><div class="progress-fill${isThis?' complete':''}" style="width:${pct}%"></div></div>
@@ -2039,8 +2042,8 @@ function openDetail(bookId) {
   const readDates = book.readDates || [];
   let readDatesHtml = '';
 
-  // Currently reading — show start date with edit button
   if (book.status === 'reading') {
+    // Currently reading — show editable start date
     const sd = book.startDate ? fmtDate(book.startDate) : 'not recorded';
     readDatesHtml += `<tr>
       <td style="color:var(--ink-muted);padding:5px 0;width:45%;vertical-align:top;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.04em">Started</td>
@@ -2051,7 +2054,45 @@ function openDetail(bookId) {
     </tr>`;
   }
 
-  if (readDates.length > 0) {
+  if (book.status === 'read') {
+    // For read books — fully editable sessions
+    const sessionRows = readDates.map((r, i) => {
+      const startVal = r.startDate ? toInputDate(r.startDate) : '';
+      const finishVal = r.date ? toInputDate(r.date) : '';
+      const label = readDates.length > 1 ? `Reading #${i+1}` : 'Date Read';
+      return `<tr id="reading-session-row-${i}">
+        <td style="color:var(--ink-muted);padding:6px 0;width:45%;vertical-align:top;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.04em">${escHtml(label)}</td>
+        <td style="padding:4px 0">
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div style="display:flex;align-items:center;gap:6px;font-size:0.82rem">
+              <label style="color:var(--ink-faint);width:46px;text-transform:uppercase;letter-spacing:0.04em;font-size:0.72rem;flex-shrink:0">Started</label>
+              <input type="date" value="${startVal}"
+                style="font-family:var(--font-body);font-size:0.85rem;border:1px solid var(--border);border-radius:var(--radius);padding:2px 6px;color:var(--ink);background:var(--card);flex:1"
+                onchange="updateReadingSession('${book.id}', ${i}, 'startDate', this.value)">
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:0.82rem">
+              <label style="color:var(--ink-faint);width:46px;text-transform:uppercase;letter-spacing:0.04em;font-size:0.72rem;flex-shrink:0">Finished</label>
+              <input type="date" value="${finishVal}"
+                style="font-family:var(--font-body);font-size:0.85rem;border:1px solid var(--border);border-radius:var(--radius);padding:2px 6px;color:var(--ink);background:var(--card);flex:1"
+                onchange="updateReadingSession('${book.id}', ${i}, 'date', this.value)">
+            </div>
+            ${readDates.length > 1 ? `<div style="text-align:right"><button class="btn-ghost" style="font-size:0.72rem;color:var(--ink-faint);padding:1px 4px" onclick="removeReadingSession('${book.id}', ${i})">remove</button></div>` : ''}
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+
+    readDatesHtml = sessionRows;
+
+    // If no sessions exist yet, show a placeholder row
+    if (readDates.length === 0) {
+      readDatesHtml = `<tr><td style="color:var(--ink-muted);padding:5px 0;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.04em" colspan="2">
+        <span style="font-style:italic;color:var(--ink-faint)">No reading dates recorded.</span>
+      </td></tr>`;
+    }
+
+  } else if (book.status !== 'reading' && readDates.length > 0) {
+    // Other statuses (unread, toread) — read-only display of any existing history
     const label = readDates.length > 1 ? 'Reading History' : 'Date Read';
     readDatesHtml += `<tr><td style="color:var(--ink-muted);padding:5px 0;width:45%;vertical-align:top;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.04em">${label}</td><td style="padding:5px 0">`;
     readDates.forEach((r, i) => {
@@ -2061,7 +2102,6 @@ function openDetail(bookId) {
       readDatesHtml += `<div style="margin-bottom:4px">
         ${readDates.length > 1 ? `<span style="font-size:0.72rem;color:var(--ink-faint);margin-right:6px">#${i+1}</span>` : ''}
         ${escHtml(range)}
-        ${r.note ? `<div style="font-size:0.82rem;color:var(--ink-muted);font-style:italic">${escHtml(r.note)}</div>` : ''}
       </div>`;
     });
     readDatesHtml += `</td></tr>`;
@@ -2077,7 +2117,7 @@ function openDetail(bookId) {
         ${book.status==='reading'?'<span class="badge badge-reading">Currently Reading</span>':book.status==='read'?'<span class="badge badge-read">Read</span>':book.status==='toread'?'<span class="badge badge-toread">To-Read</span>':'<span class="badge badge-unread">Unread</span>'}
         ${book.owned==='wishlist'?'<span class="badge badge-wishlist">Wishlist</span>':'<span class="badge badge-owned">Owned</span>'}
         ${quotes.length>0?'<span class="badge badge-notes">'+quotes.length+' quotes</span>':''}
-        ${notes.length>0?'<span class="badge" style="background:var(--gold-pale);color:var(--gold-deep);border:1px solid var(--gold-soft)">'+notes.length+' notes</span>':''}
+        ${notes.length>0?'<span class="badge" style="background:#eef0f5;color:#2a3a5a;border:1px solid #b8c8d8">'+notes.length+' notes</span>':''}
       </div>
       ${book.status==='reading'?`<div class="progress-wrap" style="margin-top:0.75rem"><div class="progress-label"><span>p.${book.currentPage}${book.pages?' of '+book.pages:''}</span><span>${pct}%</span></div><div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div></div>`:''}
       <div style="margin-top:0.75rem;display:flex;gap:6px;flex-wrap:wrap">
@@ -2099,7 +2139,10 @@ function openDetail(bookId) {
     ${readDatesHtml}
     </table>
     ${book.notes ? `<div style="margin-top:1rem;padding:0.75rem;background:var(--paper-warm);border-radius:var(--radius);font-size:0.9rem;font-style:italic;color:var(--ink-soft)">${escHtml(book.notes)}</div>` : ''}
-    ${book.status === 'read' ? `<button class="btn btn-secondary" style="margin-top:1rem;font-size:0.85rem" onclick="markReadAgain('${book.id}')">+ Read again</button>` : ''}
+    ${book.status === 'read' ? `<div style="margin-top:1rem;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-secondary" style="font-size:0.85rem" onclick="addReadingSession('${book.id}')">+ Add reading session</button>
+      <button class="btn btn-secondary" style="font-size:0.85rem" onclick="markReadAgain('${book.id}')">+ Read again</button>
+    </div>` : ''}
   </div>
 
   <!-- QUOTES TAB -->
@@ -2171,6 +2214,33 @@ function markReadAgain(bookId) {
   if (currentView === 'home') renderHome();
 }
 
+function addReadingSession(bookId) {
+  const book = db.books.find(b => b.id === bookId);
+  if (!book) return;
+  if (!book.readDates) book.readDates = [];
+  book.readDates.push({ startDate: null, date: Date.now(), note: '' });
+  saveDB();
+  openDetail(bookId);
+}
+
+function removeReadingSession(bookId, index) {
+  const book = db.books.find(b => b.id === bookId);
+  if (!book || !book.readDates) return;
+  if (!confirm('Remove this reading session?')) return;
+  book.readDates.splice(index, 1);
+  saveDB();
+  openDetail(bookId);
+}
+
+function updateReadingSession(bookId, index, field, value) {
+  const book = db.books.find(b => b.id === bookId);
+  if (!book || !book.readDates || !book.readDates[index]) return;
+  const ts = value ? new Date(value).getTime() : null;
+  book.readDates[index][field] = ts;
+  saveDB();
+  // No need to re-render — inputs update in place
+}
+
 function editStartDate(bookId) {
   const book = db.books.find(b => b.id === bookId);
   if (!book) return;
@@ -2240,7 +2310,7 @@ async function lookupISBN() {
     // Step 1: fetch the edition record for this ISBN
     const edRes = await fetch(`https://openlibrary.org/isbn/${encodeURIComponent(raw)}.json`);
     if (!edRes.ok) {
-      setStatus('ISBN not found in Open Library. You can still fill in the fields manually.', 'var(--brick)');
+      setStatus('ISBN not found in Open Library. You can still fill in the fields manually.', 'var(--accent)');
       return;
     }
     const ed = await edRes.json();
@@ -2344,10 +2414,10 @@ async function lookupISBN() {
 
     const filled = [fullTitle, authors[0], publisher, pubEdYear].filter(Boolean).length;
     const coverNote = coverId ? ' Cover fetched.' : '';
-    setStatus(`Filled ${filled} field${filled !== 1 ? 's' : ''} from Open Library.${coverNote} Review and adjust as needed.`, 'var(--gold-deep)');
+    setStatus(`Filled ${filled} field${filled !== 1 ? 's' : ''} from Open Library.${coverNote} Review and adjust as needed.`, 'var(--accent-deep)');
 
   } catch (err) {
-    setStatus('Something went wrong. Check your connection and try again.', 'var(--brick)');
+    setStatus('Something went wrong. Check your connection and try again.', 'var(--accent)');
   } finally {
     btn.disabled = false;
     btn.textContent = 'Look up';
@@ -2542,9 +2612,9 @@ function renderBatchQueue() {
     const isError = entry.status === 'error';
 
     const icon = isResolving ? `<span style="color:var(--ink-faint);font-size:0.8rem">…</span>`
-      : isFound    ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--gold-deep)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`
+      : isFound    ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent-deep)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`
       : isExists   ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--ink-faint)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`
-      : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--brick-mid)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`;
+      : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent-deep)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`;
 
     const titleLine = isFound && entry.book
       ? `<span style="font-family:var(--font-head);font-size:0.92rem;color:var(--ink)">${escHtml(entry.book.title)}</span>${entry.book.author ? `<span style="font-size:0.8rem;color:var(--ink-muted);margin-left:8px;font-style:italic">${escHtml(entry.book.author)}</span>` : ''}`
@@ -2552,7 +2622,7 @@ function renderBatchQueue() {
       ? `<span style="font-family:var(--font-head);font-size:0.92rem;color:var(--ink-muted)">${escHtml(entry.book.title)}</span><span style="font-size:0.78rem;color:var(--ink-faint);margin-left:8px">already in library</span>`
       : isResolving
       ? `<span style="font-size:0.88rem;color:var(--ink-muted)">Looking up ${escHtml(entry.isbn)}…</span>`
-      : `<span style="font-size:0.88rem;color:var(--brick-mid)">${escHtml(entry.isbn)}</span><span style="font-size:0.78rem;color:var(--ink-faint);margin-left:8px">${escHtml(entry.error)}</span>`;
+      : `<span style="font-size:0.88rem;color:var(--accent-deep)">${escHtml(entry.isbn)}</span><span style="font-size:0.78rem;color:var(--ink-faint);margin-left:8px">${escHtml(entry.error)}</span>`;
 
     const pubInfo = isFound && entry.book && (entry.book.pubOrig || entry.book.pubEd)
       ? `<span style="font-size:0.75rem;color:var(--ink-faint);margin-left:8px">${entry.book.pubOrig || entry.book.pubEd}</span>`
@@ -2611,7 +2681,7 @@ async function batchImportAll() {
   // ── Added ──
   if (added > 0) {
     html += `<div style="margin-bottom:1rem">
-      <div style="font-size:0.75rem;letter-spacing:0.07em;text-transform:uppercase;color:var(--gold-deep);margin-bottom:0.5rem;font-weight:500">
+      <div style="font-size:0.75rem;letter-spacing:0.07em;text-transform:uppercase;color:var(--accent-deep);margin-bottom:0.5rem;font-weight:500">
         ✓ Added (${added})
       </div>`;
     toImport.forEach(e => {
@@ -2626,10 +2696,10 @@ async function batchImportAll() {
   // ── Not found — needs manual entry ──
   if (failed.length > 0) {
     html += `<div style="margin-bottom:1rem">
-      <div style="font-size:0.75rem;letter-spacing:0.07em;text-transform:uppercase;color:var(--brick);margin-bottom:0.5rem;font-weight:500">
+      <div style="font-size:0.75rem;letter-spacing:0.07em;text-transform:uppercase;color:var(--accent);margin-bottom:0.5rem;font-weight:500">
         ✗ Not found — add manually (${failed.length})
       </div>
-      <div style="background:var(--brick-pale);border:1px solid var(--brick-soft);border-radius:var(--radius-lg);padding:0.75rem 1rem">`;
+      <div style="background:var(--accent-pale);border:1px solid var(--accent-soft);border-radius:var(--radius-lg);padding:0.75rem 1rem">`;
     failed.forEach(e => {
       html += `<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border-soft);font-size:0.9rem">
         <span style="font-family:'Courier New',monospace;font-size:0.85rem;color:var(--ink-soft);letter-spacing:0.04em">${escHtml(e.isbn)}</span>
@@ -3053,7 +3123,7 @@ async function runAI() {
     const text = (data.content || []).map(c => c.text || '').join('');
     resultEl.innerHTML = `<div class="ai-panel"><div class="ai-label">✦ AI Insight</div><div class="ai-response">${escHtml(text)}</div></div>`;
   } catch(e) {
-    resultEl.innerHTML = `<div class="ai-panel"><div class="ai-label" style="color:var(--brick-mid)">Error</div><div class="ai-loading">Could not reach the API. Please try again.</div></div>`;
+    resultEl.innerHTML = `<div class="ai-panel"><div class="ai-label" style="color:var(--accent-deep)">Error</div><div class="ai-loading">Could not reach the API. Please try again.</div></div>`;
   }
 }
 
