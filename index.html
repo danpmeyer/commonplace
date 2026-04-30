@@ -91,8 +91,8 @@
     flex-shrink: 0;
   }
   #sidebar-wordmark h1 {
-    font-family: var(--font-head); font-size: 1.5rem; font-weight: 400;
-    letter-spacing: 0.1em; color: var(--chrome-text); line-height: 1;
+    font-family: var(--font-body); font-size: 1.5rem; font-weight: 400;
+    font-style: italic; letter-spacing: 0.06em; color: var(--chrome-text); line-height: 1;
   }
   #sidebar-nav {
     flex: 1; padding: 0.6rem 0; overflow-y: auto; scrollbar-width: none;
@@ -143,12 +143,6 @@
   #mobile-tabbar { display: none; }
 
   /* ── OVERFLOW DRAWER ── */
-  #overflow-drawer {
-    display: none; position: fixed; bottom: 60px; right: 0; left: 0;
-    background: var(--chrome-deep); border-top: 1px solid rgba(255,255,255,0.1);
-    z-index: 200; padding: 0.5rem 0; animation: slideUpDrawer 0.18s ease;
-  }
-  #overflow-drawer.open { display: block; }
   @keyframes slideUpDrawer { from { transform: translateY(100%); opacity:0; } to { transform: translateY(0); opacity:1; } }
   .drawer-item {
     display: flex; align-items: center; gap: 12px; padding: 0.75rem 1.5rem;
@@ -165,20 +159,18 @@
     #sidebar { display: none; }
     #mobile-topbar {
       display: flex; align-items: center; justify-content: space-between;
-      background: var(--chrome); padding: 0 0.75rem; height: 50px;
+      background: var(--chrome); padding: 0 0.75rem;
       padding-top: env(safe-area-inset-top);
       height: calc(50px + env(safe-area-inset-top));
       position: sticky; top: 0; z-index: 100; flex-shrink: 0;
-      position: relative;
     }
     #mobile-topbar h1 {
-      font-family: 'EB Garamond', Georgia, serif;
+      font-family: var(--font-body);
       font-size: 1.4rem; font-style: italic; font-weight: 400;
-      letter-spacing: 0.05em; color: var(--chrome-text);
+      letter-spacing: 0.06em; color: var(--chrome-text);
       position: absolute; left: 50%; transform: translateX(-50%);
       white-space: nowrap; pointer-events: none;
     }
-    #mobile-topbar-actions { display: flex; gap: 2px; }
     #mobile-tabbar {
       display: flex; position: fixed; bottom: 0; left: 0; right: 0;
       background: var(--chrome-deep); border-top: 1px solid rgba(255,255,255,0.1);
@@ -189,21 +181,26 @@
     .tab-btn {
       flex: 1; display: flex; flex-direction: column; align-items: center;
       justify-content: center; gap: 3px; background: none; border: none;
-      cursor: pointer; color: rgba(200,224,210,0.4);
+      cursor: pointer; color: var(--chrome-muted);
       font-family: var(--font-body); font-size: 0.62rem; letter-spacing: 0.03em;
       transition: color 0.15s; padding: 0;
     }
-    .tab-btn.active { color: #c8e8d0; }
+    .tab-btn.active { color: var(--highlight); }
     .tab-btn:hover { color: var(--chrome-text); }
     .tab-btn svg { flex-shrink: 0; }
     #app { flex-direction: column; }
     #main { padding: 1rem; padding-bottom: calc(76px + env(safe-area-inset-bottom)); max-width: 100%; }
-  }
-  @media (max-width: 480px) {
-    .form-row, .form-row-3 { grid-template-columns: 1fr; }
     .modal-backdrop { padding: 0; align-items: flex-end; }
     .modal { border-radius: var(--radius-lg) var(--radius-lg) 0 0; max-width: 100%; }
   }
+  #overflow-drawer {
+    display: none; position: fixed;
+    bottom: calc(60px + env(safe-area-inset-bottom));
+    right: 0; left: 0;
+    background: var(--chrome-deep); border-top: 1px solid rgba(255,255,255,0.1);
+    z-index: 200; padding: 0.5rem 0; animation: slideUpDrawer 0.18s ease;
+  }
+  #overflow-drawer.open { display: block; }
 
   /* ── VIEWS ── */
   .view { display: none; }
@@ -246,6 +243,9 @@
   .form-group textarea { resize: vertical; min-height: 80px; line-height: 1.55; }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
   .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+  @media (max-width: 780px) {
+    .form-row, .form-row-3 { grid-template-columns: 1fr; }
+  }
 
   /* ── CARDS ── */
   .card {
@@ -323,7 +323,7 @@
 
   /* ── GRID VIEW ── */
   .cover-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(106px, 1fr)); gap: 1.1rem; }
-  .cover-grid-item { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; }
+  .cover-grid-item { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
   .cover-grid-item .cover { width: 106px; height: 156px; transition: transform 0.14s, box-shadow 0.14s; }
   .cover-grid-item:hover .cover { transform: translateY(-3px); box-shadow: 4px 6px 16px var(--shadow-md); }
   .cover-grid-label {
@@ -359,12 +359,23 @@
     cursor: pointer; flex-shrink: 0; position: relative; border-radius: 2px 3px 3px 2px;
     box-shadow: 2px 0 4px rgba(0,0,0,0.3), inset -3px 0 6px rgba(0,0,0,0.15), inset 2px 0 3px rgba(255,255,255,0.08);
     transition: transform 0.15s ease, box-shadow 0.15s ease; overflow: hidden; padding: 8px 0;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none; -webkit-user-select: none;
   }
-  .book-spine:hover {
-    transform: translateY(-6px);
-    box-shadow: 3px 6px 14px rgba(0,0,0,0.35), inset -3px 0 6px rgba(0,0,0,0.15), inset 2px 0 3px rgba(255,255,255,0.08);
+  /* Hover lift only on devices with a real pointer (mouse) */
+  @media (hover: hover) and (pointer: fine) {
+    .book-spine:hover {
+      transform: translateY(-6px);
+      box-shadow: 3px 6px 14px rgba(0,0,0,0.35), inset -3px 0 6px rgba(0,0,0,0.15), inset 2px 0 3px rgba(255,255,255,0.08);
+    }
+    .book-spine:hover .spine-tooltip { opacity: 1; transform: translateX(-50%) translateY(0px); }
   }
-  .book-spine:hover .spine-tooltip { opacity: 1; transform: translateX(-50%) translateY(0px); pointer-events: none; }
+  /* Subtle press feedback on touch */
+  .book-spine:active {
+    transform: translateY(-2px);
+    box-shadow: 2px 2px 8px rgba(0,0,0,0.35), inset -3px 0 6px rgba(0,0,0,0.15), inset 2px 0 3px rgba(255,255,255,0.08);
+  }
   .spine-title {
     writing-mode: vertical-rl;
     text-orientation: mixed;
@@ -416,6 +427,8 @@
     border-radius: var(--radius-lg); cursor: pointer;
     transition: box-shadow 0.15s, border-color 0.15s, background 0.15s;
     box-shadow: 0 1px 3px var(--shadow);
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
   .book-item:hover { box-shadow: 0 3px 12px var(--shadow-md); border-color: var(--chrome-lift); background: var(--card-warm); }
   .book-item + .book-item { margin-top: 0.75rem; }
@@ -490,6 +503,9 @@
     border-radius: var(--radius-lg); padding: 1.25rem;
     margin-bottom: 1.5rem; display: flex; flex-direction: row; gap: 1rem; align-items: flex-start;
     box-shadow: 0 3px 16px var(--shadow-md);
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
   .reading-hero-info { flex: 1; min-width: 0; }
   .reading-hero-label { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(200,224,210,0.55); margin-bottom: 6px; }
@@ -499,8 +515,34 @@
   /* ── AI PANEL ── */
   .ai-panel { background: #eef4f0; border: 1px solid #b8d4c0; border-left: 3px solid var(--chrome-lift); border-radius: 0 var(--radius-lg) var(--radius-lg) 0; padding: 1rem; margin-top: 1rem; }
   .ai-label { font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--chrome); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
-  .ai-response { font-size: 0.95rem; line-height: 1.7; color: var(--ink-soft); white-space: pre-wrap; }
+  .ai-response { font-size: 0.95rem; line-height: 1.7; color: var(--ink-soft); }
   .ai-loading { color: var(--ink-muted); font-style: italic; font-size: 0.9rem; }
+
+  /* Markdown-rendered content shared styles */
+  .md-content { font-size: inherit; line-height: inherit; color: inherit; }
+  .md-content h1, .md-content h2, .md-content h3 {
+    font-family: var(--font-head); font-weight: 400; color: var(--ink);
+    margin: 0.9em 0 0.35em; line-height: 1.3;
+  }
+  .md-content h1 { font-size: 1.15em; }
+  .md-content h2 { font-size: 1.05em; }
+  .md-content h3 { font-size: 0.95em; letter-spacing: 0.02em; }
+  .md-content p { margin: 0 0 0.65em; }
+  .md-content p:last-child { margin-bottom: 0; }
+  .md-content strong { font-weight: 600; color: var(--ink); }
+  .md-content em { font-style: italic; }
+  .md-content ul, .md-content ol { margin: 0.4em 0 0.65em 1.4em; padding: 0; }
+  .md-content li { margin-bottom: 0.2em; }
+  .md-content code {
+    font-family: 'Courier New', monospace; font-size: 0.88em;
+    background: var(--paper-warm); padding: 1px 5px;
+    border-radius: 3px; color: var(--ink-soft);
+  }
+  .md-content hr { border: none; border-top: 1px solid var(--border-soft); margin: 0.75em 0; }
+  .md-content blockquote {
+    border-left: 3px solid var(--parchment); margin: 0.5em 0;
+    padding: 0.1em 0.75em; color: var(--ink-muted); font-style: italic;
+  }
 
   /* ── STATS ── */
   .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.75rem; margin-bottom: 1.5rem; }
@@ -569,10 +611,6 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
         To-Read
       </button>
-      <button class="snav-item" data-view="reading" onclick="showView('reading')">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-        Reading
-      </button>
       <div class="snav-divider"></div>
       <button class="snav-item" data-view="journal" onclick="showView('journal')">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></svg>
@@ -621,13 +659,13 @@
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="2" y="3" width="4" height="18" rx="1"/><rect x="8" y="5" width="3" height="16" rx="1"/><rect x="13" y="2" width="5" height="19" rx="1"/><rect x="20" y="4" width="2" height="17" rx="1"/></svg>
       Shelf
     </button>
-    <button class="tab-btn" data-view="reading" onclick="showView('reading')">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-      Reading
-    </button>
     <button class="tab-btn" data-view="journal" onclick="showView('journal')">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></svg>
       Notebook
+    </button>
+    <button class="tab-btn" data-view="toread" onclick="showView('toread')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      To-Read
     </button>
     <button class="tab-btn" data-view="more" onclick="toggleOverflowDrawer()">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="5" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1" fill="currentColor" stroke="none"/></svg>
@@ -638,10 +676,6 @@
   <!-- OVERFLOW DRAWER (mobile, for Notes / To-Read / Stats) -->
   <div id="drawer-backdrop" onclick="closeOverflowDrawer()"></div>
   <div id="overflow-drawer">
-    <button class="drawer-item" data-view="toread" onclick="showView('toread');closeOverflowDrawer()">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-      To-Read
-    </button>
     <button class="drawer-item" data-view="stats" onclick="showView('stats');closeOverflowDrawer()">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
       Stats
@@ -709,7 +743,7 @@
             <option value="title">Title (A–Z)</option>
             <option value="author">Author surname</option>
             <option value="pubOrig">Year published</option>
-            <option value="dateRead">Year read</option>
+            <option value="dateRead" selected>Year read</option>
             <option value="added">Date added</option>
           </select>
         </div>
@@ -1086,6 +1120,19 @@
     </div>
     <div class="modal-body">
       <input type="hidden" id="ai-book-id">
+
+      <!-- API Key notice (shown when no key is saved) -->
+      <div id="ai-key-notice" style="display:none;background:var(--accent-pale);border:1px solid var(--accent-soft);border-radius:var(--radius-lg);padding:0.85rem 1rem;margin-bottom:1rem">
+        <div style="font-size:0.8rem;font-family:var(--font-head);color:var(--accent);margin-bottom:0.4rem">API Key Required</div>
+        <div style="font-size:0.82rem;color:var(--ink-soft);margin-bottom:0.6rem;line-height:1.5">AI Insights requires a Claude API key. It is stored only on your device and never sent anywhere except Anthropic's API.</div>
+        <div style="display:flex;gap:6px">
+          <input type="password" id="ai-key-input-inline" placeholder="sk-ant-api03-…"
+            style="flex:1;font-family:var(--font-body);font-size:0.9rem;padding:5px 8px;border:1px solid var(--border);border-radius:var(--radius);color:var(--ink);background:var(--card)">
+          <button class="btn btn-primary" style="font-size:0.85rem;padding:5px 12px;flex-shrink:0" onclick="saveAIKey()">Save</button>
+        </div>
+        <div style="font-size:0.75rem;color:var(--ink-muted);margin-top:6px">Get a key at <a href="https://console.anthropic.com" target="_blank" style="color:var(--accent)">console.anthropic.com</a></div>
+      </div>
+
       <div class="form-group">
         <label>Request Type</label>
         <select id="ai-type">
@@ -1107,9 +1154,12 @@
       </div>
       <div id="ai-result-area" style="margin-top:1rem"></div>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal('modal-ai')">Close</button>
-      <button class="btn btn-primary" onclick="runAI()">Generate</button>
+    <div class="modal-footer" style="justify-content:space-between">
+      <button class="btn-ghost" onclick="clearAIKey()" style="font-size:0.8rem;color:var(--ink-faint)" id="ai-key-clear-btn">Change API key</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-secondary" onclick="closeModal('modal-ai')">Close</button>
+        <button class="btn btn-primary" onclick="runAI()" id="ai-generate-btn">Generate</button>
+      </div>
     </div>
   </div>
 </div>
@@ -1208,7 +1258,7 @@ let db = loadDB();
 let currentView = 'home';
 let shelfFilter = 'all';
 let shelfView = 'list';
-let shelfSort = 'status';
+let shelfSort = 'dateRead';
 let journalFilter = 'all';
 let currentDetailBookId = null;
 
@@ -1240,7 +1290,6 @@ function showView(name) {
   if (name === 'home') renderHome();
   if (name === 'shelf') renderShelf();
   if (name === 'toread') renderToRead();
-  if (name === 'reading') renderReading();
   if (name === 'journal') renderJournal();
   if (name === 'stats') renderStats();
 }
@@ -1277,12 +1326,13 @@ function renderCover(book, sizeClass = '') {
 // ══════════════════════════════════════════
 function renderHome() {
   const reading = db.books.filter(b => b.status === 'reading');
-  const recentlyAdded = [...db.books].sort((a,b) => b.added - a.added).slice(0, 3);
   const recentQuotes = [...db.quotes].sort((a,b) => b.added - a.added).slice(0, 2);
 
   let html = '';
 
+  // ── Currently Reading ──
   if (reading.length > 0) {
+    html += `<div style="margin-bottom:1.5rem">`;
     html += reading.map(book => {
       const pct = book.pages ? Math.round((book.currentPage / book.pages) * 100) : 0;
       return `
@@ -1305,6 +1355,7 @@ function renderHome() {
           </div>
         </div>`;
     }).join('');
+    html += `</div>`;
   } else {
     html += `<div class="card" style="margin-bottom:1.5rem;text-align:center;padding:2rem">
       <div style="font-size:2rem;margin-bottom:0.5rem;opacity:0.4">📖</div>
@@ -1314,7 +1365,7 @@ function renderHome() {
     </div>`;
   }
 
-  // Stats strip
+  // ── Stats strip ──
   const totalRead = db.books.filter(b => b.status === 'read').length;
   const totalQuotes = db.quotes.length;
   const totalNotes = db.notes.length;
@@ -1325,13 +1376,39 @@ function renderHome() {
     <div class="stat-card"><div class="stat-number">${totalNotes}</div><div class="stat-label">Notes</div></div>
   </div>`;
 
+  // ── Recently Finished ──
+  const finished = [...db.books]
+    .filter(b => b.status === 'read')
+    .sort((a, b) => latestReadDate(b) - latestReadDate(a))
+    .slice(0, 4);
+  if (finished.length > 0) {
+    html += `<div style="margin-bottom:1.5rem">
+      <div class="section-header" style="margin-bottom:0.75rem"><div class="section-title" style="font-size:1.1rem">Recently Finished</div></div>`;
+    finished.forEach(book => {
+      const rd = latestReadDate(book);
+      html += `<div class="book-item" onclick="openDetail('${book.id}')">
+        ${renderCover(book)}
+        <div class="book-item-info">
+          <div class="book-item-title">${escHtml(book.title)}</div>
+          <div class="book-item-author">${escHtml(book.author)}</div>
+          <div class="book-item-meta">
+            <span class="badge badge-read">Read</span>
+            ${rd ? `<span style="font-size:0.78rem;color:var(--ink-faint)">${fmtDate(rd)}</span>` : ''}
+          </div>
+        </div>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+
+  // ── Recent Quotes ──
   if (recentQuotes.length > 0) {
     html += `<div style="margin-bottom:1.5rem">
       <div class="section-header" style="margin-bottom:0.75rem"><div class="section-title" style="font-size:1.1rem">Recent Quotes</div></div>`;
     recentQuotes.forEach(q => {
       const book = db.books.find(b => b.id === q.bookId);
       html += `<div class="quote-item">
-        <div class="quote-text">"${escHtml(q.text)}"</div>
+        <div class="quote-text md-content">${renderMarkdown(q.text)}</div>
         <div class="quote-meta">— <em>${book ? escHtml(book.title) : ''}${q.page ? ', p.' + q.page : ''}</em></div>
       </div>`;
     });
@@ -1398,7 +1475,13 @@ function sortBooks(books) {
         return ya - yb || a.title.localeCompare(b.title);
       });
     case 'dateRead':
-      return copy.sort((a, b) => latestReadDate(b) - latestReadDate(a) || a.title.localeCompare(b.title));
+      return copy.sort((a, b) => {
+        if (a.status === 'reading' && b.status !== 'reading') return -1;
+        if (b.status === 'reading' && a.status !== 'reading') return 1;
+        if (a.status === 'read' && b.status !== 'read') return -1;
+        if (b.status === 'read' && a.status !== 'read') return 1;
+        return latestReadDate(b) - latestReadDate(a) || a.title.localeCompare(b.title);
+      });
     case 'added':
       return copy.sort((a, b) => (b.added||0) - (a.added||0));
     default:
@@ -1830,9 +1913,9 @@ function renderJournal(filterBookId = null) {
           <button class="btn-icon" onclick="editQuote('${qt.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
           <button class="btn-icon" onclick="deleteQuote('${qt.id}');renderJournal()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
         </div>
-        <div class="quote-text">"${escHtml(qt.text)}"</div>
+        <div class="quote-text md-content">${renderMarkdown(qt.text)}</div>
         <div class="quote-meta">${qt.page ? 'p.' + qt.page : ''}${qt.chapter ? ' · ' + escHtml(qt.chapter) : ''}</div>
-        ${qt.note ? `<div style="font-size:0.875rem;color:var(--ink-soft);margin-top:0.4rem;padding-top:0.4rem;border-top:1px solid var(--border-soft)">${escHtml(qt.note)}</div>` : ''}
+        ${qt.note ? `<div style="font-size:0.875rem;color:var(--ink-soft);margin-top:0.4rem;padding-top:0.4rem;border-top:1px solid var(--border-soft)">${renderMarkdown(qt.note)}</div>` : ''}
       </div>`;
     });
 
@@ -1843,7 +1926,7 @@ function renderJournal(filterBookId = null) {
           <button class="btn-icon" onclick="deleteNote('${n.id}');renderJournal()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
         </div>
         <div style="font-size:0.72rem;color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px">${typeLabels[n.type]||'Note'}${n.ref ? ' · ' + escHtml(n.ref) : ''}</div>
-        <div class="note-text">${escHtml(n.text)}</div>
+        <div class="note-text md-content">${renderMarkdown(n.text)}</div>
         <div class="note-meta">${fmtDate(n.added)}</div>
       </div>`;
     });
@@ -2038,73 +2121,69 @@ function openDetail(bookId) {
     book.purchaseDate ? ['Date acquired', new Date(book.purchaseDate).toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'})] : null,
   ].filter(Boolean);
 
-  // Build reading dates HTML
+  // Build reading dates HTML — always read-only in Info tab
   const readDates = book.readDates || [];
   let readDatesHtml = '';
 
   if (book.status === 'reading') {
-    // Currently reading — show editable start date
+    // Currently reading — show start date with edit button
     const sd = book.startDate ? fmtDate(book.startDate) : 'not recorded';
-    readDatesHtml += `<tr>
+    readDatesHtml = `<tr>
       <td style="color:var(--ink-muted);padding:5px 0;width:45%;vertical-align:top;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.04em">Started</td>
       <td style="padding:5px 0">
-        <span id="start-date-display">${escHtml(sd)}</span>
+        ${escHtml(sd)}
         <button class="btn-ghost" style="font-size:0.75rem;padding:2px 6px;margin-left:6px;vertical-align:middle" onclick="editStartDate('${book.id}')">edit</button>
       </td>
     </tr>`;
-  }
-
-  if (book.status === 'read') {
-    // For read books — fully editable sessions
-    const sessionRows = readDates.map((r, i) => {
-      const startVal = r.startDate ? toInputDate(r.startDate) : '';
-      const finishVal = r.date ? toInputDate(r.date) : '';
-      const label = readDates.length > 1 ? `Reading #${i+1}` : 'Date Read';
-      return `<tr id="reading-session-row-${i}">
-        <td style="color:var(--ink-muted);padding:6px 0;width:45%;vertical-align:top;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.04em">${escHtml(label)}</td>
-        <td style="padding:4px 0">
-          <div style="display:flex;flex-direction:column;gap:4px">
-            <div style="display:flex;align-items:center;gap:6px;font-size:0.82rem">
-              <label style="color:var(--ink-faint);width:46px;text-transform:uppercase;letter-spacing:0.04em;font-size:0.72rem;flex-shrink:0">Started</label>
-              <input type="date" value="${startVal}"
-                style="font-family:var(--font-body);font-size:0.85rem;border:1px solid var(--border);border-radius:var(--radius);padding:2px 6px;color:var(--ink);background:var(--card);flex:1"
-                onchange="updateReadingSession('${book.id}', ${i}, 'startDate', this.value)">
-            </div>
-            <div style="display:flex;align-items:center;gap:6px;font-size:0.82rem">
-              <label style="color:var(--ink-faint);width:46px;text-transform:uppercase;letter-spacing:0.04em;font-size:0.72rem;flex-shrink:0">Finished</label>
-              <input type="date" value="${finishVal}"
-                style="font-family:var(--font-body);font-size:0.85rem;border:1px solid var(--border);border-radius:var(--radius);padding:2px 6px;color:var(--ink);background:var(--card);flex:1"
-                onchange="updateReadingSession('${book.id}', ${i}, 'date', this.value)">
-            </div>
-            ${readDates.length > 1 ? `<div style="text-align:right"><button class="btn-ghost" style="font-size:0.72rem;color:var(--ink-faint);padding:1px 4px" onclick="removeReadingSession('${book.id}', ${i})">remove</button></div>` : ''}
-          </div>
-        </td>
-      </tr>`;
-    }).join('');
-
-    readDatesHtml = sessionRows;
-
-    // If no sessions exist yet, show a placeholder row
-    if (readDates.length === 0) {
-      readDatesHtml = `<tr><td style="color:var(--ink-muted);padding:5px 0;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.04em" colspan="2">
-        <span style="font-style:italic;color:var(--ink-faint)">No reading dates recorded.</span>
-      </td></tr>`;
-    }
-
-  } else if (book.status !== 'reading' && readDates.length > 0) {
-    // Other statuses (unread, toread) — read-only display of any existing history
+  } else if (readDates.length > 0) {
+    // Read-only summary for all other statuses
     const label = readDates.length > 1 ? 'Reading History' : 'Date Read';
-    readDatesHtml += `<tr><td style="color:var(--ink-muted);padding:5px 0;width:45%;vertical-align:top;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.04em">${label}</td><td style="padding:5px 0">`;
+    readDatesHtml = `<tr><td style="color:var(--ink-muted);padding:5px 0;width:45%;vertical-align:top;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.04em">${label}</td><td style="padding:5px 0">`;
     readDates.forEach((r, i) => {
       const startStr = r.startDate ? fmtDate(r.startDate) : null;
       const finishStr = r.date ? fmtDate(r.date) : null;
       const range = startStr && finishStr ? `${startStr} → ${finishStr}` : (finishStr || startStr || 'unknown');
-      readDatesHtml += `<div style="margin-bottom:4px">
+      readDatesHtml += `<div style="margin-bottom:3px">
         ${readDates.length > 1 ? `<span style="font-size:0.72rem;color:var(--ink-faint);margin-right:6px">#${i+1}</span>` : ''}
         ${escHtml(range)}
       </div>`;
     });
     readDatesHtml += `</td></tr>`;
+  }
+
+  // Build editable dates tab HTML (for read books only)
+  let datesTabHtml = '';
+  if (book.status === 'read') {
+    const sessionRows = readDates.map((r, i) => {
+      const startVal = r.startDate ? toInputDate(r.startDate) : '';
+      const finishVal = r.date ? toInputDate(r.date) : '';
+      const label = readDates.length > 1 ? `Reading #${i+1}` : 'Reading';
+      return `<div style="padding:0.75rem 0;border-bottom:1px solid var(--border-soft)">
+        <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-muted);margin-bottom:0.5rem">${escHtml(label)}</div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <label style="font-size:0.8rem;color:var(--ink-muted);width:52px;flex-shrink:0">Started</label>
+            <input type="date" value="${startVal}"
+              style="flex:1;font-family:var(--font-body);font-size:0.9rem;border:1px solid var(--border);border-radius:var(--radius);padding:4px 8px;color:var(--ink);background:var(--card)"
+              onchange="updateReadingSession('${book.id}', ${i}, 'startDate', this.value)">
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <label style="font-size:0.8rem;color:var(--ink-muted);width:52px;flex-shrink:0">Finished</label>
+            <input type="date" value="${finishVal}"
+              style="flex:1;font-family:var(--font-body);font-size:0.9rem;border:1px solid var(--border);border-radius:var(--radius);padding:4px 8px;color:var(--ink);background:var(--card)"
+              onchange="updateReadingSession('${book.id}', ${i}, 'date', this.value)">
+          </div>
+          ${readDates.length > 1 ? `<div style="text-align:right;margin-top:2px"><button class="btn-ghost" style="font-size:0.78rem;color:var(--ink-faint)" onclick="removeReadingSession('${book.id}', ${i})">remove</button></div>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+
+    datesTabHtml = `
+      ${readDates.length === 0 ? `<p style="font-style:italic;color:var(--ink-faint);padding:0.75rem 0">No reading dates recorded yet.</p>` : sessionRows}
+      <div style="margin-top:1rem;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-secondary" style="font-size:0.85rem" onclick="addReadingSession('${book.id}')">+ Add reading session</button>
+        <button class="btn btn-secondary" style="font-size:0.85rem" onclick="markReadAgain('${book.id}')">+ Read again</button>
+      </div>`;
   }
 
   let html = `
@@ -2130,6 +2209,7 @@ function openDetail(bookId) {
     <button class="tab active" onclick="detailTab(this,'tab-info')">Info</button>
     <button class="tab" onclick="detailTab(this,'tab-quotes')">Quotes (${quotes.length})</button>
     <button class="tab" onclick="detailTab(this,'tab-notes')">Notes (${notes.length})</button>
+    ${book.status === 'read' ? `<button class="tab" onclick="detailTab(this,'tab-dates')">Dates</button>` : ''}
   </div>
 
   <!-- INFO TAB -->
@@ -2139,11 +2219,10 @@ function openDetail(bookId) {
     ${readDatesHtml}
     </table>
     ${book.notes ? `<div style="margin-top:1rem;padding:0.75rem;background:var(--paper-warm);border-radius:var(--radius);font-size:0.9rem;font-style:italic;color:var(--ink-soft)">${escHtml(book.notes)}</div>` : ''}
-    ${book.status === 'read' ? `<div style="margin-top:1rem;display:flex;gap:8px;flex-wrap:wrap">
-      <button class="btn btn-secondary" style="font-size:0.85rem" onclick="addReadingSession('${book.id}')">+ Add reading session</button>
-      <button class="btn btn-secondary" style="font-size:0.85rem" onclick="markReadAgain('${book.id}')">+ Read again</button>
-    </div>` : ''}
   </div>
+
+  <!-- DATES TAB (read books only) -->
+  ${book.status === 'read' ? `<div id="tab-dates" class="detail-tab hidden">${datesTabHtml}</div>` : ''}
 
   <!-- QUOTES TAB -->
   <div id="tab-quotes" class="detail-tab hidden">
@@ -2156,9 +2235,9 @@ function openDetail(bookId) {
           <button class="btn-icon" onclick="editQuote('${qt.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
           <button class="btn-icon" onclick="deleteQuote('${qt.id}');openDetail('${book.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
         </div>
-        <div class="quote-text">"${escHtml(qt.text)}"</div>
+        <div class="quote-text md-content">${renderMarkdown(qt.text)}</div>
         <div class="quote-meta">${qt.page?'p.'+qt.page:''}${qt.chapter?' · '+escHtml(qt.chapter):''}</div>
-        ${qt.note?`<div style="font-size:0.875rem;color:var(--ink-soft);margin-top:0.4rem;padding-top:0.4rem;border-top:1px solid var(--border-soft)">${escHtml(qt.note)}</div>`:''}
+        ${qt.note?`<div style="font-size:0.875rem;color:var(--ink-soft);margin-top:0.4rem;padding-top:0.4rem;border-top:1px solid var(--border-soft)">${renderMarkdown(qt.note)}</div>`:''}
       </div>`).join('')
     }
   </div>
@@ -2177,14 +2256,47 @@ function openDetail(bookId) {
             <button class="btn-icon" onclick="deleteNote('${n.id}');openDetail('${book.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
           </div>
           <div style="font-size:0.75rem;color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px">${typeLabels[n.type]||'Note'}${n.ref?' · '+escHtml(n.ref):''}</div>
-          <div class="note-text">${escHtml(n.text)}</div>
+          <div class="note-text md-content">${renderMarkdown(n.text)}</div>
           <div class="note-meta">${fmtDate(n.added)}</div>
         </div>`;
       }).join('')
     }
   </div>`;
 
+  // ── Reading History (collapsible, shown for any book with log entries) ──
+  const log = db.readingLog.filter(l => l.bookId === bookId).sort((a,b) => b.date - a.date);
+  if (log.length > 0) {
+    html += `<details style="margin-top:1rem;border-top:1px solid var(--border-soft);padding-top:0.85rem">
+      <summary style="cursor:pointer;font-size:0.78rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink-muted);list-style:none;display:flex;align-items:center;gap:6px;user-select:none;-webkit-user-select:none">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="details-chevron" style="transition:transform 0.15s;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg>
+        Reading History
+        <span style="font-family:var(--font-body);text-transform:none;letter-spacing:0;color:var(--ink-faint);font-size:0.8rem;margin-left:4px">${log.length} session${log.length!==1?'s':''}</span>
+      </summary>
+      <div style="margin-top:0.6rem">
+        ${log.map((l, i) => {
+          const prev = log[i+1];
+          const pagesRead = prev ? l.page - prev.page : l.page;
+          return `<div class="log-item">
+            <span class="log-date">${fmtDate(l.date)}</span>
+            <span class="log-pages">p.${l.page}</span>
+            ${pagesRead > 0 ? `<span style="font-size:0.8rem;color:var(--ink-muted)">+${pagesRead} pages</span>` : ''}
+          </div>`;
+        }).join('')}
+      </div>
+    </details>`;
+  }
+
   document.getElementById('detail-body').innerHTML = html;
+
+  // Rotate chevron when details opens/closes
+  const det = document.getElementById('modal-detail').querySelector('details');
+  if (det) {
+    const chev = det.querySelector('.details-chevron');
+    det.addEventListener('toggle', () => {
+      if (chev) chev.style.transform = det.open ? 'rotate(90deg)' : '';
+    });
+  }
+
   document.getElementById('modal-detail').classList.remove('hidden');
 }
 
@@ -2280,7 +2392,7 @@ function deleteCurrentBook() {
   closeModal('modal-detail');
   if (currentView === 'shelf')   renderShelf();
   else if (currentView === 'home')    renderHome();
-  else if (currentView === 'reading') renderReading();
+  
   else if (currentView === 'toread')  renderToRead();
   else if (currentView === 'stats')   renderStats();
 }
@@ -2868,7 +2980,7 @@ function saveBook() {
   closeModal('modal-book');
   if (currentView === 'shelf') renderShelf();
   if (currentView === 'home') renderHome();
-  if (currentView === 'reading') renderReading();
+  
 }
 
 // ══════════════════════════════════════════
@@ -2946,7 +3058,7 @@ function saveProgress() {
   saveDB();
   closeModal('modal-progress');
   if (currentView === 'home') renderHome();
-  if (currentView === 'reading') renderReading();
+  
   if (currentView === 'shelf') renderShelf();
   if (currentDetailBookId === bookId) openDetail(bookId);
 }
@@ -3065,6 +3177,39 @@ function deleteNote(noteId) {
 // ══════════════════════════════════════════
 //  AI INSIGHTS
 // ══════════════════════════════════════════
+const AI_KEY_STORAGE = 'commonplace_ai_key';
+
+function getAIKey() {
+  try { return localStorage.getItem(AI_KEY_STORAGE) || ''; } catch(e) { return ''; }
+}
+
+function saveAIKey() {
+  const val = document.getElementById('ai-key-input-inline').value.trim();
+  if (!val) return;
+  try { localStorage.setItem(AI_KEY_STORAGE, val); } catch(e) {}
+  refreshAIKeyUI();
+}
+
+function clearAIKey() {
+  if (!confirm('Remove your saved API key?')) return;
+  try { localStorage.removeItem(AI_KEY_STORAGE); } catch(e) {}
+  refreshAIKeyUI();
+}
+
+function refreshAIKeyUI() {
+  const hasKey = !!getAIKey();
+  const notice = document.getElementById('ai-key-notice');
+  const clearBtn = document.getElementById('ai-key-clear-btn');
+  const generateBtn = document.getElementById('ai-generate-btn');
+  if (notice) notice.style.display = hasKey ? 'none' : 'block';
+  if (clearBtn) clearBtn.style.display = hasKey ? 'inline-flex' : 'none';
+  if (generateBtn) generateBtn.disabled = !hasKey;
+  if (!hasKey) {
+    const input = document.getElementById('ai-key-input-inline');
+    if (input) input.value = '';
+  }
+}
+
 function openAI(bookId) {
   document.getElementById('ai-book-id').value = bookId;
   document.getElementById('ai-type').value = 'summary';
@@ -3072,6 +3217,7 @@ function openAI(bookId) {
   document.getElementById('ai-chapter-wrap').style.display = 'none';
   document.getElementById('ai-custom-wrap').style.display = 'none';
   document.getElementById('modal-ai').classList.remove('hidden');
+  refreshAIKeyUI();
 }
 
 document.addEventListener('change', e => {
@@ -3083,6 +3229,9 @@ document.addEventListener('change', e => {
 });
 
 async function runAI() {
+  const apiKey = getAIKey();
+  if (!apiKey) { refreshAIKeyUI(); return; }
+
   const bookId = document.getElementById('ai-book-id').value;
   const book = db.books.find(b => b.id === bookId);
   if (!book) return;
@@ -3112,18 +3261,35 @@ async function runAI() {
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
+        model: 'claude-opus-4-6',
+        max_tokens: 1024,
         messages: [{ role: 'user', content: prompt }]
       })
     });
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      const msg = err.error?.message || `HTTP ${response.status}`;
+      // Bad key — clear it and show the key entry UI
+      if (response.status === 401) {
+        try { localStorage.removeItem(AI_KEY_STORAGE); } catch(e) {}
+        refreshAIKeyUI();
+        resultEl.innerHTML = `<div class="ai-panel"><div class="ai-label" style="color:var(--accent-deep)">Invalid API key</div><div class="ai-loading">Your key was rejected. Please enter a valid key above.</div></div>`;
+        return;
+      }
+      throw new Error(msg);
+    }
     const data = await response.json();
     const text = (data.content || []).map(c => c.text || '').join('');
-    resultEl.innerHTML = `<div class="ai-panel"><div class="ai-label">✦ AI Insight</div><div class="ai-response">${escHtml(text)}</div></div>`;
+    resultEl.innerHTML = `<div class="ai-panel"><div class="ai-label">✦ AI Insight</div><div class="ai-response md-content">${renderMarkdown(text)}</div></div>`;
   } catch(e) {
-    resultEl.innerHTML = `<div class="ai-panel"><div class="ai-label" style="color:var(--accent-deep)">Error</div><div class="ai-loading">Could not reach the API. Please try again.</div></div>`;
+    resultEl.innerHTML = `<div class="ai-panel"><div class="ai-label" style="color:var(--accent-deep)">Error</div><div class="ai-loading">${escHtml(e.message || 'Could not reach the API. Check your connection and try again.')}</div></div>`;
   }
 }
 
@@ -3297,6 +3463,99 @@ function uid() {
 function escHtml(str) {
   if (!str) return '';
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Lightweight markdown renderer — handles the patterns Claude typically outputs
+function renderMarkdown(text) {
+  if (!text) return '';
+  let t = String(text);
+
+  // Escape HTML first so user content is safe
+  t = t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+  // Process line by line for block-level elements
+  const lines = t.split('\n');
+  const out = [];
+  let inUl = false, inOl = false, prevWasBlank = false;
+
+  const closeList = () => {
+    if (inUl) { out.push('</ul>'); inUl = false; }
+    if (inOl) { out.push('</ol>'); inOl = false; }
+  };
+
+  for (let i = 0; i < lines.length; i++) {
+    let line = lines[i];
+
+    // Headings
+    if (/^### (.+)/.test(line)) { closeList(); out.push(`<h3>${applyInline(line.slice(4))}</h3>`); prevWasBlank = false; continue; }
+    if (/^## (.+)/.test(line))  { closeList(); out.push(`<h2>${applyInline(line.slice(3))}</h2>`); prevWasBlank = false; continue; }
+    if (/^# (.+)/.test(line))   { closeList(); out.push(`<h1>${applyInline(line.slice(2))}</h1>`); prevWasBlank = false; continue; }
+
+    // Horizontal rule
+    if (/^---+$/.test(line.trim())) { closeList(); out.push('<hr>'); prevWasBlank = false; continue; }
+
+    // Blockquote
+    if (/^&gt; /.test(line)) { closeList(); out.push(`<blockquote>${applyInline(line.slice(5))}</blockquote>`); prevWasBlank = false; continue; }
+
+    // Unordered list
+    if (/^[*\-] (.+)/.test(line)) {
+      if (inOl) { out.push('</ol>'); inOl = false; }
+      if (!inUl) { out.push('<ul>'); inUl = true; }
+      out.push(`<li>${applyInline(line.replace(/^[*\-] /, ''))}</li>`);
+      prevWasBlank = false; continue;
+    }
+
+    // Ordered list
+    if (/^\d+\. (.+)/.test(line)) {
+      if (inUl) { out.push('</ul>'); inUl = false; }
+      if (!inOl) { out.push('<ol>'); inOl = true; }
+      out.push(`<li>${applyInline(line.replace(/^\d+\. /, ''))}</li>`);
+      prevWasBlank = false; continue;
+    }
+
+    // Empty line
+    if (line.trim() === '') {
+      closeList();
+      prevWasBlank = true;
+      continue;
+    }
+
+    // Regular paragraph line
+    closeList();
+    const inlineContent = applyInline(line.trim());
+    const last = out[out.length - 1];
+    if (last === '<p></p>') {
+      // Replace the blank placeholder with real content
+      out[out.length - 1] = `<p>${inlineContent}</p>`;
+    } else if (last && last.startsWith('<p>') && last.endsWith('</p>') &&
+               last !== '<p></p>' && !prevWasBlank) {
+      // Soft-wrap consecutive non-blank lines within the same paragraph
+      out[out.length - 1] = last.slice(0, -4) + ' ' + inlineContent + '</p>';
+    } else {
+      out.push(`<p>${inlineContent}</p>`);
+    }
+    prevWasBlank = false;
+    continue;
+  }
+
+  closeList();
+
+  // Clean up orphan empty paragraphs
+  return out.join('\n').replace(/<p><\/p>/g, '').trim();
+}
+
+function applyInline(t) {
+  // Bold+italic
+  t = t.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
+  // Bold
+  t = t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  t = t.replace(/__(.+?)__/g, '<strong>$1</strong>');
+  // Italic
+  t = t.replace(/\*([^*]+?)\*/g, '<em>$1</em>');
+  t = t.replace(/_([^_]+?)_/g, '<em>$1</em>');
+  // Inline code
+  t = t.replace(/`([^`]+?)`/g, '<code>$1</code>');
+  return t;
 }
 
 function fmtDate(ts) {
