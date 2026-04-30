@@ -1218,36 +1218,155 @@
   </div>
 </div>
 
+<!-- UPDATE WARNING MODAL -->
+<div id="modal-update-warning" class="modal-backdrop hidden">
+  <div class="modal" style="max-width:440px">
+    <div class="modal-header">
+      <div class="modal-title" style="display:flex;align-items:center;gap:8px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        App Updated
+      </div>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:0.95rem;line-height:1.65;color:var(--ink-soft);margin-bottom:1rem">
+        Commonplace has been updated. Safari occasionally clears local storage when a web app updates — <strong>your data is likely still safe</strong>, but it's a good idea to export a backup right now before continuing.
+      </p>
+      <p style="font-size:0.85rem;color:var(--ink-muted);font-style:italic">
+        Your library has <strong style="font-style:normal;color:var(--ink)">${db.books.length} book${db.books.length !== 1 ? 's' : ''}</strong> — exporting takes one tap.
+      </p>
+    </div>
+    <div class="modal-footer" style="justify-content:space-between">
+      <button class="btn btn-secondary" onclick="dismissWarning()">Skip for now</button>
+      <button class="btn btn-primary" onclick="exportAndDismissWarning()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export backup now
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- BACKUP NUDGE BANNER -->
+<div id="backup-nudge" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:90;background:var(--chrome);color:var(--chrome-text);padding:0.65rem 1rem;display:none;align-items:center;gap:10px;font-family:var(--font-body);font-size:0.85rem;border-top:1px solid rgba(255,255,255,0.1)">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--highlight)" stroke-width="2" style="flex-shrink:0"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+  <span class="nudge-msg" style="flex:1;color:rgba(200,224,210,0.85)">It's been a while since your last backup.</span>
+  <button onclick="exportFromNudge()" style="background:rgba(255,255,255,0.12);border:1px solid rgba(200,224,210,0.3);color:var(--chrome-text);font-family:var(--font-body);font-size:0.82rem;padding:4px 12px;border-radius:var(--radius);cursor:pointer;white-space:nowrap">Export now</button>
+  <button onclick="dismissNudge()" style="background:none;border:none;color:rgba(200,224,210,0.5);cursor:pointer;padding:4px;font-size:1rem;line-height:1">✕</button>
+</div>
+
 <script>
 // ══════════════════════════════════════════
 //  DATA LAYER
 // ══════════════════════════════════════════
 const DB_KEY = 'commonplace_v1';
+const IDB_NAME = 'commonplace';
+const IDB_STORE = 'data';
+const IDB_KEY = 'db';
+
+// ── IndexedDB helpers ──
+function idbOpen() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(IDB_NAME, 1);
+    req.onupgradeneeded = e => e.target.result.createObjectStore(IDB_STORE);
+    req.onsuccess = e => resolve(e.target.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function idbSave(data) {
+  try {
+    const idb = await idbOpen();
+    return new Promise((resolve, reject) => {
+      const tx = idb.transaction(IDB_STORE, 'readwrite');
+      tx.objectStore(IDB_STORE).put(data, IDB_KEY);
+      tx.oncomplete = resolve;
+      tx.onerror = () => reject(tx.error);
+    });
+  } catch(e) {}
+}
+
+async function idbLoad() {
+  try {
+    const idb = await idbOpen();
+    return new Promise((resolve, reject) => {
+      const tx = idb.transaction(IDB_STORE, 'readonly');
+      const req = tx.objectStore(IDB_STORE).get(IDB_KEY);
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => resolve(null);
+    });
+  } catch(e) { return null; }
+}
+
+function migrateLegacy(data) {
+  // Migrate legacy dateRead → readDates
+  (data.books || []).forEach(b => {
+    if (!b.readDates) {
+      b.readDates = b.dateRead ? [{ startDate: null, date: b.dateRead, note: '' }] : [];
+      delete b.dateRead;
+    }
+    b.readDates.forEach(r => { if (!('startDate' in r)) r.startDate = null; });
+    if (b.status === 'reading' && !('startDate' in b)) b.startDate = null;
+  });
+  return data;
+}
 
 function loadDB() {
+  // Synchronous load from localStorage for immediate startup
   try {
     const raw = localStorage.getItem(DB_KEY);
     if (raw) {
       const data = JSON.parse(raw);
-      // Migrate legacy dateRead → readDates
-      (data.books || []).forEach(b => {
-        if (!b.readDates) {
-          b.readDates = b.dateRead ? [{ startDate: null, date: b.dateRead, note: '' }] : [];
-          delete b.dateRead;
-        }
-        // Ensure all readDates entries have startDate field
-        b.readDates.forEach(r => { if (!('startDate' in r)) r.startDate = null; });
-        // Ensure currently-reading books have startDate field
-        if (b.status === 'reading' && !('startDate' in b)) b.startDate = null;
-      });
-      return data;
+      return migrateLegacy(data);
     }
   } catch(e) {}
   return { books: [], quotes: [], notes: [], readingLog: [], yearlyGoal: {} };
 }
 
 function saveDB() {
-  try { localStorage.setItem(DB_KEY, JSON.stringify(db)); } catch(e) {}
+  const json = JSON.stringify(db);
+  // Write to localStorage synchronously
+  try { localStorage.setItem(DB_KEY, json); } catch(e) {}
+  // Write to IndexedDB asynchronously as durable backup
+  idbSave(json);
+}
+
+// On startup, check if IndexedDB has newer/more data than localStorage
+// (covers the case where Safari wiped localStorage but kept IDB)
+async function reconcileStorage() {
+  const idbRaw = await idbLoad();
+  if (!idbRaw) return; // IDB empty, nothing to do
+
+  let idbData;
+  try { idbData = JSON.parse(idbRaw); } catch(e) { return; }
+
+  const lsEmpty = db.books.length === 0;
+  const idbHasData = (idbData.books || []).length > 0;
+
+  if (lsEmpty && idbHasData) {
+    // localStorage was wiped but IDB survived — restore from IDB
+    db = migrateLegacy(idbData);
+    try { localStorage.setItem(DB_KEY, idbRaw); } catch(e) {}
+    renderHome();
+    showView(currentView);
+    // Show a quiet notice
+    const nudge = document.getElementById('backup-nudge');
+    if (nudge) {
+      nudge.querySelector('.nudge-msg').textContent =
+        'Your library was restored from backup storage. Export a copy to be safe.';
+      nudge.style.display = 'flex';
+    }
+    return;
+  }
+
+  // Both have data — if IDB has more books, it may be more recent
+  if (!lsEmpty && idbHasData && idbData.books.length > db.books.length) {
+    db = migrateLegacy(idbData);
+    try { localStorage.setItem(DB_KEY, idbRaw); } catch(e) {}
+    renderHome();
+    showView(currentView);
+  }
+
+  // Keep IDB in sync with localStorage either way
+  idbSave(JSON.stringify(db));
 }
 
 let db = loadDB();
@@ -3578,9 +3697,86 @@ document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
 });
 
 // ══════════════════════════════════════════
+//  VERSION & DATA SAFETY
+// ══════════════════════════════════════════
+const APP_VERSION = '2025-04-30'; // updated each deployment
+const VERSION_KEY = 'commonplace_version';
+const LAST_EXPORT_KEY = 'commonplace_last_export';
+
+function checkDataSafety() {
+  const storedVersion = localStorage.getItem(VERSION_KEY) || '';
+  const hasData = db.books.length > 0;
+
+  // On first ever load, just store the version
+  if (!storedVersion) {
+    localStorage.setItem(VERSION_KEY, APP_VERSION);
+    return;
+  }
+
+  // Version changed since last visit — app was updated
+  if (storedVersion !== APP_VERSION && hasData) {
+    localStorage.setItem(VERSION_KEY, APP_VERSION);
+    showUpdateWarning();
+    return;
+  }
+
+  localStorage.setItem(VERSION_KEY, APP_VERSION);
+
+  // Periodic backup nudge: if data exists and no export in 14 days
+  if (hasData) {
+    const lastExport = parseInt(localStorage.getItem(LAST_EXPORT_KEY) || '0');
+    const daysSince = (Date.now() - lastExport) / 86400000;
+    if (daysSince > 14) {
+      // Show as a non-blocking banner rather than a modal
+      showBackupNudge();
+    }
+  }
+}
+
+function showUpdateWarning() {
+  document.getElementById('modal-update-warning').classList.remove('hidden');
+}
+
+function exportAndDismissWarning() {
+  exportData();
+  localStorage.setItem(LAST_EXPORT_KEY, String(Date.now()));
+  closeModal('modal-update-warning');
+}
+
+function dismissWarning() {
+  closeModal('modal-update-warning');
+}
+
+function showBackupNudge() {
+  const nudge = document.getElementById('backup-nudge');
+  if (nudge) nudge.style.display = 'flex';
+}
+
+function dismissNudge() {
+  const nudge = document.getElementById('backup-nudge');
+  if (nudge) nudge.style.display = 'none';
+}
+
+function exportFromNudge() {
+  exportData();
+  localStorage.setItem(LAST_EXPORT_KEY, String(Date.now()));
+  dismissNudge();
+}
+
+// Stamp the export timestamp whenever a manual export happens
+const _origExportData = exportData;
+function exportData() {
+  _origExportData();
+  try { localStorage.setItem(LAST_EXPORT_KEY, String(Date.now())); } catch(e) {}
+}
+
+// ══════════════════════════════════════════
 //  INIT
 // ══════════════════════════════════════════
 renderHome();
+checkDataSafety();
+// Check IndexedDB for data that may have survived a localStorage wipe
+reconcileStorage();
 </script>
 </body>
 </html>
