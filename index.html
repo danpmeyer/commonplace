@@ -2157,6 +2157,20 @@ function editCurrentBook() {
   openAddBook(currentDetailBookId);
 }
 
+function markReadAgain(bookId) {
+  const book = db.books.find(b => b.id === bookId);
+  if (!book) return;
+  // Switch back to reading so user can track the new reading
+  book.status = 'reading';
+  book.currentPage = 0;
+  book.startDate = Date.now();
+  saveDB();
+  openDetail(bookId);
+  if (currentView === 'shelf') renderShelf();
+  if (currentView === 'stats') renderStats();
+  if (currentView === 'home') renderHome();
+}
+
 function editStartDate(bookId) {
   const book = db.books.find(b => b.id === bookId);
   if (!book) return;
@@ -2169,6 +2183,8 @@ function editStartDate(bookId) {
   saveDB();
   openDetail(bookId);
 }
+
+function markReadAgain(bookId) {
   const book = db.books.find(b => b.id === bookId);
   if (!book) return;
   // Switch back to reading so user can track it again, with a fresh startDate
