@@ -982,9 +982,9 @@
   <div class="modal" style="max-width:680px">
     <div class="modal-header">
       <div class="modal-title" id="detail-title">Book Details</div>
-      <div style="display:flex;gap:6px;align-items:center">
-        <button class="btn btn-secondary" style="font-size:0.8rem;padding:0.3rem 0.7rem" onclick="editCurrentBook()">Edit</button>
-        <button class="btn btn-danger" style="font-size:0.8rem;padding:0.3rem 0.7rem" onclick="deleteCurrentBook()">Delete</button>
+      <div style="display:flex;gap:6px;align-items:center" id="detail-header-actions">
+        <button class="btn btn-secondary" id="detail-edit-btn" style="font-size:0.8rem;padding:0.3rem 0.7rem" onclick="editCurrentBook()">Edit</button>
+        <button class="btn btn-danger" id="detail-delete-btn" style="font-size:0.8rem;padding:0.3rem 0.7rem" onclick="deleteCurrentBook()">Delete</button>
         <button class="btn-icon" onclick="closeModal('modal-detail')">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
@@ -2271,7 +2271,18 @@ function renderStats() {
 // ══════════════════════════════════════════
 //  BOOK DETAIL MODAL
 // ══════════════════════════════════════════
+// Set the detail modal header buttons.
+// mode: 'book' (Edit + Delete), 'plain' (close only)
+function setDetailMode(mode) {
+  const editBtn   = document.getElementById('detail-edit-btn');
+  const deleteBtn = document.getElementById('detail-delete-btn');
+  const show = mode === 'book';
+  if (editBtn)   editBtn.style.display   = show ? '' : 'none';
+  if (deleteBtn) deleteBtn.style.display = show ? '' : 'none';
+}
+
 function openDetail(bookId) {
+  setDetailMode('book');
   const book = db.books.find(b => b.id === bookId);
   if (!book) return;
   currentDetailBookId = bookId;
@@ -4191,11 +4202,25 @@ function bcShowVoteResult(voteId) {
       </div>
     </div>`;
   });
-  html += `</div>`;
+  html += `<div style="display:flex;justify-content:space-between;align-items:center;margin-top:1rem;padding-top:0.75rem;border-top:1px solid var(--border-soft)">
+    <button class="btn btn-danger" onclick="bcDeleteVote('${voteId}')">Delete Vote</button>
+    <button class="btn btn-secondary" onclick="closeModal('modal-detail')">Close</button>
+  </div></div>`;
   // Show in a simple modal using detail modal
+  setDetailMode('plain');
   document.getElementById('detail-title').textContent = 'Vote Results';
   document.getElementById('detail-body').innerHTML = html;
   document.getElementById('modal-detail').classList.remove('hidden');
+}
+
+function bcDeleteVote(voteId) {
+  if (!confirm('Delete this vote permanently?')) return;
+  const bc = getBC();
+  bc.votes = bc.votes.filter(v => v.id !== voteId);
+  if (bc.activeVoteId === voteId) bc.activeVoteId = null;
+  saveDB();
+  closeModal('modal-detail');
+  renderBookClub();
 }
 
 // ── Dialogs / sub-modals using a shared lightweight approach ──
@@ -4205,6 +4230,7 @@ function bcSetCurrentRead() {
     `<option value="${b.id}" ${bc.currentRead?.bookId===b.id?'selected':''}>${escHtml(b.title)}</option>`
   ).join('');
   const curDate = bc.currentRead?.meetingDate ? new Date(bc.currentRead.meetingDate).toISOString().slice(0,10) : '';
+  setDetailMode('plain');
   document.getElementById('detail-title').textContent = 'Set Current Read';
   document.getElementById('detail-body').innerHTML = `
     <div class="form-group"><label>Book</label>
@@ -4253,6 +4279,7 @@ function bcFinishCurrentRead() {
 function bcAddPastRead() {
   const bc = getBC();
   const bookOptions = db.books.map(b => `<option value="${b.id}">${escHtml(b.title)}</option>`).join('');
+  setDetailMode('plain');
   document.getElementById('detail-title').textContent = 'Add Past Read';
   document.getElementById('detail-body').innerHTML = `
     <div class="form-group"><label>Book</label>
@@ -4308,6 +4335,7 @@ function bcOpenRead(readId) {
   const ratings = Object.values(read.ratings || {}).filter(r => r !== '' && r != null && !isNaN(r));
   const avg = ratings.length ? (ratings.reduce((s,r)=>s+Number(r),0)/ratings.length).toFixed(1) : null;
 
+  setDetailMode('plain');
   document.getElementById('detail-title').textContent = book ? book.title : 'Book Club Read';
   document.getElementById('detail-body').innerHTML = `
     <div style="margin-bottom:1rem;display:flex;align-items:baseline;justify-content:space-between">
@@ -4377,6 +4405,7 @@ function bcStartVoteSetup() {
       <span style="font-family:var(--font-head);font-size:1rem">${escHtml(m.name)}</span>
     </label>`
   ).join('');
+  setDetailMode('plain');
   document.getElementById('detail-title').textContent = 'New Vote — Setup';
   document.getElementById('detail-body').innerHTML = `
     <div style="max-height:60vh;overflow-y:auto;padding-right:4px">
@@ -4402,6 +4431,7 @@ function bcOpenVoteModal(voteId) {
 
   if (remaining.length === 0) {
     // All done — show tally button
+    setDetailMode('plain');
     document.getElementById('detail-title').textContent = 'Voting Complete';
     document.getElementById('detail-body').innerHTML = `
       <div style="text-align:center;padding:1.5rem 0">
@@ -4433,6 +4463,7 @@ function bcOpenVoteModal(voteId) {
     </div>`;
   }).join('');
 
+  setDetailMode('plain');
   document.getElementById('detail-title').textContent = `${member ? member.name + "'s" : ''} Ballot`;
   document.getElementById('detail-body').innerHTML = `
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border-soft)">
@@ -4468,6 +4499,7 @@ function bcLaunchVote() {
 
 function bcOpenSettings() {
   const bc = getBC();
+  setDetailMode('plain');
   document.getElementById('detail-title').textContent = 'Book Club Settings';
   document.getElementById('detail-body').innerHTML = `
     <div class="form-group"><label>Name</label>
