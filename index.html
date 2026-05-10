@@ -3930,18 +3930,28 @@ function bcSaveSetup() {
   renderBookClub();
 }
 
+function bcParseReadDate(str) {
+  // Parse "Month YYYY" strings into a sortable value
+  if (!str) return 0;
+  const months = { january:0,february:1,march:2,april:3,may:4,june:5,july:6,august:7,september:8,october:9,november:10,december:11,
+    jan:0,feb:1,mar:2,apr:3,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11 };
+  const parts = str.toLowerCase().trim().split(/[\s,]+/);
+  const year = parseInt(parts.find(p => /^\d{4}$/.test(p))) || 0;
+  const monthName = parts.find(p => months[p] !== undefined);
+  const month = monthName !== undefined ? months[monthName] : 0;
+  return year * 100 + month;
+}
+
 function renderBCMain() {
   const bc = getBC();
-  let html = `
-  <div class="section-header">
+
+  // ── Header — just the club name, no buttons ──
+  let html = `<div style="margin-bottom:1.25rem">
     <div class="section-title">${escHtml(bc.name)}</div>
-    <div style="display:flex;gap:8px">
-      <button class="btn btn-secondary" style="font-size:0.85rem;padding:0.3rem 0.75rem" onclick="bcOpenSettings()">Settings</button>
-      <button class="btn btn-primary" onclick="bcSetCurrentRead()">Set Current Read</button>
-    </div>
+    <div style="font-size:0.85rem;color:var(--ink-muted);font-style:italic;margin-top:2px">${escHtml(bc.frequency||'')}</div>
   </div>`;
 
-  // ── Current Read ──
+  // ── Current Read (or prompt to set one) ──
   if (bc.currentRead) {
     const book = db.books.find(b => b.id === bc.currentRead.bookId);
     const meetDate = bc.currentRead.meetingDate ? new Date(bc.currentRead.meetingDate) : null;
@@ -3952,7 +3962,7 @@ function renderBCMain() {
         <div class="reading-hero-label">Currently Reading</div>
         <div class="reading-hero-title">${book ? escHtml(book.title) : 'Unknown'}</div>
         <div class="reading-hero-author">${book ? escHtml(book.author) : ''}</div>
-        ${meetDate ? `<div class="bc-countdown">${daysLeft > 0 ? daysLeft + ' days until meeting' : daysLeft === 0 ? 'Meeting today!' : 'Meeting was ' + Math.abs(daysLeft) + ' days ago'}</div>` : ''}
+        ${meetDate ? `<div class="bc-countdown">${daysLeft > 0 ? daysLeft + ' days until meeting' : daysLeft === 0 ? 'Meeting today!' : 'Meeting was ' + Math.abs(daysLeft) + ' day' + (Math.abs(daysLeft)!==1?'s':'')+' ago'}</div>` : ''}
         <div style="margin-top:0.75rem;display:flex;gap:6px;flex-wrap:wrap">
           <button class="btn" style="background:rgba(255,255,255,0.12);color:var(--chrome-text);border:1px solid rgba(200,224,210,0.35);font-size:0.82rem;padding:0.3rem 0.75rem" onclick="bcSetCurrentRead()">Edit</button>
           <button class="btn" style="background:rgba(255,255,255,0.12);color:var(--chrome-text);border:1px solid rgba(200,224,210,0.35);font-size:0.82rem;padding:0.3rem 0.75rem" onclick="bcFinishCurrentRead()">Mark as Finished</button>
@@ -3960,19 +3970,29 @@ function renderBCMain() {
       </div>
     </div>`;
   } else {
-    html += `<div class="card" style="text-align:center;padding:1.5rem;margin-bottom:1.5rem">
-      <div style="font-family:var(--font-head);color:var(--ink-muted);margin-bottom:0.75rem">No current read set</div>
-      <button class="btn btn-primary" onclick="bcSetCurrentRead()">Set Current Read</button>
+    // No current read — show a simple prompt in place of the hero
+    html += `<div style="margin-bottom:1.5rem">
+      <button class="btn btn-primary" onclick="bcSetCurrentRead()">+ Set Current Read</button>
     </div>`;
   }
 
-  // ── Active Vote ──
+  // ── Active Vote indicator (just a button to open the vote modal) ──
   const activeVote = bc.activeVoteId ? bc.votes.find(v => v.id === bc.activeVoteId) : null;
   if (activeVote && !activeVote.complete) {
-    html += renderBCActiveVote(activeVote);
+    const bc2 = getBC();
+    const ballotDone = activeVote.ballots.map(b => b.memberId);
+    const remaining = activeVote.participants.filter(id => !ballotDone.includes(id));
+    const nextMember = bc2.members.find(m => m.id === remaining[0]);
+    html += `<div class="card" style="border-color:var(--accent-soft);margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem">
+      <div>
+        <div style="font-family:var(--font-head);font-size:0.95rem">📊 Vote in progress</div>
+        <div style="font-size:0.82rem;color:var(--ink-muted);margin-top:2px">${activeVote.ballots.length}/${activeVote.participants.length} submitted · ${nextMember ? `${escHtml(nextMember.name)} is next` : 'All submitted'}</div>
+      </div>
+      <button class="btn btn-primary" style="flex-shrink:0" onclick="bcOpenVoteModal('${activeVote.id}')">Continue Voting</button>
+    </div>`;
   }
 
-  // ── Past Reads ──
+  // ── Past Reads — sorted chronologically ──
   html += `<div style="margin-bottom:1.5rem">
     <div class="section-header" style="margin-bottom:0.75rem">
       <div style="font-family:var(--font-head);font-size:1.1rem">Past Reads</div>
@@ -3981,7 +4001,8 @@ function renderBCMain() {
   if (bc.reads.length === 0) {
     html += `<div style="font-style:italic;color:var(--ink-faint);font-size:0.9rem">No past reads recorded yet.</div>`;
   } else {
-    [...bc.reads].sort((a,b) => (b.readDate||'').localeCompare(a.readDate||'')).forEach(read => {
+    const sorted = [...bc.reads].sort((a, b) => bcParseReadDate(b.readDate) - bcParseReadDate(a.readDate));
+    sorted.forEach(read => {
       const book = db.books.find(b => b.id === read.bookId);
       const ratings = Object.values(read.ratings || {}).filter(r => r > 0);
       const avg = ratings.length ? (ratings.reduce((s,r)=>s+r,0)/ratings.length).toFixed(1) : null;
@@ -3993,7 +4014,7 @@ function renderBCMain() {
           <div class="book-item-meta">
             ${read.readDate ? `<span style="font-size:0.78rem;color:var(--ink-faint)">${escHtml(read.readDate)}</span>` : ''}
             ${avg ? `<span style="font-size:0.82rem;color:var(--highlight)">★ ${avg}</span>` : ''}
-            <span style="font-size:0.78rem;color:var(--ink-faint)">${Object.keys(read.ratings||{}).length} of ${bc.members.length} rated</span>
+            <span style="font-size:0.78rem;color:var(--ink-faint)">${ratings.length} of ${bc.members.length} rated</span>
           </div>
         </div>
       </div>`;
@@ -4002,7 +4023,7 @@ function renderBCMain() {
   html += `</div>`;
 
   // ── Voting ──
-  html += `<div>
+  html += `<div style="margin-bottom:1.5rem">
     <div class="section-header" style="margin-bottom:0.75rem">
       <div style="font-family:var(--font-head);font-size:1.1rem">Book Voting</div>
       ${!activeVote ? `<button class="btn btn-primary" onclick="bcStartVoteSetup()">New Vote</button>` : ''}
@@ -4024,52 +4045,12 @@ function renderBCMain() {
   });
   html += `</div>`;
 
-  return html;
-}
-
-function renderBCActiveVote(vote) {
-  const bc = getBC();
-  const idx = bc.votingMemberIndex || 0;
-  const participantIds = vote.participants || [];
-  const ballotDone = vote.ballots.map(b => b.memberId);
-  const remaining = participantIds.filter(id => !ballotDone.includes(id));
-
-  if (remaining.length === 0) {
-    // All voted — show result
-    return `<div class="card" style="background:var(--gold-pale);border-color:var(--highlight);margin-bottom:1.5rem">
-      <div style="font-family:var(--font-head);font-size:1rem;margin-bottom:0.5rem">Voting Complete!</div>
-      <button class="btn btn-primary" onclick="bcTallyVote('${vote.id}')">Calculate Results</button>
-    </div>`;
-  }
-
-  const currentMemberId = remaining[0];
-  const member = bc.members.find(m => m.id === currentMemberId);
-  const ranked = vote._tempRanking || [...vote.candidates];
-
-  let html = `<div class="card" style="border-color:var(--accent-soft);margin-bottom:1.5rem">
-    <div style="font-family:var(--font-head);font-size:1rem;margin-bottom:0.25rem">📊 Voting in Progress</div>
-    <div style="font-size:0.875rem;color:var(--ink-muted);margin-bottom:1rem">
-      ${member ? `<strong>${escHtml(member.name)}'s</strong> turn to rank the books.` : ''}
-      <span style="float:right;font-size:0.78rem">${vote.ballots.length}/${participantIds.length} voted</span>
-    </div>
-    <div style="font-size:0.78rem;color:var(--ink-muted);margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.06em">Drag to rank — top is first choice</div>
-    <div id="bc-vote-list">`;
-  ranked.forEach((bookId, i) => {
-    const book = db.books.find(b => b.id === bookId);
-    html += `<div class="bc-vote-book" data-id="${bookId}" draggable="true">
-      <div class="rank-badge">${i+1}</div>
-      ${book ? renderCover(book) : ''}
-      <div style="flex:1;min-width:0">
-        <div style="font-family:var(--font-head);font-size:0.9rem">${book ? escHtml(book.title) : bookId}</div>
-        <div style="font-size:0.78rem;color:var(--ink-muted);font-style:italic">${book ? escHtml(book.author) : ''}</div>
-      </div>
-    </div>`;
-  });
-  html += `</div>
-    <div style="margin-top:1rem;display:flex;justify-content:flex-end;gap:8px">
-      <button class="btn btn-primary" onclick="bcSubmitBallot('${vote.id}', '${currentMemberId}')">Submit Ranking</button>
-    </div>
+  // ── Settings at bottom ──
+  html += `<hr class="section">
+  <div style="text-align:right;margin-top:0.5rem">
+    <button class="btn btn-secondary" onclick="bcOpenSettings()">Club Settings</button>
   </div>`;
+
   return html;
 }
 
@@ -4142,7 +4123,19 @@ function bcSubmitBallot(voteId, memberId) {
   vote.ballots.push({ memberId, ranking });
   delete vote._tempRanking;
   saveDB();
-  renderBookClub();
+  renderBookClub(); // update backdrop
+  bcOpenVoteModal(voteId); // immediately show next member or completion screen
+}
+
+function bcMoveVoteItem(btn, dir) {
+  const item = btn.closest('.bc-vote-book');
+  const list = item.parentElement;
+  if (dir === 'up' && item.previousElementSibling) {
+    list.insertBefore(item, item.previousElementSibling);
+  } else if (dir === 'down' && item.nextElementSibling) {
+    item.nextElementSibling.after(item);
+  }
+  bcUpdateRankBadges();
 }
 
 function bcTallyVote(voteId) {
@@ -4295,29 +4288,31 @@ function bcOpenRead(readId) {
   if (!read) return;
   const book = db.books.find(b => b.id === read.bookId);
 
-  let membersHtml = bc.members.map(m => {
-    const rating = read.ratings[m.id] || 0;
-    const stars = [1,2,3,4,5].map(s =>
-      `<span class="bc-star ${s<=rating?'filled':''}" data-member="${m.id}" data-val="${s}" onclick="bcSetRating('${readId}','${m.id}',${s})">★</span>`
-    ).join('');
-    return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-soft)">
+  const membersHtml = bc.members.map(m => {
+    const rating = read.ratings[m.id] != null ? read.ratings[m.id] : '';
+    return `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border-soft)">
       <div class="bc-avatar bc-avatar-lg">${m.photo ? `<img src="${m.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">` : escHtml(m.name[0])}</div>
       <div style="flex:1">
-        <div style="font-size:0.9rem;font-weight:500">${escHtml(m.name)}</div>
-        <div class="bc-star-row" style="margin-top:3px">${stars}</div>
+        <div style="font-size:1rem;font-family:var(--font-head)">${escHtml(m.name)}</div>
+        <div style="font-size:0.78rem;color:var(--ink-muted)">Rating out of 10</div>
       </div>
-      ${rating ? `<div style="font-family:var(--font-head);color:var(--highlight)">★ ${rating}</div>` : ''}
+      <input type="number" min="0" max="10" step="0.1"
+        value="${rating}"
+        placeholder="—"
+        id="bcr-${m.id}"
+        style="width:72px;text-align:center;font-family:var(--font-head);font-size:1.1rem;padding:6px;border:1px solid var(--border);border-radius:var(--radius);color:var(--ink);background:var(--card)"
+        oninput="bcSaveRating('${readId}','${m.id}',this.value)">
     </div>`;
   }).join('');
 
-  const ratings = Object.values(read.ratings).filter(r => r > 0);
-  const avg = ratings.length ? (ratings.reduce((s,r)=>s+r,0)/ratings.length).toFixed(1) : null;
+  const ratings = Object.values(read.ratings || {}).filter(r => r !== '' && r != null && !isNaN(r));
+  const avg = ratings.length ? (ratings.reduce((s,r)=>s+Number(r),0)/ratings.length).toFixed(1) : null;
 
   document.getElementById('detail-title').textContent = book ? book.title : 'Book Club Read';
   document.getElementById('detail-body').innerHTML = `
-    <div style="margin-bottom:1rem">
-      <div style="font-size:0.78rem;color:var(--ink-muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.06em">${escHtml(read.readDate||'')}</div>
-      ${avg ? `<div style="font-size:1.1rem;color:var(--highlight);font-family:var(--font-head)">★ ${avg} average</div>` : ''}
+    <div style="margin-bottom:1rem;display:flex;align-items:baseline;justify-content:space-between">
+      <div style="font-size:0.82rem;color:var(--ink-muted)">${escHtml(read.readDate||'')}</div>
+      ${avg ? `<div style="font-size:1.2rem;color:var(--highlight);font-family:var(--font-head)">★ ${avg} <span style="font-size:0.78rem;color:var(--ink-faint)">avg</span></div>` : ''}
     </div>
     ${membersHtml}
     <div style="margin-top:1rem">
@@ -4333,14 +4328,22 @@ function bcOpenRead(readId) {
   document.getElementById('modal-detail').classList.remove('hidden');
 }
 
-function bcSetRating(readId, memberId, val) {
+function bcSaveRating(readId, memberId, val) {
   const bc = getBC();
   const read = bc.reads.find(r => r.id === readId);
   if (!read) return;
-  // Toggle off if same star clicked
-  read.ratings[memberId] = read.ratings[memberId] === val ? 0 : val;
+  const num = parseFloat(val);
+  if (val === '' || val == null) {
+    delete read.ratings[memberId];
+  } else if (!isNaN(num) && num >= 0 && num <= 10) {
+    read.ratings[memberId] = Math.round(num * 10) / 10; // store with 1 decimal precision
+  }
   saveDB();
-  bcOpenRead(readId); // re-render
+  // Update the live average display without re-rendering the whole modal
+  const ratings = Object.values(read.ratings).filter(r => r != null && !isNaN(r));
+  const avg = ratings.length ? (ratings.reduce((s,r)=>s+Number(r),0)/ratings.length).toFixed(1) : null;
+  const avgEl = document.querySelector('#modal-detail .avg-display');
+  if (avgEl) avgEl.textContent = avg ? `★ ${avg}` : '';
 }
 
 function bcSaveReadNotes(readId, notes) {
@@ -4361,31 +4364,92 @@ function bcDeleteRead(readId) {
 function bcStartVoteSetup() {
   const bc = getBC();
   const bookOptions = db.books.map(b =>
-    `<label style="display:flex;align-items:center;gap:8px;padding:5px 0;cursor:pointer;font-size:0.9rem">
-      <input type="checkbox" value="${b.id}" style="width:16px;height:16px;accent-color:var(--accent)">
-      <span>${escHtml(b.title)}</span>
+    `<label style="display:flex;align-items:center;gap:10px;padding:7px 0;cursor:pointer;border-bottom:1px solid var(--border-soft)">
+      <input type="checkbox" value="${b.id}" style="width:16px;height:16px;accent-color:var(--accent);flex-shrink:0">
+      ${renderCover(b)}
+      <span style="font-family:var(--font-head);font-size:0.92rem">${escHtml(b.title)}</span>
     </label>`
   ).join('');
   const memberOptions = bc.members.map(m =>
-    `<label style="display:flex;align-items:center;gap:8px;padding:5px 0;cursor:pointer;font-size:0.9rem">
-      <input type="checkbox" value="${m.id}" checked style="width:16px;height:16px;accent-color:var(--accent)">
-      <div class="bc-avatar">${m.photo ? `<img src="${m.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">` : escHtml(m.name[0])}</div>
-      <span>${escHtml(m.name)}</span>
+    `<label style="display:flex;align-items:center;gap:10px;padding:8px 0;cursor:pointer;border-bottom:1px solid var(--border-soft)">
+      <input type="checkbox" value="${m.id}" checked style="width:16px;height:16px;accent-color:var(--accent);flex-shrink:0">
+      <div class="bc-avatar bc-avatar-lg">${m.photo ? `<img src="${m.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">` : escHtml(m.name[0])}</div>
+      <span style="font-family:var(--font-head);font-size:1rem">${escHtml(m.name)}</span>
     </label>`
   ).join('');
-  document.getElementById('detail-title').textContent = 'Start a Vote';
+  document.getElementById('detail-title').textContent = 'New Vote — Setup';
   document.getElementById('detail-body').innerHTML = `
-    <div style="max-height:65vh;overflow-y:auto">
-      <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-muted);margin-bottom:6px">Books to vote on</div>
-      <div id="bc-vote-candidates" style="margin-bottom:1rem">${bookOptions}</div>
-      <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-muted);margin-bottom:6px">Participating members</div>
+    <div style="max-height:60vh;overflow-y:auto;padding-right:4px">
+      <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink-muted);margin-bottom:8px">Books to vote on</div>
+      <div id="bc-vote-candidates" style="margin-bottom:1.25rem">${bookOptions}</div>
+      <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink-muted);margin-bottom:8px">Who's voting</div>
       <div id="bc-vote-participants">${memberOptions}</div>
     </div>
-    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:1rem">
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:1rem;padding-top:0.75rem;border-top:1px solid var(--border)">
       <button class="btn btn-secondary" onclick="closeModal('modal-detail')">Cancel</button>
-      <button class="btn btn-primary" onclick="bcLaunchVote()">Begin Voting</button>
+      <button class="btn btn-primary" onclick="bcLaunchVote()">Start Voting</button>
     </div>`;
   document.getElementById('modal-detail').classList.remove('hidden');
+}
+
+function bcOpenVoteModal(voteId) {
+  const bc = getBC();
+  const vote = bc.votes.find(v => v.id === voteId);
+  if (!vote) return;
+
+  const ballotDone = vote.ballots.map(b => b.memberId);
+  const remaining = vote.participants.filter(id => !ballotDone.includes(id));
+
+  if (remaining.length === 0) {
+    // All done — show tally button
+    document.getElementById('detail-title').textContent = 'Voting Complete';
+    document.getElementById('detail-body').innerHTML = `
+      <div style="text-align:center;padding:1.5rem 0">
+        <div style="font-size:1.5rem;margin-bottom:0.5rem">🗳️</div>
+        <div style="font-family:var(--font-head);font-size:1.05rem;margin-bottom:1.25rem">All ${vote.ballots.length} members have submitted their rankings.</div>
+        <button class="btn btn-primary" onclick="bcTallyVote('${voteId}')">Calculate Results</button>
+      </div>`;
+    document.getElementById('modal-detail').classList.remove('hidden');
+    return;
+  }
+
+  const currentMemberId = remaining[0];
+  const member = bc.members.find(m => m.id === currentMemberId);
+  const ranked = vote._tempRanking || [...vote.candidates];
+
+  let ballotRows = ranked.map((bookId, i) => {
+    const book = db.books.find(b => b.id === bookId);
+    return `<div class="bc-vote-book" data-id="${bookId}" draggable="true">
+      <div class="rank-badge">${i+1}</div>
+      ${book ? renderCover(book) : ''}
+      <div style="flex:1;min-width:0">
+        <div style="font-family:var(--font-head);font-size:0.92rem;line-height:1.3">${book ? escHtml(book.title) : bookId}</div>
+        <div style="font-size:0.78rem;color:var(--ink-muted);font-style:italic">${book ? escHtml(book.author) : ''}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:2px;flex-shrink:0">
+        <button onclick="bcMoveVoteItem(this,'up')" class="btn-icon" style="padding:2px" title="Move up">▲</button>
+        <button onclick="bcMoveVoteItem(this,'down')" class="btn-icon" style="padding:2px" title="Move down">▼</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('detail-title').textContent = `${member ? member.name + "'s" : ''} Ballot`;
+  document.getElementById('detail-body').innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border-soft)">
+      <div class="bc-avatar bc-avatar-lg">${member?.photo ? `<img src="${member.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">` : escHtml(member?.name[0]||'?')}</div>
+      <div>
+        <div style="font-family:var(--font-head);font-size:1.1rem">${escHtml(member?.name||'')}</div>
+        <div style="font-size:0.82rem;color:var(--ink-muted)">${vote.ballots.length} of ${vote.participants.length} submitted · Drag or use arrows to rank</div>
+      </div>
+    </div>
+    <div id="bc-vote-list" style="margin-bottom:1rem">${ballotRows}</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding-top:0.75rem;border-top:1px solid var(--border)">
+      <button class="btn btn-secondary" onclick="closeModal('modal-detail')">Save &amp; Close</button>
+      <button class="btn btn-primary" onclick="bcSubmitBallot('${voteId}','${currentMemberId}')">Submit Ranking →</button>
+    </div>`;
+  document.getElementById('modal-detail').classList.remove('hidden');
+  // Re-bind drag events since we just wrote new HTML
+  requestAnimationFrame(() => bcBindEvents());
 }
 
 function bcLaunchVote() {
@@ -4398,8 +4462,8 @@ function bcLaunchVote() {
   bc.votes.push(vote);
   bc.activeVoteId = vote.id;
   saveDB();
-  closeModal('modal-detail');
-  renderBookClub();
+  renderBookClub(); // update the page backdrop
+  bcOpenVoteModal(vote.id); // open ballot immediately
 }
 
 function bcOpenSettings() {
