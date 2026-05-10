@@ -587,6 +587,48 @@
   .justify-between { justify-content: space-between; }
   .hidden { display: none !important; }
   .italic { font-style: italic; }
+  /* ── BOOK CLUB ── */
+  .bc-member-grid { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 0.75rem 0; }
+  .bc-member-chip {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 24px; padding: 4px 12px 4px 4px;
+    font-size: 0.875rem; color: var(--ink-soft);
+  }
+  .bc-avatar {
+    width: 32px; height: 32px; border-radius: 50%; overflow: hidden;
+    background: var(--chrome); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-head); font-size: 0.75rem; color: var(--chrome-text);
+  }
+  .bc-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .bc-avatar-lg { width: 48px; height: 48px; font-size: 1rem; }
+  .bc-star-row { display: flex; gap: 3px; }
+  .bc-star { font-size: 1.1rem; cursor: pointer; color: var(--paper-mid); transition: color 0.1s; }
+  .bc-star.filled { color: var(--highlight); }
+  .bc-countdown {
+    font-family: var(--font-head); font-size: 1.1rem; color: var(--chrome-text);
+    background: var(--chrome); border-radius: var(--radius-lg);
+    padding: 0.75rem 1.25rem; display: inline-block; margin-top: 0.5rem;
+  }
+  .bc-vote-book {
+    display: flex; align-items: center; gap: 10px;
+    padding: 0.75rem; background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); margin-bottom: 0.5rem;
+    cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none;
+  }
+  .bc-vote-book.dragging { opacity: 0.5; cursor: grabbing; }
+  .bc-vote-book .rank-badge {
+    width: 28px; height: 28px; border-radius: 50%; background: var(--chrome);
+    color: var(--chrome-text); font-family: var(--font-head); font-size: 0.85rem;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .bc-result-bar {
+    height: 8px; border-radius: 4px;
+    background: linear-gradient(90deg, var(--accent-deep), var(--accent));
+    transition: width 0.4s ease;
+  }
+
   hr.section { border: none; border-top: 1px solid var(--border); margin: 1rem 0; }
 </style>
 </head>
@@ -617,6 +659,10 @@
         Notebook
       </button>
       <div class="snav-divider"></div>
+      <button class="snav-item" data-view="bookclub" onclick="showView('bookclub')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Book Club
+      </button>
       <button class="snav-item" data-view="stats" onclick="showView('stats')">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
         Stats
@@ -676,6 +722,10 @@
   <!-- OVERFLOW DRAWER (mobile, for Notes / To-Read / Stats) -->
   <div id="drawer-backdrop" onclick="closeOverflowDrawer()"></div>
   <div id="overflow-drawer">
+    <button class="drawer-item" data-view="bookclub" onclick="showView('bookclub');closeOverflowDrawer()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Book Club
+    </button>
     <button class="drawer-item" data-view="stats" onclick="showView('stats');closeOverflowDrawer()">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
       Stats
@@ -785,6 +835,11 @@
     <!-- STATS VIEW -->
     <div id="view-stats" class="view">
       <div id="stats-content"></div>
+    </div>
+
+    <!-- BOOK CLUB VIEW -->
+    <div id="view-bookclub" class="view">
+      <div id="bookclub-content"></div>
     </div>
 
   </main>
@@ -1398,7 +1453,7 @@ function showView(name) {
   // Sync sidebar
   document.querySelectorAll('.snav-item').forEach(b => b.classList.toggle('active', b.dataset.view === name));
 
-  const drawerViews = ['toread', 'stats'];
+  const drawerViews = ['stats', 'bookclub'];
   const inDrawer = drawerViews.includes(name);
   document.querySelectorAll('.tab-btn').forEach(b => {
     if (b.dataset.view === 'more') b.classList.toggle('active', inDrawer);
@@ -1411,6 +1466,7 @@ function showView(name) {
   if (name === 'toread') renderToRead();
   if (name === 'journal') renderJournal();
   if (name === 'stats') renderStats();
+  if (name === 'bookclub') renderBookClub();
 }
 
 // ══════════════════════════════════════════
@@ -3482,6 +3538,7 @@ function exportData() {
   a.download = 'commonplace-backup-' + new Date().toISOString().slice(0,10) + '.json';
   a.click();
   URL.revokeObjectURL(url);
+  try { localStorage.setItem(LAST_EXPORT_KEY, String(Date.now())); } catch(e) {}
 }
 
 function importData(event) {
@@ -3763,19 +3820,653 @@ function exportFromNudge() {
   dismissNudge();
 }
 
-// Stamp the export timestamp whenever a manual export happens
-const _origExportData = exportData;
-function exportData() {
-  _origExportData();
-  try { localStorage.setItem(LAST_EXPORT_KEY, String(Date.now())); } catch(e) {}
+// ══════════════════════════════════════════
+//  BOOK CLUB
+// ══════════════════════════════════════════
+
+function bcDefault() {
+  return {
+    name: '', members: [], frequency: 'monthly',
+    currentRead: null,   // { bookId, meetingDate }
+    reads: [],           // [{ id, bookId, readDate, ratings:{memberId:score}, notes }]
+    votes: [],           // [{ id, date, candidates:[bookId], participants:[memberId], ballots:[{memberId,ranking:[bookId]}], result:[bookId], complete:bool }]
+    activeVoteId: null,
+    votingMemberIndex: 0
+  };
 }
 
+function getBC() {
+  if (!db.bookClub) db.bookClub = bcDefault();
+  return db.bookClub;
+}
+
+// ── Render ──
+function renderBookClub() {
+  const bc = getBC();
+  const el = document.getElementById('bookclub-content');
+  if (!bc.name) { el.innerHTML = renderBCSetup(); return; }
+  el.innerHTML = renderBCMain();
+  bcBindEvents();
+}
+
+function renderBCSetup() {
+  return `
+  <div class="section-header"><div class="section-title">Book Club Setup</div></div>
+  <div class="card" style="max-width:520px">
+    <div class="form-group">
+      <label>Book Club Name</label>
+      <input type="text" id="bc-setup-name" placeholder="e.g. The Page Turners">
+    </div>
+    <div class="form-group">
+      <label>Meeting Frequency</label>
+      <select id="bc-setup-freq">
+        <option value="weekly">Weekly</option>
+        <option value="biweekly">Bi-weekly</option>
+        <option value="monthly" selected>Monthly</option>
+        <option value="bimonthly">Every two months</option>
+        <option value="quarterly">Quarterly</option>
+      </select>
+    </div>
+    <hr class="section">
+    <div style="font-size:0.8rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-muted);margin-bottom:0.5rem">Members</div>
+    <div id="bc-setup-members"></div>
+    <button class="btn btn-secondary" style="margin-top:0.5rem;font-size:0.875rem" onclick="bcAddMemberRow()">+ Add Member</button>
+    <div style="margin-top:1.5rem;display:flex;justify-content:flex-end">
+      <button class="btn btn-primary" onclick="bcSaveSetup()">Create Book Club</button>
+    </div>
+  </div>`;
+}
+
+function bcAddMemberRow(name='', photoData='') {
+  const id = uid();
+  const container = document.getElementById('bc-setup-members') || document.getElementById('bc-members-list');
+  const div = document.createElement('div');
+  div.id = `bcm-${id}`;
+  div.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:8px';
+  div.innerHTML = `
+    <div class="bc-avatar" id="bcav-${id}" onclick="bcPickPhoto('${id}')" style="cursor:pointer;flex-shrink:0" title="Add photo">
+      ${photoData ? `<img src="${photoData}">` : '<span>+</span>'}
+    </div>
+    <input type="hidden" id="bcph-${id}" value="${escHtml(photoData)}">
+    <input type="text" value="${escHtml(name)}" placeholder="Member name" id="bcn-${id}"
+      style="flex:1;font-family:var(--font-body);font-size:1rem;padding:6px 10px;border:1px solid var(--border);border-radius:var(--radius);color:var(--ink);background:var(--card)">
+    <button class="btn-icon" onclick="document.getElementById('bcm-${id}').remove()" title="Remove">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>`;
+  if (container) container.appendChild(div);
+}
+
+function bcPickPhoto(rowId) {
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = 'image/*';
+  input.onchange = e => {
+    const file = e.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const data = ev.target.result;
+      document.getElementById(`bcph-${rowId}`).value = data;
+      const av = document.getElementById(`bcav-${rowId}`);
+      if (av) av.innerHTML = `<img src="${data}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+    };
+    reader.readAsDataURL(file);
+  };
+  input.click();
+}
+
+function bcSaveSetup() {
+  const name = document.getElementById('bc-setup-name').value.trim();
+  if (!name) { alert('Please enter a name for your book club.'); return; }
+  const freq = document.getElementById('bc-setup-freq').value;
+  const members = [];
+  document.querySelectorAll('[id^="bcm-"]').forEach(row => {
+    const id = row.id.replace('bcm-','');
+    const mName = document.getElementById(`bcn-${id}`)?.value.trim();
+    const photo = document.getElementById(`bcph-${id}`)?.value || '';
+    if (mName) members.push({ id, name: mName, photo });
+  });
+  if (members.length < 2) { alert('Add at least 2 members.'); return; }
+  db.bookClub = { ...bcDefault(), name, members, frequency: freq };
+  saveDB();
+  renderBookClub();
+}
+
+function renderBCMain() {
+  const bc = getBC();
+  let html = `
+  <div class="section-header">
+    <div class="section-title">${escHtml(bc.name)}</div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-secondary" style="font-size:0.85rem;padding:0.3rem 0.75rem" onclick="bcOpenSettings()">Settings</button>
+      <button class="btn btn-primary" onclick="bcSetCurrentRead()">Set Current Read</button>
+    </div>
+  </div>`;
+
+  // ── Current Read ──
+  if (bc.currentRead) {
+    const book = db.books.find(b => b.id === bc.currentRead.bookId);
+    const meetDate = bc.currentRead.meetingDate ? new Date(bc.currentRead.meetingDate) : null;
+    const daysLeft = meetDate ? Math.ceil((meetDate - Date.now()) / 86400000) : null;
+    html += `<div class="reading-hero" style="margin-bottom:1.5rem">
+      ${book ? renderCover(book, 'cover-hero') : ''}
+      <div class="reading-hero-info">
+        <div class="reading-hero-label">Currently Reading</div>
+        <div class="reading-hero-title">${book ? escHtml(book.title) : 'Unknown'}</div>
+        <div class="reading-hero-author">${book ? escHtml(book.author) : ''}</div>
+        ${meetDate ? `<div class="bc-countdown">${daysLeft > 0 ? daysLeft + ' days until meeting' : daysLeft === 0 ? 'Meeting today!' : 'Meeting was ' + Math.abs(daysLeft) + ' days ago'}</div>` : ''}
+        <div style="margin-top:0.75rem;display:flex;gap:6px;flex-wrap:wrap">
+          <button class="btn" style="background:rgba(255,255,255,0.12);color:var(--chrome-text);border:1px solid rgba(200,224,210,0.35);font-size:0.82rem;padding:0.3rem 0.75rem" onclick="bcSetCurrentRead()">Edit</button>
+          <button class="btn" style="background:rgba(255,255,255,0.12);color:var(--chrome-text);border:1px solid rgba(200,224,210,0.35);font-size:0.82rem;padding:0.3rem 0.75rem" onclick="bcFinishCurrentRead()">Mark as Finished</button>
+        </div>
+      </div>
+    </div>`;
+  } else {
+    html += `<div class="card" style="text-align:center;padding:1.5rem;margin-bottom:1.5rem">
+      <div style="font-family:var(--font-head);color:var(--ink-muted);margin-bottom:0.75rem">No current read set</div>
+      <button class="btn btn-primary" onclick="bcSetCurrentRead()">Set Current Read</button>
+    </div>`;
+  }
+
+  // ── Active Vote ──
+  const activeVote = bc.activeVoteId ? bc.votes.find(v => v.id === bc.activeVoteId) : null;
+  if (activeVote && !activeVote.complete) {
+    html += renderBCActiveVote(activeVote);
+  }
+
+  // ── Past Reads ──
+  html += `<div style="margin-bottom:1.5rem">
+    <div class="section-header" style="margin-bottom:0.75rem">
+      <div style="font-family:var(--font-head);font-size:1.1rem">Past Reads</div>
+      <button class="btn btn-secondary" style="font-size:0.85rem;padding:0.3rem 0.75rem" onclick="bcAddPastRead()">+ Add</button>
+    </div>`;
+  if (bc.reads.length === 0) {
+    html += `<div style="font-style:italic;color:var(--ink-faint);font-size:0.9rem">No past reads recorded yet.</div>`;
+  } else {
+    [...bc.reads].sort((a,b) => (b.readDate||'').localeCompare(a.readDate||'')).forEach(read => {
+      const book = db.books.find(b => b.id === read.bookId);
+      const ratings = Object.values(read.ratings || {}).filter(r => r > 0);
+      const avg = ratings.length ? (ratings.reduce((s,r)=>s+r,0)/ratings.length).toFixed(1) : null;
+      html += `<div class="book-item" onclick="bcOpenRead('${read.id}')" style="margin-bottom:0.5rem">
+        ${book ? renderCover(book) : '<div class="cover" style="background:var(--paper-mid)"></div>'}
+        <div class="book-item-info">
+          <div class="book-item-title">${book ? escHtml(book.title) : 'Unknown'}</div>
+          <div class="book-item-author">${book ? escHtml(book.author) : ''}</div>
+          <div class="book-item-meta">
+            ${read.readDate ? `<span style="font-size:0.78rem;color:var(--ink-faint)">${escHtml(read.readDate)}</span>` : ''}
+            ${avg ? `<span style="font-size:0.82rem;color:var(--highlight)">★ ${avg}</span>` : ''}
+            <span style="font-size:0.78rem;color:var(--ink-faint)">${Object.keys(read.ratings||{}).length} of ${bc.members.length} rated</span>
+          </div>
+        </div>
+      </div>`;
+    });
+  }
+  html += `</div>`;
+
+  // ── Voting ──
+  html += `<div>
+    <div class="section-header" style="margin-bottom:0.75rem">
+      <div style="font-family:var(--font-head);font-size:1.1rem">Book Voting</div>
+      ${!activeVote ? `<button class="btn btn-primary" onclick="bcStartVoteSetup()">New Vote</button>` : ''}
+    </div>`;
+  const pastVotes = bc.votes.filter(v => v.complete).sort((a,b) => (b.date||0)-(a.date||0));
+  if (pastVotes.length === 0 && !activeVote) {
+    html += `<div style="font-style:italic;color:var(--ink-faint);font-size:0.9rem">No votes yet. Start one to pick your next read.</div>`;
+  }
+  pastVotes.slice(0, 3).forEach(vote => {
+    const winner = vote.result && vote.result[0] ? db.books.find(b => b.id === vote.result[0]) : null;
+    html += `<div class="card" style="margin-bottom:0.5rem;font-size:0.875rem">
+      <div style="display:flex;justify-content:space-between;align-items:baseline">
+        <div style="font-family:var(--font-head)">${winner ? escHtml(winner.title) : 'Vote'}</div>
+        <div style="font-size:0.78rem;color:var(--ink-faint)">${vote.date ? fmtDate(vote.date) : ''}</div>
+      </div>
+      ${vote.result && vote.result.length > 1 ? `<div style="font-size:0.78rem;color:var(--ink-muted);margin-top:3px">${vote.result.slice(1).map(id => { const b = db.books.find(x=>x.id===id); return b ? escHtml(b.title) : ''; }).filter(Boolean).join(', ')}</div>` : ''}
+      <button class="btn-ghost" style="font-size:0.75rem;margin-top:4px" onclick="bcShowVoteResult('${vote.id}')">View results</button>
+    </div>`;
+  });
+  html += `</div>`;
+
+  return html;
+}
+
+function renderBCActiveVote(vote) {
+  const bc = getBC();
+  const idx = bc.votingMemberIndex || 0;
+  const participantIds = vote.participants || [];
+  const ballotDone = vote.ballots.map(b => b.memberId);
+  const remaining = participantIds.filter(id => !ballotDone.includes(id));
+
+  if (remaining.length === 0) {
+    // All voted — show result
+    return `<div class="card" style="background:var(--gold-pale);border-color:var(--highlight);margin-bottom:1.5rem">
+      <div style="font-family:var(--font-head);font-size:1rem;margin-bottom:0.5rem">Voting Complete!</div>
+      <button class="btn btn-primary" onclick="bcTallyVote('${vote.id}')">Calculate Results</button>
+    </div>`;
+  }
+
+  const currentMemberId = remaining[0];
+  const member = bc.members.find(m => m.id === currentMemberId);
+  const ranked = vote._tempRanking || [...vote.candidates];
+
+  let html = `<div class="card" style="border-color:var(--accent-soft);margin-bottom:1.5rem">
+    <div style="font-family:var(--font-head);font-size:1rem;margin-bottom:0.25rem">📊 Voting in Progress</div>
+    <div style="font-size:0.875rem;color:var(--ink-muted);margin-bottom:1rem">
+      ${member ? `<strong>${escHtml(member.name)}'s</strong> turn to rank the books.` : ''}
+      <span style="float:right;font-size:0.78rem">${vote.ballots.length}/${participantIds.length} voted</span>
+    </div>
+    <div style="font-size:0.78rem;color:var(--ink-muted);margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.06em">Drag to rank — top is first choice</div>
+    <div id="bc-vote-list">`;
+  ranked.forEach((bookId, i) => {
+    const book = db.books.find(b => b.id === bookId);
+    html += `<div class="bc-vote-book" data-id="${bookId}" draggable="true">
+      <div class="rank-badge">${i+1}</div>
+      ${book ? renderCover(book) : ''}
+      <div style="flex:1;min-width:0">
+        <div style="font-family:var(--font-head);font-size:0.9rem">${book ? escHtml(book.title) : bookId}</div>
+        <div style="font-size:0.78rem;color:var(--ink-muted);font-style:italic">${book ? escHtml(book.author) : ''}</div>
+      </div>
+    </div>`;
+  });
+  html += `</div>
+    <div style="margin-top:1rem;display:flex;justify-content:flex-end;gap:8px">
+      <button class="btn btn-primary" onclick="bcSubmitBallot('${vote.id}', '${currentMemberId}')">Submit Ranking</button>
+    </div>
+  </div>`;
+  return html;
+}
+
+function bcBindEvents() {
+  // Drag-to-reorder for vote list
+  const list = document.getElementById('bc-vote-list');
+  if (!list) return;
+  let dragSrc = null;
+  list.querySelectorAll('.bc-vote-book').forEach(item => {
+    item.addEventListener('dragstart', e => { dragSrc = item; item.classList.add('dragging'); });
+    item.addEventListener('dragend', () => { dragSrc = null; list.querySelectorAll('.bc-vote-book').forEach(i=>i.classList.remove('dragging')); bcUpdateRankBadges(); });
+    item.addEventListener('dragover', e => { e.preventDefault(); if (dragSrc && dragSrc !== item) { const r = item.getBoundingClientRect(); if (e.clientY < r.top + r.height/2) list.insertBefore(dragSrc, item); else item.after(dragSrc); } });
+  });
+
+  // Touch drag for mobile
+  let touchDrag = null, touchClone = null;
+  list.querySelectorAll('.bc-vote-book').forEach(item => {
+    item.addEventListener('touchstart', e => {
+      touchDrag = item;
+      const t = e.touches[0];
+      touchClone = item.cloneNode(true);
+      touchClone.style.cssText = `position:fixed;top:${t.clientY-30}px;left:${item.getBoundingClientRect().left}px;width:${item.offsetWidth}px;opacity:0.8;z-index:1000;pointer-events:none;`;
+      document.body.appendChild(touchClone);
+      item.style.opacity = '0.3';
+    }, { passive: true });
+    item.addEventListener('touchmove', e => {
+      if (!touchDrag || !touchClone) return;
+      const t = e.touches[0];
+      touchClone.style.top = (t.clientY - 30) + 'px';
+      const els = list.querySelectorAll('.bc-vote-book');
+      els.forEach(el => {
+        if (el === touchDrag) return;
+        const r = el.getBoundingClientRect();
+        if (t.clientY > r.top && t.clientY < r.bottom) {
+          if (t.clientY < r.top + r.height/2) list.insertBefore(touchDrag, el);
+          else el.after(touchDrag);
+        }
+      });
+    }, { passive: true });
+    item.addEventListener('touchend', () => {
+      if (touchDrag) touchDrag.style.opacity = '';
+      if (touchClone) { touchClone.remove(); touchClone = null; }
+      touchDrag = null;
+      bcUpdateRankBadges();
+    });
+  });
+}
+
+function bcUpdateRankBadges() {
+  const list = document.getElementById('bc-vote-list');
+  if (!list) return;
+  list.querySelectorAll('.bc-vote-book').forEach((item, i) => {
+    const badge = item.querySelector('.rank-badge');
+    if (badge) badge.textContent = i + 1;
+  });
+  // Save temp ranking to vote object
+  const bc = getBC();
+  const vote = bc.activeVoteId ? bc.votes.find(v => v.id === bc.activeVoteId) : null;
+  if (vote) {
+    vote._tempRanking = [...list.querySelectorAll('.bc-vote-book')].map(el => el.dataset.id);
+  }
+}
+
+function bcSubmitBallot(voteId, memberId) {
+  const bc = getBC();
+  const vote = bc.votes.find(v => v.id === voteId);
+  if (!vote) return;
+  const list = document.getElementById('bc-vote-list');
+  const ranking = [...list.querySelectorAll('.bc-vote-book')].map(el => el.dataset.id);
+  vote.ballots.push({ memberId, ranking });
+  delete vote._tempRanking;
+  saveDB();
+  renderBookClub();
+}
+
+function bcTallyVote(voteId) {
+  const bc = getBC();
+  const vote = bc.votes.find(v => v.id === voteId);
+  if (!vote) return;
+  // Borda count: n-1 points for 1st, n-2 for 2nd, etc.
+  const n = vote.candidates.length;
+  const scores = {};
+  vote.candidates.forEach(id => { scores[id] = 0; });
+  vote.ballots.forEach(ballot => {
+    ballot.ranking.forEach((bookId, i) => {
+      if (scores[bookId] !== undefined) scores[bookId] += (n - 1 - i);
+    });
+  });
+  vote.result = Object.entries(scores).sort((a,b) => b[1]-a[1]).map(([id]) => id);
+  vote.complete = true;
+  vote.date = Date.now();
+  bc.activeVoteId = null;
+  saveDB();
+  renderBookClub();
+  bcShowVoteResult(voteId);
+}
+
+function bcShowVoteResult(voteId) {
+  const bc = getBC();
+  const vote = bc.votes.find(v => v.id === voteId);
+  if (!vote) return;
+  const n = vote.candidates.length;
+  // Recalculate scores for display
+  const scores = {};
+  vote.candidates.forEach(id => { scores[id] = 0; });
+  vote.ballots.forEach(ballot => {
+    ballot.ranking.forEach((bookId, i) => {
+      if (scores[bookId] !== undefined) scores[bookId] += (n - 1 - i);
+    });
+  });
+  const maxScore = Math.max(...Object.values(scores));
+  let html = `<div style="max-height:70vh;overflow-y:auto">
+    <div style="font-family:var(--font-head);font-size:1rem;margin-bottom:1rem">Final Rankings</div>`;
+  (vote.result || []).forEach((bookId, i) => {
+    const book = db.books.find(b => b.id === bookId);
+    const score = scores[bookId] || 0;
+    const pct = maxScore > 0 ? Math.round((score / maxScore) * 100) : 0;
+    html += `<div style="margin-bottom:0.75rem">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+        <span style="font-family:var(--font-head);color:${i===0?'var(--highlight)':'var(--ink-muted)'};width:20px">${i===0?'🏆':i+1}.</span>
+        <span style="font-size:0.9rem;flex:1">${book ? escHtml(book.title) : bookId}</span>
+        <span style="font-size:0.78rem;color:var(--ink-faint)">${score} pts</span>
+      </div>
+      <div style="background:var(--paper-mid);border-radius:4px;height:8px;overflow:hidden">
+        <div class="bc-result-bar" style="width:${pct}%"></div>
+      </div>
+    </div>`;
+  });
+  html += `</div>`;
+  // Show in a simple modal using detail modal
+  document.getElementById('detail-title').textContent = 'Vote Results';
+  document.getElementById('detail-body').innerHTML = html;
+  document.getElementById('modal-detail').classList.remove('hidden');
+}
+
+// ── Dialogs / sub-modals using a shared lightweight approach ──
+function bcSetCurrentRead() {
+  const bc = getBC();
+  const bookOptions = db.books.map(b =>
+    `<option value="${b.id}" ${bc.currentRead?.bookId===b.id?'selected':''}>${escHtml(b.title)}</option>`
+  ).join('');
+  const curDate = bc.currentRead?.meetingDate ? new Date(bc.currentRead.meetingDate).toISOString().slice(0,10) : '';
+  document.getElementById('detail-title').textContent = 'Set Current Read';
+  document.getElementById('detail-body').innerHTML = `
+    <div class="form-group"><label>Book</label>
+      <select id="bc-cur-book" style="width:100%;font-family:var(--font-body);font-size:1rem;padding:8px;border:1px solid var(--border);border-radius:var(--radius);color:var(--ink);background:var(--card)">
+        <option value="">— Select a book —</option>${bookOptions}
+      </select>
+    </div>
+    <div class="form-group"><label>Meeting Date</label>
+      <input type="date" id="bc-cur-date" value="${curDate}"
+        style="width:100%;font-family:var(--font-body);font-size:1rem;padding:8px;border:1px solid var(--border);border-radius:var(--radius);color:var(--ink);background:var(--card)">
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:1rem">
+      <button class="btn btn-secondary" onclick="closeModal('modal-detail')">Cancel</button>
+      <button class="btn btn-primary" onclick="bcSaveCurrentRead()">Save</button>
+    </div>`;
+  document.getElementById('modal-detail').classList.remove('hidden');
+}
+
+function bcSaveCurrentRead() {
+  const bookId = document.getElementById('bc-cur-book').value;
+  if (!bookId) { alert('Select a book.'); return; }
+  const dateVal = document.getElementById('bc-cur-date').value;
+  const bc = getBC();
+  bc.currentRead = { bookId, meetingDate: dateVal ? new Date(dateVal).getTime() : null };
+  saveDB();
+  closeModal('modal-detail');
+  renderBookClub();
+}
+
+function bcFinishCurrentRead() {
+  const bc = getBC();
+  if (!bc.currentRead) return;
+  if (!confirm('Move the current read to past reads?')) return;
+  const existing = bc.reads.find(r => r.bookId === bc.currentRead.bookId);
+  if (!existing) {
+    const readDate = bc.currentRead.meetingDate
+      ? new Date(bc.currentRead.meetingDate).toLocaleDateString('en-US', {month:'long', year:'numeric'})
+      : new Date().toLocaleDateString('en-US', {month:'long', year:'numeric'});
+    bc.reads.push({ id: uid(), bookId: bc.currentRead.bookId, readDate, ratings: {}, notes: '' });
+  }
+  bc.currentRead = null;
+  saveDB();
+  renderBookClub();
+}
+
+function bcAddPastRead() {
+  const bc = getBC();
+  const bookOptions = db.books.map(b => `<option value="${b.id}">${escHtml(b.title)}</option>`).join('');
+  document.getElementById('detail-title').textContent = 'Add Past Read';
+  document.getElementById('detail-body').innerHTML = `
+    <div class="form-group"><label>Book</label>
+      <select id="bc-pr-book" style="width:100%;font-family:var(--font-body);font-size:1rem;padding:8px;border:1px solid var(--border);border-radius:var(--radius);color:var(--ink);background:var(--card)">
+        <option value="">— Select —</option>${bookOptions}
+      </select>
+    </div>
+    <div class="form-group"><label>When (e.g. "March 2025")</label>
+      <input type="text" id="bc-pr-date" placeholder="March 2025"
+        style="width:100%;font-family:var(--font-body);font-size:1rem;padding:8px;border:1px solid var(--border);border-radius:var(--radius);color:var(--ink);background:var(--card)">
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:1rem">
+      <button class="btn btn-secondary" onclick="closeModal('modal-detail')">Cancel</button>
+      <button class="btn btn-primary" onclick="bcSavePastRead()">Add</button>
+    </div>`;
+  document.getElementById('modal-detail').classList.remove('hidden');
+}
+
+function bcSavePastRead() {
+  const bookId = document.getElementById('bc-pr-book').value;
+  if (!bookId) { alert('Select a book.'); return; }
+  const readDate = document.getElementById('bc-pr-date').value.trim();
+  const bc = getBC();
+  bc.reads.push({ id: uid(), bookId, readDate, ratings: {}, notes: '' });
+  saveDB();
+  closeModal('modal-detail');
+  renderBookClub();
+}
+
+function bcOpenRead(readId) {
+  const bc = getBC();
+  const read = bc.reads.find(r => r.id === readId);
+  if (!read) return;
+  const book = db.books.find(b => b.id === read.bookId);
+
+  let membersHtml = bc.members.map(m => {
+    const rating = read.ratings[m.id] || 0;
+    const stars = [1,2,3,4,5].map(s =>
+      `<span class="bc-star ${s<=rating?'filled':''}" data-member="${m.id}" data-val="${s}" onclick="bcSetRating('${readId}','${m.id}',${s})">★</span>`
+    ).join('');
+    return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-soft)">
+      <div class="bc-avatar bc-avatar-lg">${m.photo ? `<img src="${m.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">` : escHtml(m.name[0])}</div>
+      <div style="flex:1">
+        <div style="font-size:0.9rem;font-weight:500">${escHtml(m.name)}</div>
+        <div class="bc-star-row" style="margin-top:3px">${stars}</div>
+      </div>
+      ${rating ? `<div style="font-family:var(--font-head);color:var(--highlight)">★ ${rating}</div>` : ''}
+    </div>`;
+  }).join('');
+
+  const ratings = Object.values(read.ratings).filter(r => r > 0);
+  const avg = ratings.length ? (ratings.reduce((s,r)=>s+r,0)/ratings.length).toFixed(1) : null;
+
+  document.getElementById('detail-title').textContent = book ? book.title : 'Book Club Read';
+  document.getElementById('detail-body').innerHTML = `
+    <div style="margin-bottom:1rem">
+      <div style="font-size:0.78rem;color:var(--ink-muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.06em">${escHtml(read.readDate||'')}</div>
+      ${avg ? `<div style="font-size:1.1rem;color:var(--highlight);font-family:var(--font-head)">★ ${avg} average</div>` : ''}
+    </div>
+    ${membersHtml}
+    <div style="margin-top:1rem">
+      <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-muted);margin-bottom:4px">Notes</div>
+      <textarea id="bc-read-notes" rows="3"
+        style="width:100%;font-family:var(--font-body);font-size:0.95rem;padding:8px;border:1px solid var(--border);border-radius:var(--radius);color:var(--ink);background:var(--card);resize:vertical"
+        onchange="bcSaveReadNotes('${readId}',this.value)">${escHtml(read.notes||'')}</textarea>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:1rem">
+      <button class="btn btn-danger" onclick="bcDeleteRead('${readId}')">Delete</button>
+      <button class="btn btn-primary" onclick="closeModal('modal-detail');renderBookClub()">Done</button>
+    </div>`;
+  document.getElementById('modal-detail').classList.remove('hidden');
+}
+
+function bcSetRating(readId, memberId, val) {
+  const bc = getBC();
+  const read = bc.reads.find(r => r.id === readId);
+  if (!read) return;
+  // Toggle off if same star clicked
+  read.ratings[memberId] = read.ratings[memberId] === val ? 0 : val;
+  saveDB();
+  bcOpenRead(readId); // re-render
+}
+
+function bcSaveReadNotes(readId, notes) {
+  const bc = getBC();
+  const read = bc.reads.find(r => r.id === readId);
+  if (read) { read.notes = notes; saveDB(); }
+}
+
+function bcDeleteRead(readId) {
+  if (!confirm('Remove this book from past reads?')) return;
+  const bc = getBC();
+  bc.reads = bc.reads.filter(r => r.id !== readId);
+  saveDB();
+  closeModal('modal-detail');
+  renderBookClub();
+}
+
+function bcStartVoteSetup() {
+  const bc = getBC();
+  const bookOptions = db.books.map(b =>
+    `<label style="display:flex;align-items:center;gap:8px;padding:5px 0;cursor:pointer;font-size:0.9rem">
+      <input type="checkbox" value="${b.id}" style="width:16px;height:16px;accent-color:var(--accent)">
+      <span>${escHtml(b.title)}</span>
+    </label>`
+  ).join('');
+  const memberOptions = bc.members.map(m =>
+    `<label style="display:flex;align-items:center;gap:8px;padding:5px 0;cursor:pointer;font-size:0.9rem">
+      <input type="checkbox" value="${m.id}" checked style="width:16px;height:16px;accent-color:var(--accent)">
+      <div class="bc-avatar">${m.photo ? `<img src="${m.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">` : escHtml(m.name[0])}</div>
+      <span>${escHtml(m.name)}</span>
+    </label>`
+  ).join('');
+  document.getElementById('detail-title').textContent = 'Start a Vote';
+  document.getElementById('detail-body').innerHTML = `
+    <div style="max-height:65vh;overflow-y:auto">
+      <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-muted);margin-bottom:6px">Books to vote on</div>
+      <div id="bc-vote-candidates" style="margin-bottom:1rem">${bookOptions}</div>
+      <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-muted);margin-bottom:6px">Participating members</div>
+      <div id="bc-vote-participants">${memberOptions}</div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:1rem">
+      <button class="btn btn-secondary" onclick="closeModal('modal-detail')">Cancel</button>
+      <button class="btn btn-primary" onclick="bcLaunchVote()">Begin Voting</button>
+    </div>`;
+  document.getElementById('modal-detail').classList.remove('hidden');
+}
+
+function bcLaunchVote() {
+  const bc = getBC();
+  const candidates = [...document.querySelectorAll('#bc-vote-candidates input:checked')].map(el => el.value);
+  const participants = [...document.querySelectorAll('#bc-vote-participants input:checked')].map(el => el.value);
+  if (candidates.length < 2) { alert('Select at least 2 books.'); return; }
+  if (participants.length < 1) { alert('Select at least 1 member.'); return; }
+  const vote = { id: uid(), date: null, candidates, participants, ballots: [], result: [], complete: false };
+  bc.votes.push(vote);
+  bc.activeVoteId = vote.id;
+  saveDB();
+  closeModal('modal-detail');
+  renderBookClub();
+}
+
+function bcOpenSettings() {
+  const bc = getBC();
+  document.getElementById('detail-title').textContent = 'Book Club Settings';
+  document.getElementById('detail-body').innerHTML = `
+    <div class="form-group"><label>Name</label>
+      <input type="text" id="bc-set-name" value="${escHtml(bc.name)}"
+        style="width:100%;font-family:var(--font-body);font-size:1rem;padding:8px;border:1px solid var(--border);border-radius:var(--radius);color:var(--ink);background:var(--card)">
+    </div>
+    <div class="form-group"><label>Meeting Frequency</label>
+      <select id="bc-set-freq" style="width:100%;font-family:var(--font-body);font-size:1rem;padding:8px;border:1px solid var(--border);border-radius:var(--radius);color:var(--ink);background:var(--card)">
+        <option value="weekly" ${bc.frequency==='weekly'?'selected':''}>Weekly</option>
+        <option value="biweekly" ${bc.frequency==='biweekly'?'selected':''}>Bi-weekly</option>
+        <option value="monthly" ${bc.frequency==='monthly'?'selected':''}>Monthly</option>
+        <option value="bimonthly" ${bc.frequency==='bimonthly'?'selected':''}>Every two months</option>
+        <option value="quarterly" ${bc.frequency==='quarterly'?'selected':''}>Quarterly</option>
+      </select>
+    </div>
+    <hr class="section">
+    <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-muted);margin-bottom:6px">Members</div>
+    <div id="bc-members-list">
+      ${bc.members.map(m => `<div id="bcm-${m.id}" style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <div class="bc-avatar" id="bcav-${m.id}" onclick="bcPickPhoto('${m.id}')" style="cursor:pointer;flex-shrink:0" title="Change photo">
+          ${m.photo ? `<img src="${m.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">` : escHtml(m.name[0])}
+        </div>
+        <input type="hidden" id="bcph-${m.id}" value="${escHtml(m.photo||'')}">
+        <input type="text" value="${escHtml(m.name)}" id="bcn-${m.id}"
+          style="flex:1;font-family:var(--font-body);font-size:1rem;padding:6px 10px;border:1px solid var(--border);border-radius:var(--radius);color:var(--ink);background:var(--card)">
+        <button class="btn-icon" onclick="document.getElementById('bcm-${m.id}').remove()" title="Remove">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>`).join('')}
+    </div>
+    <button class="btn btn-secondary" style="font-size:0.875rem;margin-bottom:1rem" onclick="bcAddMemberRow()">+ Add Member</button>
+    <div style="display:flex;justify-content:flex-end;gap:8px">
+      <button class="btn btn-secondary" onclick="closeModal('modal-detail')">Cancel</button>
+      <button class="btn btn-primary" onclick="bcSaveSettings()">Save</button>
+    </div>`;
+  document.getElementById('modal-detail').classList.remove('hidden');
+}
+
+function bcSaveSettings() {
+  const bc = getBC();
+  bc.name = document.getElementById('bc-set-name').value.trim() || bc.name;
+  bc.frequency = document.getElementById('bc-set-freq').value;
+  // Update members
+  const updated = [];
+  document.querySelectorAll('[id^="bcm-"]').forEach(row => {
+    const id = row.id.replace('bcm-','');
+    const name = document.getElementById(`bcn-${id}`)?.value.trim();
+    const photo = document.getElementById(`bcph-${id}`)?.value || '';
+    if (name) {
+      const existing = bc.members.find(m => m.id === id);
+      updated.push({ id: existing ? id : uid(), name, photo });
+    }
+  });
+  if (updated.length >= 1) bc.members = updated;
+  saveDB();
+  closeModal('modal-detail');
+  renderBookClub();
+}
 // ══════════════════════════════════════════
 //  INIT
 // ══════════════════════════════════════════
 renderHome();
 checkDataSafety();
-// Check IndexedDB for data that may have survived a localStorage wipe
 reconcileStorage();
 </script>
 </body>
