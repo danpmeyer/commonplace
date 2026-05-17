@@ -15,7 +15,16 @@
 <link rel="apple-touch-icon" href="icon-192.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="icon-192.svg">
 <title>Commonplace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  /* Ensure the app is visible even if Google Fonts never loads */
+  :root {
+    --font-head: 'Marcellus', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
+    --font-body: 'EB Garamond', Garamond, 'Palatino Linotype', Palatino, Georgia, serif;
+  }
+</style>
 <style>
   :root {
     /* ── Chrome — deep forest green ── */
@@ -2617,20 +2626,6 @@ function editStartDate(bookId) {
   book.startDate = ts || null;
   saveDB();
   openDetail(bookId);
-}
-
-function markReadAgain(bookId) {
-  const book = db.books.find(b => b.id === bookId);
-  if (!book) return;
-  // Switch back to reading so user can track it again, with a fresh startDate
-  book.status = 'reading';
-  book.currentPage = 0;
-  book.startDate = Date.now();
-  saveDB();
-  openDetail(bookId);
-  if (currentView === 'shelf') renderShelf();
-  if (currentView === 'stats') renderStats();
-  if (currentView === 'home') renderHome();
 }
 
 function deleteCurrentBook() {
