@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -24,618 +25,626 @@
     --chrome-text:  #e8f0ec;   /* text on chrome backgrounds */
     --chrome-muted: rgba(200,224,210,0.5); /* secondary text on chrome */
 
-    /* ── Accent — terracotta ── */
-    --accent:       #c45e35;   /* buttons, progress, active states, quote marks */
-    --accent-deep:  #9e4420;   /* hover on accent */
-    --accent-pale:  #faf0eb;   /* accent-tinted light surface */
-    --accent-soft:  #e0a888;   /* accent-tinted border */
+```
+/* ── Accent — terracotta ── */
+--accent:       #c45e35;   /* buttons, progress, active states, quote marks */
+--accent-deep:  #9e4420;   /* hover on accent */
+--accent-pale:  #faf0eb;   /* accent-tinted light surface */
+--accent-soft:  #e0a888;   /* accent-tinted border */
 
-    /* ── Warm highlight — used for nav active marker, tab underlines ── */
-    --highlight:    #e8c87a;   /* soft gold — just for structural accents on chrome */
+/* ── Warm highlight — used for nav active marker, tab underlines ── */
+--highlight:    #e8c87a;   /* soft gold — just for structural accents on chrome */
 
-    /* ── Page ground — classic warm cream ── */
-    --paper:        #f5f0e8;   /* page background */
-    --paper-warm:   #ece5d8;   /* card hover, inset */
-    --paper-mid:    #d8cfbf;   /* progress track, dividers */
-    --parchment:    #c4b89e;   /* strong border */
+/* ── Page ground — classic warm cream ── */
+--paper:        #f5f0e8;   /* page background */
+--paper-warm:   #ece5d8;   /* card hover, inset */
+--paper-mid:    #d8cfbf;   /* progress track, dividers */
+--parchment:    #c4b89e;   /* strong border */
 
-    /* ── Ink ── */
-    --ink:          #18140e;   /* primary text */
-    --ink-soft:     #302820;   /* secondary text */
-    --ink-muted:    #6a5c48;   /* labels */
-    --ink-faint:    #a89880;   /* hints, placeholders */
+/* ── Ink ── */
+--ink:          #18140e;   /* primary text */
+--ink-soft:     #302820;   /* secondary text */
+--ink-muted:    #6a5c48;   /* labels */
+--ink-faint:    #a89880;   /* hints, placeholders */
 
-    /* ── Surfaces ── */
-    --card:         #ffffff;
-    --card-warm:    #fdfaf5;
-    --border:       #d0c4ac;
-    --border-soft:  #e4dace;
-    --shadow:       rgba(24,20,14,0.07);
-    --shadow-md:    rgba(24,20,14,0.14);
+/* ── Surfaces ── */
+--card:         #ffffff;
+--card-warm:    #fdfaf5;
+--border:       #d0c4ac;
+--border-soft:  #e4dace;
+--shadow:       rgba(24,20,14,0.07);
+--shadow-md:    rgba(24,20,14,0.14);
 
-    --font-head: 'Marcellus', Georgia, serif;
-    --font-body: 'EB Garamond', Georgia, serif;
-    --radius: 4px;
-    --radius-lg: 8px;
-  }
+--font-head: 'Marcellus', Georgia, serif;
+--font-body: 'EB Garamond', Georgia, serif;
+--radius: 4px;
+--radius-lg: 8px;
+```
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+}
 
-  body {
-    font-family: var(--font-body);
-    background: var(--paper);
-    color: var(--ink);
-    font-size: 18px;
-    line-height: 1.6;
-    min-height: 100vh;
-    -webkit-font-smoothing: antialiased;
-  }
+- { box-sizing: border-box; margin: 0; padding: 0; }
 
-  /* ══════════════════════════════════════
-     LAYOUT
-  ══════════════════════════════════════ */
+body {
+font-family: var(–font-body);
+background: var(–paper);
+color: var(–ink);
+font-size: 18px;
+line-height: 1.6;
+min-height: 100vh;
+-webkit-font-smoothing: antialiased;
+}
 
-  #app { display: flex; flex-direction: row; min-height: 100vh; }
+/* ══════════════════════════════════════
+LAYOUT
+══════════════════════════════════════ */
 
-  /* ── SIDEBAR ── */
-  #sidebar {
-    width: 220px; min-height: 100vh;
-    background: var(--chrome);
-    display: flex; flex-direction: column; flex-shrink: 0;
-    position: sticky; top: 0; height: 100vh; overflow: hidden; z-index: 100;
-  }
-  #sidebar-wordmark {
-    padding: 1.4rem 1.25rem 1rem;
-    padding-top: max(1.4rem, env(safe-area-inset-top));
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    flex-shrink: 0;
-  }
-  #sidebar-wordmark h1 {
-    font-family: var(--font-body); font-size: 1.5rem; font-weight: 400;
-    font-style: italic; letter-spacing: 0.06em; color: var(--chrome-text); line-height: 1;
-  }
-  #sidebar-nav {
-    flex: 1; padding: 0.6rem 0; overflow-y: auto; scrollbar-width: none;
-  }
-  #sidebar-nav::-webkit-scrollbar { display: none; }
-  .snav-item {
-    display: flex; align-items: center; gap: 12px;
-    padding: 0.6rem 1.35rem;
-    cursor: pointer; border: none; background: none; width: 100%; text-align: left;
-    color: var(--chrome-muted);
-    font-family: var(--font-body); font-size: 1rem; letter-spacing: 0.02em;
-    border-left: 3px solid transparent;
-    transition: color 0.15s, background 0.15s, border-color 0.15s;
-  }
-  .snav-item:hover { color: var(--chrome-text); background: rgba(255,255,255,0.07); }
-  .snav-item.active {
-    color: var(--chrome-text);
-    background: rgba(0,0,0,0.15);
-    border-left-color: var(--highlight);
-  }
-  .snav-item svg { flex-shrink: 0; opacity: 0.65; }
-  .snav-item.active svg { opacity: 1; }
-  .snav-badge {
-    margin-left: auto; background: var(--chrome-deep); color: var(--chrome-text);
-    font-size: 0.65rem; padding: 1px 6px; border-radius: 10px;
-    font-family: var(--font-body); letter-spacing: 0;
-  }
-  .snav-divider {
-    height: 1px; background: rgba(255,255,255,0.08); margin: 0.4rem 1.25rem;
-  }
-  #sidebar-actions {
-    padding: 0.75rem 1rem; border-top: 1px solid rgba(255,255,255,0.1);
-    display: flex; gap: 4px; flex-shrink: 0;
-  }
-  .sidebar-action-btn {
-    flex: 1; background: rgba(0,0,0,0.15); border: none; border-radius: var(--radius);
-    color: var(--chrome-muted); cursor: pointer; padding: 9px 0;
-    display: flex; align-items: center; justify-content: center;
-    transition: background 0.15s, color 0.15s;
-  }
-  .sidebar-action-btn:hover { background: rgba(255,255,255,0.12); color: var(--chrome-text); }
+#app { display: flex; flex-direction: row; min-height: 100vh; }
 
-  /* ── MAIN CONTENT ── */
-  #main { flex: 1; padding: 1.75rem 2rem; max-width: 880px; min-width: 0; }
+/* ── SIDEBAR ── */
+#sidebar {
+width: 220px; min-height: 100vh;
+background: var(–chrome);
+display: flex; flex-direction: column; flex-shrink: 0;
+position: sticky; top: 0; height: 100vh; overflow: hidden; z-index: 100;
+}
+#sidebar-wordmark {
+padding: 1.4rem 1.25rem 1rem;
+padding-top: max(1.4rem, env(safe-area-inset-top));
+border-bottom: 1px solid rgba(255,255,255,0.1);
+flex-shrink: 0;
+}
+#sidebar-wordmark h1 {
+font-family: var(–font-body); font-size: 1.5rem; font-weight: 400;
+font-style: italic; letter-spacing: 0.06em; color: var(–chrome-text); line-height: 1;
+}
+#sidebar-nav {
+flex: 1; padding: 0.6rem 0; overflow-y: auto; scrollbar-width: none;
+}
+#sidebar-nav::-webkit-scrollbar { display: none; }
+.snav-item {
+display: flex; align-items: center; gap: 12px;
+padding: 0.6rem 1.35rem;
+cursor: pointer; border: none; background: none; width: 100%; text-align: left;
+color: var(–chrome-muted);
+font-family: var(–font-body); font-size: 1rem; letter-spacing: 0.02em;
+border-left: 3px solid transparent;
+transition: color 0.15s, background 0.15s, border-color 0.15s;
+}
+.snav-item:hover { color: var(–chrome-text); background: rgba(255,255,255,0.07); }
+.snav-item.active {
+color: var(–chrome-text);
+background: rgba(0,0,0,0.15);
+border-left-color: var(–highlight);
+}
+.snav-item svg { flex-shrink: 0; opacity: 0.65; }
+.snav-item.active svg { opacity: 1; }
+.snav-badge {
+margin-left: auto; background: var(–chrome-deep); color: var(–chrome-text);
+font-size: 0.65rem; padding: 1px 6px; border-radius: 10px;
+font-family: var(–font-body); letter-spacing: 0;
+}
+.snav-divider {
+height: 1px; background: rgba(255,255,255,0.08); margin: 0.4rem 1.25rem;
+}
+#sidebar-actions {
+padding: 0.75rem 1rem; border-top: 1px solid rgba(255,255,255,0.1);
+display: flex; gap: 4px; flex-shrink: 0;
+}
+.sidebar-action-btn {
+flex: 1; background: rgba(0,0,0,0.15); border: none; border-radius: var(–radius);
+color: var(–chrome-muted); cursor: pointer; padding: 9px 0;
+display: flex; align-items: center; justify-content: center;
+transition: background 0.15s, color 0.15s;
+}
+.sidebar-action-btn:hover { background: rgba(255,255,255,0.12); color: var(–chrome-text); }
 
-  /* ── MOBILE TOP BAR ── */
-  #mobile-topbar { display: none; }
-  #mobile-tabbar { display: none; }
+/* ── MAIN CONTENT ── */
+#main { flex: 1; padding: 1.75rem 2rem; max-width: 880px; min-width: 0; }
 
-  /* ── OVERFLOW DRAWER ── */
-  @keyframes slideUpDrawer { from { transform: translateY(100%); opacity:0; } to { transform: translateY(0); opacity:1; } }
-  .drawer-item {
-    display: flex; align-items: center; gap: 12px; padding: 0.75rem 1.5rem;
-    color: rgba(200,224,210,0.75); font-family: var(--font-body); font-size: 1rem;
-    cursor: pointer; border: none; background: none; width: 100%;
-  }
-  .drawer-item.active { color: var(--chrome-text); }
-  .drawer-item:hover { background: rgba(255,255,255,0.06); }
-  #drawer-backdrop { display: none; position: fixed; inset: 0; z-index: 199; }
-  #drawer-backdrop.open { display: block; }
+/* ── MOBILE TOP BAR ── */
+#mobile-topbar { display: none; }
+#mobile-tabbar { display: none; }
 
-  /* ── RESPONSIVE ── */
-  @media (max-width: 780px) {
-    #sidebar { display: none; }
-    #mobile-topbar {
-      display: flex; align-items: center; justify-content: space-between;
-      background: var(--chrome); padding: 0 0.75rem;
-      padding-top: env(safe-area-inset-top);
-      height: calc(50px + env(safe-area-inset-top));
-      position: sticky; top: 0; z-index: 100; flex-shrink: 0;
-    }
-    #mobile-topbar h1 {
-      font-family: var(--font-body);
-      font-size: 1.4rem; font-style: italic; font-weight: 400;
-      letter-spacing: 0.06em; color: var(--chrome-text);
-      position: absolute; left: 50%; transform: translateX(-50%);
-      white-space: nowrap; pointer-events: none;
-    }
-    #mobile-tabbar {
-      display: flex; position: fixed; bottom: 0; left: 0; right: 0;
-      background: var(--chrome-deep); border-top: 1px solid rgba(255,255,255,0.1);
-      z-index: 100;
-      height: calc(60px + env(safe-area-inset-bottom));
-      padding-bottom: env(safe-area-inset-bottom);
-    }
-    .tab-btn {
-      flex: 1; display: flex; flex-direction: column; align-items: center;
-      justify-content: center; gap: 3px; background: none; border: none;
-      cursor: pointer; color: var(--chrome-muted);
-      font-family: var(--font-body); font-size: 0.62rem; letter-spacing: 0.03em;
-      transition: color 0.15s; padding: 0;
-    }
-    .tab-btn.active { color: var(--highlight); }
-    .tab-btn:hover { color: var(--chrome-text); }
-    .tab-btn svg { flex-shrink: 0; }
-    #app { flex-direction: column; }
-    #main { padding: 1rem; padding-bottom: calc(76px + env(safe-area-inset-bottom)); max-width: 100%; }
-    .modal-backdrop { padding: 0; align-items: flex-end; }
-    .modal { border-radius: var(--radius-lg) var(--radius-lg) 0 0; max-width: 100%; }
-  }
-  #overflow-drawer {
-    display: none; position: fixed;
-    bottom: calc(60px + env(safe-area-inset-bottom));
-    right: 0; left: 0;
-    background: var(--chrome-deep); border-top: 1px solid rgba(255,255,255,0.1);
-    z-index: 200; padding: 0.5rem 0; animation: slideUpDrawer 0.18s ease;
-  }
-  #overflow-drawer.open { display: block; }
+/* ── OVERFLOW DRAWER ── */
+@keyframes slideUpDrawer { from { transform: translateY(100%); opacity:0; } to { transform: translateY(0); opacity:1; } }
+.drawer-item {
+display: flex; align-items: center; gap: 12px; padding: 0.75rem 1.5rem;
+color: rgba(200,224,210,0.75); font-family: var(–font-body); font-size: 1rem;
+cursor: pointer; border: none; background: none; width: 100%;
+}
+.drawer-item.active { color: var(–chrome-text); }
+.drawer-item:hover { background: rgba(255,255,255,0.06); }
+#drawer-backdrop { display: none; position: fixed; inset: 0; z-index: 199; }
+#drawer-backdrop.open { display: block; }
 
-  /* ── VIEWS ── */
-  .view { display: none; }
-  .view.active { display: block; animation: fadeIn 0.2s ease; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; } }
+/* ── RESPONSIVE ── */
+@media (max-width: 780px) {
+#sidebar { display: none; }
+#mobile-topbar {
+display: flex; align-items: center; justify-content: space-between;
+background: var(–chrome); padding: 0 0.75rem;
+padding-top: env(safe-area-inset-top);
+height: calc(50px + env(safe-area-inset-top));
+position: fixed; top: 0; left: 0; right: 0; z-index: 100; flex-shrink: 0;
+}
+#mobile-topbar h1 {
+font-family: var(–font-body);
+font-size: 1.4rem; font-style: italic; font-weight: 400;
+letter-spacing: 0.06em; color: var(–chrome-text);
+position: absolute; left: 50%; transform: translateX(-50%);
+white-space: nowrap; pointer-events: none;
+}
+#mobile-tabbar {
+display: flex; position: fixed; bottom: 0; left: 0; right: 0;
+background: var(–chrome-deep); border-top: 1px solid rgba(255,255,255,0.1);
+z-index: 100;
+height: calc(60px + env(safe-area-inset-bottom));
+padding-bottom: env(safe-area-inset-bottom);
+}
+.tab-btn {
+flex: 1; display: flex; flex-direction: column; align-items: center;
+justify-content: center; gap: 3px; background: none; border: none;
+cursor: pointer; color: var(–chrome-muted);
+font-family: var(–font-body); font-size: 0.62rem; letter-spacing: 0.03em;
+transition: color 0.15s; padding: 0;
+}
+.tab-btn.active { color: var(–highlight); }
+.tab-btn:hover { color: var(–chrome-text); }
+.tab-btn svg { flex-shrink: 0; }
+#app { flex-direction: column; }
+#main { padding: 1rem; padding-top: calc(50px + env(safe-area-inset-top) + 0.75rem); padding-bottom: calc(76px + env(safe-area-inset-bottom)); max-width: 100%; }
+.modal-backdrop { padding: 0; align-items: flex-end; }
+.modal { border-radius: var(–radius-lg) var(–radius-lg) 0 0; max-width: 100%; }
+}
+#overflow-drawer {
+display: none; position: fixed;
+bottom: calc(60px + env(safe-area-inset-bottom));
+right: 0; left: 0;
+background: var(–chrome-deep); border-top: 1px solid rgba(255,255,255,0.1);
+z-index: 200; padding: 0.5rem 0; animation: slideUpDrawer 0.18s ease;
+}
+#overflow-drawer.open { display: block; }
 
-  /* ── BUTTONS ── */
-  .btn {
-    font-family: var(--font-body); font-size: 0.9rem;
-    padding: 0.45rem 1rem; border-radius: var(--radius);
-    cursor: pointer; border: 1px solid transparent;
-    transition: all 0.15s; display: inline-flex; align-items: center; gap: 6px;
-  }
-  .btn-primary { background: var(--accent); color: var(--chrome-text); border-color: var(--accent); }
-  .btn-primary:hover { background: var(--accent-deep); border-color: var(--accent-deep); }
-  .btn-secondary { background: transparent; color: var(--ink-soft); border-color: var(--border); }
-  .btn-secondary:hover { background: var(--paper-warm); }
-  .btn-danger { background: transparent; color: var(--accent); border-color: var(--parchment); }
-  .btn-danger:hover { background: var(--accent-pale); border-color: var(--accent); }
-  .btn-ghost { background: none; border: none; color: var(--ink-muted); cursor: pointer; font-family: var(--font-body); font-size: 0.875rem; padding: 0.35rem 0.5rem; border-radius: var(--radius); }
-  .btn-ghost:hover { background: var(--paper-warm); color: var(--ink); }
-  .btn-icon { background: none; border: none; cursor: pointer; color: var(--ink-muted); padding: 6px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
-  .btn-icon:hover { background: var(--paper-warm); color: var(--ink); }
-  .btn-icon-cream { background: none; border: none; cursor: pointer; color: rgba(200,224,210,0.65); padding: 6px; border-radius: var(--radius); display: flex; align-items: center; transition: color 0.15s; }
-  .btn-icon-cream:hover { color: var(--chrome-text); }
+/* ── VIEWS ── */
+.view { display: none; }
+.view.active { display: block; animation: fadeIn 0.2s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; } }
 
-  /* ── FORMS ── */
-  .form-group { margin-bottom: 1rem; }
-  .form-group label { display: block; font-size: 0.75rem; letter-spacing: 0.07em; color: var(--ink-muted); margin-bottom: 4px; text-transform: uppercase; }
-  .form-group input, .form-group textarea, .form-group select {
-    width: 100%; background: var(--card); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 0.5rem 0.75rem;
-    font-family: var(--font-body); font-size: 1rem; color: var(--ink);
-    transition: border-color 0.15s;
-  }
-  .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
-    outline: none; border-color: var(--chrome-lift);
-    box-shadow: 0 0 0 2px rgba(30,58,47,0.12);
-  }
-  .form-group textarea { resize: vertical; min-height: 80px; line-height: 1.55; }
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-  .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
-  @media (max-width: 780px) {
-    .form-row, .form-row-3 { grid-template-columns: 1fr; }
-  }
+/* ── BUTTONS ── */
+.btn {
+font-family: var(–font-body); font-size: 0.9rem;
+padding: 0.45rem 1rem; border-radius: var(–radius);
+cursor: pointer; border: 1px solid transparent;
+transition: all 0.15s; display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-primary { background: var(–accent); color: var(–chrome-text); border-color: var(–accent); }
+.btn-primary:hover { background: var(–accent-deep); border-color: var(–accent-deep); }
+.btn-secondary { background: transparent; color: var(–ink-soft); border-color: var(–border); }
+.btn-secondary:hover { background: var(–paper-warm); }
+.btn-danger { background: transparent; color: var(–accent); border-color: var(–parchment); }
+.btn-danger:hover { background: var(–accent-pale); border-color: var(–accent); }
+.btn-ghost { background: none; border: none; color: var(–ink-muted); cursor: pointer; font-family: var(–font-body); font-size: 0.875rem; padding: 0.35rem 0.5rem; border-radius: var(–radius); }
+.btn-ghost:hover { background: var(–paper-warm); color: var(–ink); }
+.btn-icon { background: none; border: none; cursor: pointer; color: var(–ink-muted); padding: 6px; border-radius: var(–radius); display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+.btn-icon:hover { background: var(–paper-warm); color: var(–ink); }
+.btn-icon-cream { background: none; border: none; cursor: pointer; color: rgba(200,224,210,0.65); padding: 6px; border-radius: var(–radius); display: flex; align-items: center; transition: color 0.15s; }
+.btn-icon-cream:hover { color: var(–chrome-text); }
 
-  /* ── CARDS ── */
-  .card {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: var(--radius-lg); padding: 1.25rem;
-    box-shadow: 0 1px 4px var(--shadow);
-  }
-  .card + .card { margin-top: 0.75rem; }
+/* ── FORMS ── */
+.form-group { margin-bottom: 1rem; }
+.form-group label { display: block; font-size: 0.75rem; letter-spacing: 0.07em; color: var(–ink-muted); margin-bottom: 4px; text-transform: uppercase; }
+.form-group input, .form-group textarea, .form-group select {
+width: 100%; background: var(–card); border: 1px solid var(–border);
+border-radius: var(–radius); padding: 0.5rem 0.75rem;
+font-family: var(–font-body); font-size: 1rem; color: var(–ink);
+transition: border-color 0.15s;
+}
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+outline: none; border-color: var(–chrome-lift);
+box-shadow: 0 0 0 2px rgba(30,58,47,0.12);
+}
+.form-group input[type=“date”] {
+width: 100%; max-width: 100%; box-sizing: border-box;
+-webkit-appearance: none; appearance: none;
+}
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+@media (max-width: 780px) {
+.form-row, .form-row-3 { grid-template-columns: 1fr; }
+}
 
-  /* ── SECTION HEADERS ── */
-  .section-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 1.25rem; }
-  .section-title { font-family: var(--font-head); font-size: 1.4rem; color: var(--ink); }
-  .section-sub { font-size: 0.85rem; color: var(--ink-muted); font-style: italic; margin-top: 2px; }
+/* ── CARDS ── */
+.card {
+background: var(–card); border: 1px solid var(–border);
+border-radius: var(–radius-lg); padding: 1.25rem;
+box-shadow: 0 1px 4px var(–shadow);
+}
+.card + .card { margin-top: 0.75rem; }
 
-  /* ── BADGES — all tonal, no random hues ── */
-  .badge {
-    display: inline-block; font-size: 0.68rem; letter-spacing: 0.07em;
-    padding: 2px 8px; border-radius: 20px; font-family: var(--font-body);
-    text-transform: uppercase;
-  }
-  .badge-reading { background: var(--accent-pale); color: var(--accent);  border: 1px solid var(--accent-soft); }
-  .badge-read    { background: #e8f0e8; color: #1e3a2f; border: 1px solid #b0ccb8; }
-  .badge-toread  { background: var(--paper-warm); color: var(--ink-muted); border: 1px solid var(--border); }
-  .badge-unread  { background: var(--paper-warm); color: var(--ink-muted); border: 1px solid var(--border); }
-  .badge-notes   { background: #eef0f5; color: #2a3a5a; border: 1px solid #b8c8d8; }
-  .badge-owned   { background: #e8efe8; color: #1e3a2f; border: 1px solid #b0ccb8; }
-  .badge-wishlist{ background: var(--paper-warm); color: var(--ink-muted); border: 1px solid var(--border); }
+/* ── SECTION HEADERS ── */
+.section-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 1.25rem; }
+.section-title { font-family: var(–font-head); font-size: 1.4rem; color: var(–ink); }
+.section-sub { font-size: 0.85rem; color: var(–ink-muted); font-style: italic; margin-top: 2px; }
 
-  /* ── PROGRESS BAR ── */
-  .progress-wrap { margin: 0.5rem 0; }
-  .progress-label { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--ink-muted); margin-bottom: 4px; }
-  .progress-track { background: var(--paper-mid); border-radius: 20px; height: 8px; overflow: hidden; }
-  .progress-fill { height: 100%; border-radius: 20px; background: linear-gradient(90deg, var(--accent-deep) 0%, var(--accent) 100%); transition: width 0.4s ease; }
-  .progress-fill.complete { background: var(--chrome); }
+/* ── BADGES — all tonal, no random hues ── */
+.badge {
+display: inline-block; font-size: 0.68rem; letter-spacing: 0.07em;
+padding: 2px 8px; border-radius: 20px; font-family: var(–font-body);
+text-transform: uppercase;
+}
+.badge-reading { background: var(–accent-pale); color: var(–accent);  border: 1px solid var(–accent-soft); }
+.badge-read    { background: #e8f0e8; color: #1e3a2f; border: 1px solid #b0ccb8; }
+.badge-toread  { background: var(–paper-warm); color: var(–ink-muted); border: 1px solid var(–border); }
+.badge-unread  { background: var(–paper-warm); color: var(–ink-muted); border: 1px solid var(–border); }
+.badge-notes   { background: #eef0f5; color: #2a3a5a; border: 1px solid #b8c8d8; }
+.badge-owned   { background: #e8efe8; color: #1e3a2f; border: 1px solid #b0ccb8; }
+.badge-wishlist{ background: var(–paper-warm); color: var(–ink-muted); border: 1px solid var(–border); }
 
-  /* ── BOOK COVERS ── */
-  .cover {
-    width: 68px; height: 100px; border-radius: 2px 5px 5px 2px;
-    flex-shrink: 0; overflow: hidden; position: relative;
-    box-shadow: 3px 3px 10px var(--shadow-md), inset -2px 0 4px rgba(0,0,0,0.15);
-  }
-  .cover img { width: 100%; height: 100%; object-fit: cover; }
-  .cover-placeholder {
-    width: 100%; height: 100%;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    font-family: var(--font-head); letter-spacing: 0.04em;
-    color: rgba(255,255,255,0.9); text-align: center; padding: 7px; line-height: 1.25;
-  }
-  .cover-lg { width: 116px; height: 172px; }
-  .cover-xl { width: 150px; height: 222px; }
-  .cover-hero { width: 100px; height: 148px; }
-  @media (max-width: 780px) {
-    .cover-hero { width: 72px; height: 106px; }
-  }
+/* ── PROGRESS BAR ── */
+.progress-wrap { margin: 0.5rem 0; }
+.progress-label { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(–ink-muted); margin-bottom: 4px; }
+.progress-track { background: var(–paper-mid); border-radius: 20px; height: 8px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 20px; background: linear-gradient(90deg, var(–accent-deep) 0%, var(–accent) 100%); transition: width 0.4s ease; }
+.progress-fill.complete { background: var(–chrome); }
 
-  /* Cover palette — brick, warm earth, aged leather, dark oak */
-  .cp-0 { background: linear-gradient(175deg, #1e3a2f 0%, #0e2018 100%); }
-  .cp-1 { background: linear-gradient(175deg, #c45e35 0%, #8a3a18 100%); }
-  .cp-2 { background: linear-gradient(175deg, #2a5040 0%, #16301e 100%); }
-  .cp-3 { background: linear-gradient(175deg, #5a3820 0%, #381e0c 100%); }
-  .cp-4 { background: linear-gradient(175deg, #183828 0%, #0a2018 100%); }
-  .cp-5 { background: linear-gradient(175deg, #8a4820 0%, #582808 100%); }
-  .cp-6 { background: linear-gradient(175deg, #3a3020 0%, #201a0e 100%); }
-  .cp-7 { background: linear-gradient(175deg, #4a2a38 0%, #2a1220 100%); }
+/* ── BOOK COVERS ── */
+.cover {
+width: 68px; height: 100px; border-radius: 2px 5px 5px 2px;
+flex-shrink: 0; overflow: hidden; position: relative;
+box-shadow: 3px 3px 10px var(–shadow-md), inset -2px 0 4px rgba(0,0,0,0.15);
+}
+.cover img { width: 100%; height: 100%; object-fit: cover; }
+.cover-placeholder {
+width: 100%; height: 100%;
+display: flex; flex-direction: column; align-items: center; justify-content: center;
+font-family: var(–font-head); letter-spacing: 0.04em;
+color: rgba(255,255,255,0.9); text-align: center; padding: 7px; line-height: 1.25;
+}
+.cover-lg { width: 116px; height: 172px; }
+.cover-xl { width: 150px; height: 222px; }
+.cover-hero { width: 100px; height: 148px; }
+@media (max-width: 780px) {
+.cover-hero { width: 72px; height: 106px; }
+}
 
-  /* ── VIEW TOGGLE ── */
-  .view-toggle { display: flex; gap: 2px; background: var(--paper-warm); border: 1px solid var(--border); border-radius: var(--radius); padding: 2px; }
-  .view-toggle-btn {
-    background: none; border: none; cursor: pointer; padding: 5px 8px;
-    border-radius: 3px; color: var(--ink-muted); display: flex; align-items: center;
-    transition: background 0.12s, color 0.12s;
-  }
-  .view-toggle-btn.active { background: var(--card); color: var(--ink); box-shadow: 0 1px 3px var(--shadow); }
-  .view-toggle-btn:hover:not(.active) { color: var(--ink); }
+/* Cover palette — brick, warm earth, aged leather, dark oak */
+.cp-0 { background: linear-gradient(175deg, #1e3a2f 0%, #0e2018 100%); }
+.cp-1 { background: linear-gradient(175deg, #c45e35 0%, #8a3a18 100%); }
+.cp-2 { background: linear-gradient(175deg, #2a5040 0%, #16301e 100%); }
+.cp-3 { background: linear-gradient(175deg, #5a3820 0%, #381e0c 100%); }
+.cp-4 { background: linear-gradient(175deg, #183828 0%, #0a2018 100%); }
+.cp-5 { background: linear-gradient(175deg, #8a4820 0%, #582808 100%); }
+.cp-6 { background: linear-gradient(175deg, #3a3020 0%, #201a0e 100%); }
+.cp-7 { background: linear-gradient(175deg, #4a2a38 0%, #2a1220 100%); }
 
-  /* ── GRID VIEW ── */
-  .cover-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(106px, 1fr)); gap: 1.1rem; }
-  .cover-grid-item { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
-  .cover-grid-item .cover { width: 106px; height: 156px; transition: transform 0.14s, box-shadow 0.14s; }
-  .cover-grid-item:hover .cover { transform: translateY(-3px); box-shadow: 4px 6px 16px var(--shadow-md); }
-  .cover-grid-label {
-    font-family: var(--font-head); font-size: 0.72rem; color: var(--ink-soft);
-    text-align: center; line-height: 1.25; max-width: 106px;
-    overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-  }
-  .cover-grid-year-group { margin-bottom: 1.5rem; }
-  .cover-grid-year-group .shelf-year-label { margin-bottom: 0.75rem; }
+/* ── VIEW TOGGLE ── */
+.view-toggle { display: flex; gap: 2px; background: var(–paper-warm); border: 1px solid var(–border); border-radius: var(–radius); padding: 2px; }
+.view-toggle-btn {
+background: none; border: none; cursor: pointer; padding: 5px 8px;
+border-radius: 3px; color: var(–ink-muted); display: flex; align-items: center;
+transition: background 0.12s, color 0.12s;
+}
+.view-toggle-btn.active { background: var(–card); color: var(–ink); box-shadow: 0 1px 3px var(–shadow); }
+.view-toggle-btn:hover:not(.active) { color: var(–ink); }
 
-  /* ── BOOKSHELF SPINE VIEW ── */
-  .shelf-unit { margin-bottom: 2.5rem; }
-  .shelf-row {
-    display: flex; align-items: flex-end; gap: 3px; padding: 16px 20px 0 20px;
-    background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.04) 100%);
-    border-radius: var(--radius) var(--radius) 0 0; min-height: 204px; flex-wrap: wrap;
-    border: 1px solid var(--parchment); border-bottom: none;
-  }
-  .shelf-plank {
-    height: 22px;
-    background: linear-gradient(180deg, #8a7050 0%, #6a5030 40%, #4a3818 100%);
-    border-radius: 0 0 3px 3px;
-    box-shadow: 0 4px 12px rgba(26,20,12,0.3), inset 0 1px 0 rgba(255,255,255,0.12);
-    border: 1px solid #3a2e18; border-top: none; margin-bottom: 4px;
-  }
-  .shelf-plank-shadow {
-    height: 6px;
-    background: linear-gradient(180deg, rgba(26,20,12,0.2) 0%, transparent 100%);
-    margin-bottom: 1.5rem; border-radius: 0 0 4px 4px;
-  }
-  .book-spine {
-    display: flex; flex-direction: column; align-items: center; justify-content: space-between;
-    cursor: pointer; flex-shrink: 0; position: relative; border-radius: 2px 3px 3px 2px;
-    box-shadow: 2px 0 4px rgba(0,0,0,0.3), inset -3px 0 6px rgba(0,0,0,0.15), inset 2px 0 3px rgba(255,255,255,0.08);
-    transition: transform 0.15s ease, box-shadow 0.15s ease; overflow: hidden; padding: 8px 0;
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-    user-select: none; -webkit-user-select: none;
-  }
-  /* Hover lift only on devices with a real pointer (mouse) */
-  @media (hover: hover) and (pointer: fine) {
-    .book-spine:hover {
-      transform: translateY(-6px);
-      box-shadow: 3px 6px 14px rgba(0,0,0,0.35), inset -3px 0 6px rgba(0,0,0,0.15), inset 2px 0 3px rgba(255,255,255,0.08);
-    }
-    .book-spine:hover .spine-tooltip { opacity: 1; transform: translateX(-50%) translateY(0px); }
-  }
-  /* Subtle press feedback on touch */
-  .book-spine:active {
-    transform: translateY(-2px);
-    box-shadow: 2px 2px 8px rgba(0,0,0,0.35), inset -3px 0 6px rgba(0,0,0,0.15), inset 2px 0 3px rgba(255,255,255,0.08);
-  }
-  .spine-title {
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
-    transform: rotate(180deg);
-    font-family: var(--font-head);
-    color: rgba(255,255,255,0.92);
-    text-align: center;
-    overflow: hidden;
-    flex: 1;
-    padding: 0 3px;
-    letter-spacing: 0.04em;
-    word-break: break-word;
-  }
-  .spine-author {
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
-    transform: rotate(180deg);
-    font-family: var(--font-body);
-    color: rgba(255,255,255,0.6);
-    font-style: italic;
-    padding: 0 3px;
-    overflow: hidden;
-    flex-shrink: 0;
-  }
-  .spine-status-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; margin: 4px auto 2px; }
-  .spine-tooltip {
-    position: absolute; bottom: calc(100% + 10px); left: 50%;
-    transform: translateX(-50%) translateY(4px);
-    background: var(--chrome); color: var(--chrome-text);
-    padding: 6px 10px; border-radius: var(--radius); font-size: 0.78rem;
-    font-family: var(--font-body); opacity: 0; transition: opacity 0.15s, transform 0.15s;
-    pointer-events: none; z-index: 10; box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-    max-width: 200px; white-space: normal; text-align: center; line-height: 1.3;
-  }
-  .spine-tooltip::after {
-    content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
-    border: 5px solid transparent; border-top-color: var(--chrome-deep);
-  }
-  .shelf-year-label {
-    font-family: var(--font-head); font-size: 0.8rem; letter-spacing: 0.08em;
-    text-transform: uppercase; color: var(--ink-muted); margin-bottom: 0.6rem;
-    padding-bottom: 0.35rem; border-bottom: 1px solid var(--border-soft);
-  }
+/* ── GRID VIEW ── */
+.cover-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(106px, 1fr)); gap: 1.1rem; }
+.cover-grid-item { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.cover-grid-item .cover { width: 106px; height: 156px; transition: transform 0.14s, box-shadow 0.14s; }
+.cover-grid-item:hover .cover { transform: translateY(-3px); box-shadow: 4px 6px 16px var(–shadow-md); }
+.cover-grid-label {
+font-family: var(–font-head); font-size: 0.72rem; color: var(–ink-soft);
+text-align: center; line-height: 1.25; max-width: 106px;
+overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+}
+.cover-grid-year-group { margin-bottom: 1.5rem; }
+.cover-grid-year-group .shelf-year-label { margin-bottom: 0.75rem; }
 
-  /* ── BOOK LIST ITEM ── */
-  .book-item {
-    display: flex; gap: 1rem; align-items: flex-start;
-    padding: 1rem; background: var(--card); border: 1px solid var(--border);
-    border-radius: var(--radius-lg); cursor: pointer;
-    transition: box-shadow 0.15s, border-color 0.15s, background 0.15s;
-    box-shadow: 0 1px 3px var(--shadow);
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .book-item:hover { box-shadow: 0 3px 12px var(--shadow-md); border-color: var(--chrome-lift); background: var(--card-warm); }
-  .book-item + .book-item { margin-top: 0.75rem; }
-  .book-item-info { flex: 1; min-width: 0; }
-  .book-item-title { font-family: var(--font-head); font-size: 1rem; color: var(--ink); line-height: 1.3; }
-  .book-item-author { font-size: 0.875rem; color: var(--ink-muted); font-style: italic; margin-top: 2px; }
-  .book-item-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; align-items: center; }
+/* ── BOOKSHELF SPINE VIEW ── */
+.shelf-unit { margin-bottom: 2.5rem; }
+.shelf-row {
+display: flex; align-items: flex-end; gap: 3px; padding: 16px 20px 0 20px;
+background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.04) 100%);
+border-radius: var(–radius) var(–radius) 0 0; min-height: 204px; flex-wrap: wrap;
+border: 1px solid var(–parchment); border-bottom: none;
+}
+.shelf-plank {
+height: 22px;
+background: linear-gradient(180deg, #8a7050 0%, #6a5030 40%, #4a3818 100%);
+border-radius: 0 0 3px 3px;
+box-shadow: 0 4px 12px rgba(26,20,12,0.3), inset 0 1px 0 rgba(255,255,255,0.12);
+border: 1px solid #3a2e18; border-top: none; margin-bottom: 4px;
+}
+.shelf-plank-shadow {
+height: 6px;
+background: linear-gradient(180deg, rgba(26,20,12,0.2) 0%, transparent 100%);
+margin-bottom: 1.5rem; border-radius: 0 0 4px 4px;
+}
+.book-spine {
+display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+cursor: pointer; flex-shrink: 0; position: relative; border-radius: 2px 3px 3px 2px;
+box-shadow: 2px 0 4px rgba(0,0,0,0.3), inset -3px 0 6px rgba(0,0,0,0.15), inset 2px 0 3px rgba(255,255,255,0.08);
+transition: transform 0.15s ease, box-shadow 0.15s ease; overflow: hidden; padding: 8px 0;
+touch-action: manipulation;
+-webkit-tap-highlight-color: transparent;
+user-select: none; -webkit-user-select: none;
+}
+/* Hover lift only on devices with a real pointer (mouse) */
+@media (hover: hover) and (pointer: fine) {
+.book-spine:hover {
+transform: translateY(-6px);
+box-shadow: 3px 6px 14px rgba(0,0,0,0.35), inset -3px 0 6px rgba(0,0,0,0.15), inset 2px 0 3px rgba(255,255,255,0.08);
+}
+.book-spine:hover .spine-tooltip { opacity: 1; transform: translateX(-50%) translateY(0px); }
+}
+/* Subtle press feedback on touch */
+.book-spine:active {
+transform: translateY(-2px);
+box-shadow: 2px 2px 8px rgba(0,0,0,0.35), inset -3px 0 6px rgba(0,0,0,0.15), inset 2px 0 3px rgba(255,255,255,0.08);
+}
+.spine-title {
+writing-mode: vertical-rl;
+text-orientation: mixed;
+transform: rotate(180deg);
+font-family: var(–font-head);
+color: rgba(255,255,255,0.92);
+text-align: center;
+overflow: hidden;
+flex: 1;
+padding: 0 3px;
+letter-spacing: 0.04em;
+word-break: break-word;
+}
+.spine-author {
+writing-mode: vertical-rl;
+text-orientation: mixed;
+transform: rotate(180deg);
+font-family: var(–font-body);
+color: rgba(255,255,255,0.6);
+font-style: italic;
+padding: 0 3px;
+overflow: hidden;
+flex-shrink: 0;
+}
+.spine-status-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; margin: 4px auto 2px; }
+.spine-tooltip {
+position: absolute; bottom: calc(100% + 10px); left: 50%;
+transform: translateX(-50%) translateY(4px);
+background: var(–chrome); color: var(–chrome-text);
+padding: 6px 10px; border-radius: var(–radius); font-size: 0.78rem;
+font-family: var(–font-body); opacity: 0; transition: opacity 0.15s, transform 0.15s;
+pointer-events: none; z-index: 10; box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+max-width: 200px; white-space: normal; text-align: center; line-height: 1.3;
+}
+.spine-tooltip::after {
+content: ‘’; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+border: 5px solid transparent; border-top-color: var(–chrome-deep);
+}
+.shelf-year-label {
+font-family: var(–font-head); font-size: 0.8rem; letter-spacing: 0.08em;
+text-transform: uppercase; color: var(–ink-muted); margin-bottom: 0.6rem;
+padding-bottom: 0.35rem; border-bottom: 1px solid var(–border-soft);
+}
 
-  /* ── DIVIDER ── */
-  .divider { border: none; border-top: 1px solid var(--border-soft); margin: 1.25rem 0; }
+/* ── BOOK LIST ITEM ── */
+.book-item {
+display: flex; gap: 1rem; align-items: flex-start;
+padding: 1rem; background: var(–card); border: 1px solid var(–border);
+border-radius: var(–radius-lg); cursor: pointer;
+transition: box-shadow 0.15s, border-color 0.15s, background 0.15s;
+box-shadow: 0 1px 3px var(–shadow);
+touch-action: manipulation;
+-webkit-tap-highlight-color: transparent;
+}
+.book-item:hover { box-shadow: 0 3px 12px var(–shadow-md); border-color: var(–chrome-lift); background: var(–card-warm); }
+.book-item + .book-item { margin-top: 0.75rem; }
+.book-item-info { flex: 1; min-width: 0; }
+.book-item-title { font-family: var(–font-head); font-size: 1rem; color: var(–ink); line-height: 1.3; }
+.book-item-author { font-size: 0.875rem; color: var(–ink-muted); font-style: italic; margin-top: 2px; }
+.book-item-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; align-items: center; }
 
-  /* ── MODAL ── */
-  .modal-backdrop {
-    position: fixed; inset: 0; background: rgba(10,20,14,0.65);
-    z-index: 200; display: flex; align-items: flex-start; justify-content: center;
-    padding: 2rem 1rem; overflow-y: auto;
-  }
-  .modal {
-    background: var(--paper); border-radius: var(--radius-lg);
-    border: 1px solid var(--parchment); width: 100%; max-width: 560px;
-    box-shadow: 0 8px 40px rgba(10,20,14,0.25); animation: slideUp 0.2s ease;
-  }
-  @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-  .modal-header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border);
-  }
-  .modal-title { font-family: var(--font-head); font-size: 1.2rem; color: var(--ink); }
-  .modal-body { padding: 1.5rem; }
-  .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 8px; }
+/* ── DIVIDER ── */
+.divider { border: none; border-top: 1px solid var(–border-soft); margin: 1.25rem 0; }
 
-  /* ── TABS ── */
-  .tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 1.25rem; }
-  .tab {
-    background: none; border: none; border-bottom: 2px solid transparent;
-    padding: 0.5rem 1rem; font-family: var(--font-body); font-size: 0.9rem;
-    color: var(--ink-muted); cursor: pointer; margin-bottom: -1px;
-    transition: color 0.15s, border-color 0.15s;
-  }
-  .tab.active { color: var(--ink); border-bottom-color: var(--accent); }
-  .tab:hover { color: var(--ink); }
+/* ── MODAL ── */
+.modal-backdrop {
+position: fixed; inset: 0; background: rgba(10,20,14,0.65);
+z-index: 200; display: flex; align-items: flex-start; justify-content: center;
+padding: 2rem 1rem; overflow-y: auto;
+}
+.modal {
+background: var(–paper); border-radius: var(–radius-lg);
+border: 1px solid var(–parchment); width: 100%; max-width: 560px;
+box-shadow: 0 8px 40px rgba(10,20,14,0.25); animation: slideUp 0.2s ease;
+}
+@keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+.modal-header {
+display: flex; align-items: center; justify-content: space-between;
+padding: 1.25rem 1.5rem; border-bottom: 1px solid var(–border);
+}
+.modal-title { font-family: var(–font-head); font-size: 1.2rem; color: var(–ink); }
+.modal-body { padding: 1.5rem; }
+.modal-footer { padding: 1rem 1.5rem; border-top: 1px solid var(–border); display: flex; justify-content: flex-end; gap: 8px; }
 
-  /* ── QUOTE ITEM ── */
-  .quote-item {
-    border-left: 3px solid var(--accent); padding: 0.75rem 1rem;
-    background: var(--card-warm); border-radius: 0 var(--radius) var(--radius) 0;
-    border-top: 1px solid var(--border-soft); border-right: 1px solid var(--border-soft); border-bottom: 1px solid var(--border-soft);
-    margin-bottom: 0.75rem; position: relative;
-  }
-  .quote-text { font-size: 1rem; line-height: 1.65; color: var(--ink-soft); }
-  .quote-meta { font-size: 0.8rem; color: var(--ink-muted); margin-top: 0.4rem; }
-  .quote-actions { position: absolute; top: 6px; right: 6px; display: flex; gap: 4px; }
+/* ── TABS ── */
+.tabs { display: flex; border-bottom: 1px solid var(–border); margin-bottom: 1.25rem; }
+.tab {
+background: none; border: none; border-bottom: 2px solid transparent;
+padding: 0.5rem 1rem; font-family: var(–font-body); font-size: 0.9rem;
+color: var(–ink-muted); cursor: pointer; margin-bottom: -1px;
+transition: color 0.15s, border-color 0.15s;
+}
+.tab.active { color: var(–ink); border-bottom-color: var(–accent); }
+.tab:hover { color: var(–ink); }
 
-  /* ── NOTE ITEM ── */
-  .note-item {
-    background: var(--card-warm); border: 1px solid var(--border-soft);
-    border-left: 3px solid var(--parchment);
-    border-radius: 0 var(--radius) var(--radius) 0;
-    padding: 0.75rem 1rem; margin-bottom: 0.75rem; position: relative;
-  }
-  .note-text { font-size: 0.95rem; line-height: 1.65; color: var(--ink-soft); }
-  .note-meta { font-size: 0.8rem; color: var(--ink-muted); margin-top: 0.4rem; }
+/* ── QUOTE ITEM ── */
+.quote-item {
+border-left: 3px solid var(–accent); padding: 0.75rem 1rem;
+background: var(–card-warm); border-radius: 0 var(–radius) var(–radius) 0;
+border-top: 1px solid var(–border-soft); border-right: 1px solid var(–border-soft); border-bottom: 1px solid var(–border-soft);
+margin-bottom: 0.75rem; position: relative;
+}
+.quote-text { font-size: 1rem; line-height: 1.65; color: var(–ink-soft); }
+.quote-meta { font-size: 0.8rem; color: var(–ink-muted); margin-top: 0.4rem; }
+.quote-actions { position: absolute; top: 6px; right: 6px; display: flex; gap: 4px; }
 
-  /* ── SEARCH ── */
-  .search-wrap { position: relative; margin-bottom: 1.25rem; }
-  .search-wrap input { padding-left: 2.25rem; }
-  .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--ink-faint); pointer-events: none; }
+/* ── NOTE ITEM ── */
+.note-item {
+background: var(–card-warm); border: 1px solid var(–border-soft);
+border-left: 3px solid var(–parchment);
+border-radius: 0 var(–radius) var(–radius) 0;
+padding: 0.75rem 1rem; margin-bottom: 0.75rem; position: relative;
+}
+.note-text { font-size: 0.95rem; line-height: 1.65; color: var(–ink-soft); }
+.note-meta { font-size: 0.8rem; color: var(–ink-muted); margin-top: 0.4rem; }
 
-  /* ── CURRENTLY READING HERO ── */
-  .reading-hero {
-    background: var(--chrome); color: var(--chrome-text);
-    border-radius: var(--radius-lg); padding: 1.25rem;
-    margin-bottom: 1.5rem; display: flex; flex-direction: row; gap: 1rem; align-items: flex-start;
-    box-shadow: 0 3px 16px var(--shadow-md);
-    cursor: pointer;
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .reading-hero-info { flex: 1; min-width: 0; }
-  .reading-hero-label { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(200,224,210,0.55); margin-bottom: 6px; }
-  .reading-hero-title { font-family: var(--font-head); font-size: 1.15rem; color: var(--chrome-text); line-height: 1.3; }
-  .reading-hero-author { font-size: 0.875rem; color: rgba(200,224,210,0.7); font-style: italic; margin-top: 3px; }
+/* ── SEARCH ── */
+.search-wrap { position: relative; margin-bottom: 1.25rem; }
+.search-wrap input { padding-left: 2.25rem; }
+.search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(–ink-faint); pointer-events: none; }
 
-  /* ── AI PANEL ── */
-  .ai-panel { background: #eef4f0; border: 1px solid #b8d4c0; border-left: 3px solid var(--chrome-lift); border-radius: 0 var(--radius-lg) var(--radius-lg) 0; padding: 1rem; margin-top: 1rem; }
-  .ai-label { font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--chrome); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
-  .ai-response { font-size: 0.95rem; line-height: 1.7; color: var(--ink-soft); }
-  .ai-loading { color: var(--ink-muted); font-style: italic; font-size: 0.9rem; }
+/* ── CURRENTLY READING HERO ── */
+.reading-hero {
+background: var(–chrome); color: var(–chrome-text);
+border-radius: var(–radius-lg); padding: 1.25rem;
+margin-bottom: 1.5rem; display: flex; flex-direction: row; gap: 1rem; align-items: flex-start;
+box-shadow: 0 3px 16px var(–shadow-md);
+cursor: pointer;
+touch-action: manipulation;
+-webkit-tap-highlight-color: transparent;
+}
+.reading-hero-info { flex: 1; min-width: 0; }
+.reading-hero-label { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(200,224,210,0.55); margin-bottom: 6px; }
+.reading-hero-title { font-family: var(–font-head); font-size: 1.15rem; color: var(–chrome-text); line-height: 1.3; }
+.reading-hero-author { font-size: 0.875rem; color: rgba(200,224,210,0.7); font-style: italic; margin-top: 3px; }
 
-  /* Markdown-rendered content shared styles */
-  .md-content { font-size: inherit; line-height: inherit; color: inherit; }
-  .md-content h1, .md-content h2, .md-content h3 {
-    font-family: var(--font-head); font-weight: 400; color: var(--ink);
-    margin: 0.9em 0 0.35em; line-height: 1.3;
-  }
-  .md-content h1 { font-size: 1.15em; }
-  .md-content h2 { font-size: 1.05em; }
-  .md-content h3 { font-size: 0.95em; letter-spacing: 0.02em; }
-  .md-content p { margin: 0 0 0.65em; }
-  .md-content p:last-child { margin-bottom: 0; }
-  .md-content strong { font-weight: 600; color: var(--ink); }
-  .md-content em { font-style: italic; }
-  .md-content ul, .md-content ol { margin: 0.4em 0 0.65em 1.4em; padding: 0; }
-  .md-content li { margin-bottom: 0.2em; }
-  .md-content code {
-    font-family: 'Courier New', monospace; font-size: 0.88em;
-    background: var(--paper-warm); padding: 1px 5px;
-    border-radius: 3px; color: var(--ink-soft);
-  }
-  .md-content hr { border: none; border-top: 1px solid var(--border-soft); margin: 0.75em 0; }
-  .md-content blockquote {
-    border-left: 3px solid var(--parchment); margin: 0.5em 0;
-    padding: 0.1em 0.75em; color: var(--ink-muted); font-style: italic;
-  }
+/* ── AI PANEL ── */
+.ai-panel { background: #eef4f0; border: 1px solid #b8d4c0; border-left: 3px solid var(–chrome-lift); border-radius: 0 var(–radius-lg) var(–radius-lg) 0; padding: 1rem; margin-top: 1rem; }
+.ai-label { font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(–chrome); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.ai-response { font-size: 0.95rem; line-height: 1.7; color: var(–ink-soft); }
+.ai-loading { color: var(–ink-muted); font-style: italic; font-size: 0.9rem; }
 
-  /* ── STATS ── */
-  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.75rem; margin-bottom: 1.5rem; }
-  .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1rem; text-align: center; }
-  .stat-number { font-family: var(--font-head); font-size: 1.8rem; color: var(--chrome); }
-  .stat-label { font-size: 0.72rem; color: var(--ink-muted); letter-spacing: 0.06em; text-transform: uppercase; margin-top: 2px; }
+/* Markdown-rendered content shared styles */
+.md-content { font-size: inherit; line-height: inherit; color: inherit; }
+.md-content h1, .md-content h2, .md-content h3 {
+font-family: var(–font-head); font-weight: 400; color: var(–ink);
+margin: 0.9em 0 0.35em; line-height: 1.3;
+}
+.md-content h1 { font-size: 1.15em; }
+.md-content h2 { font-size: 1.05em; }
+.md-content h3 { font-size: 0.95em; letter-spacing: 0.02em; }
+.md-content p { margin: 0 0 0.65em; }
+.md-content p:last-child { margin-bottom: 0; }
+.md-content strong { font-weight: 600; color: var(–ink); }
+.md-content em { font-style: italic; }
+.md-content ul, .md-content ol { margin: 0.4em 0 0.65em 1.4em; padding: 0; }
+.md-content li { margin-bottom: 0.2em; }
+.md-content code {
+font-family: ‘Courier New’, monospace; font-size: 0.88em;
+background: var(–paper-warm); padding: 1px 5px;
+border-radius: 3px; color: var(–ink-soft);
+}
+.md-content hr { border: none; border-top: 1px solid var(–border-soft); margin: 0.75em 0; }
+.md-content blockquote {
+border-left: 3px solid var(–parchment); margin: 0.5em 0;
+padding: 0.1em 0.75em; color: var(–ink-muted); font-style: italic;
+}
 
-  /* ── READING LOG ── */
-  .log-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0; border-bottom: 1px solid var(--border-soft); font-size: 0.875rem; }
-  .log-date { color: var(--ink-muted); min-width: 90px; font-size: 0.8rem; }
-  .log-pages { font-family: var(--font-head); color: var(--accent); }
+/* ── STATS ── */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.75rem; margin-bottom: 1.5rem; }
+.stat-card { background: var(–card); border: 1px solid var(–border); border-radius: var(–radius-lg); padding: 1rem; text-align: center; }
+.stat-number { font-family: var(–font-head); font-size: 1.8rem; color: var(–chrome); }
+.stat-label { font-size: 0.72rem; color: var(–ink-muted); letter-spacing: 0.06em; text-transform: uppercase; margin-top: 2px; }
 
-  /* ── FILTER BAR ── */
-  .filter-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.25rem; }
-  .filter-btn { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 4px 14px; font-size: 0.85rem; font-family: var(--font-body); cursor: pointer; color: var(--ink-muted); transition: all 0.15s; }
-  .filter-btn.active { background: var(--accent); color: var(--chrome-text); border-color: var(--accent); }
-  .filter-btn:hover:not(.active) { border-color: var(--accent-soft); color: var(--ink); background: var(--chrome-text); }
+/* ── READING LOG ── */
+.log-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0; border-bottom: 1px solid var(–border-soft); font-size: 0.875rem; }
+.log-date { color: var(–ink-muted); min-width: 90px; font-size: 0.8rem; }
+.log-pages { font-family: var(–font-head); color: var(–accent); }
 
-  /* ── COVER UPLOAD ── */
-  .cover-upload-area {
-    border: 2px dashed var(--parchment); border-radius: var(--radius-lg);
-    padding: 1.5rem; text-align: center; cursor: pointer;
-    transition: border-color 0.15s, background 0.15s; color: var(--ink-muted); font-size: 0.875rem;
-  }
-  .cover-upload-area:hover { border-color: var(--chrome-lift); background: #eef4f0; }
+/* ── FILTER BAR ── */
+.filter-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.25rem; }
+.filter-btn { background: var(–card); border: 1px solid var(–border); border-radius: 20px; padding: 4px 14px; font-size: 0.85rem; font-family: var(–font-body); cursor: pointer; color: var(–ink-muted); transition: all 0.15s; }
+.filter-btn.active { background: var(–accent); color: var(–chrome-text); border-color: var(–accent); }
+.filter-btn:hover:not(.active) { border-color: var(–accent-soft); color: var(–ink); background: var(–chrome-text); }
 
-  /* ── EMPTY STATE ── */
-  .empty-state { text-align: center; padding: 3rem 1.5rem; color: var(--ink-muted); }
-  .empty-state .empty-icon { font-size: 2.5rem; margin-bottom: 0.75rem; opacity: 0.35; }
-  .empty-state p { font-style: italic; }
+/* ── COVER UPLOAD ── */
+.cover-upload-area {
+border: 2px dashed var(–parchment); border-radius: var(–radius-lg);
+padding: 1.5rem; text-align: center; cursor: pointer;
+transition: border-color 0.15s, background 0.15s; color: var(–ink-muted); font-size: 0.875rem;
+}
+.cover-upload-area:hover { border-color: var(–chrome-lift); background: #eef4f0; }
 
-  /* ── MISC ── */
-  .text-muted { color: var(--ink-muted); }
-  .text-sm { font-size: 0.875rem; }
-  .mt-1 { margin-top: 0.5rem; }
-  .mt-2 { margin-top: 1rem; }
-  .mt-3 { margin-top: 1.5rem; }
-  .flex { display: flex; }
-  .items-center { align-items: center; }
-  .gap-2 { gap: 0.5rem; }
-  .gap-3 { gap: 0.75rem; }
-  .justify-between { justify-content: space-between; }
-  .hidden { display: none !important; }
-  .italic { font-style: italic; }
-  /* ── BOOK CLUB ── */
-  .bc-member-grid { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 0.75rem 0; }
-  .bc-member-chip {
-    display: flex; align-items: center; gap: 8px;
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 24px; padding: 4px 12px 4px 4px;
-    font-size: 0.875rem; color: var(--ink-soft);
-  }
-  .bc-avatar {
-    width: 32px; height: 32px; border-radius: 50%; overflow: hidden;
-    background: var(--chrome); flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-    font-family: var(--font-head); font-size: 0.75rem; color: var(--chrome-text);
-  }
-  .bc-avatar img { width: 100%; height: 100%; object-fit: cover; }
-  .bc-avatar-lg { width: 48px; height: 48px; font-size: 1rem; }
-  .bc-star-row { display: flex; gap: 3px; }
-  .bc-star { font-size: 1.1rem; cursor: pointer; color: var(--paper-mid); transition: color 0.1s; }
-  .bc-star.filled { color: var(--highlight); }
-  .bc-countdown {
-    font-family: var(--font-head); font-size: 1.1rem; color: var(--chrome-text);
-    background: var(--chrome); border-radius: var(--radius-lg);
-    padding: 0.75rem 1.25rem; display: inline-block; margin-top: 0.5rem;
-  }
-  .bc-vote-book {
-    display: flex; align-items: center; gap: 10px;
-    padding: 0.75rem; background: var(--card); border: 1px solid var(--border);
-    border-radius: var(--radius-lg); margin-bottom: 0.5rem;
-    cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none;
-  }
-  .bc-vote-book.dragging { opacity: 0.5; cursor: grabbing; }
-  .bc-vote-book .rank-badge {
-    width: 28px; height: 28px; border-radius: 50%; background: var(--chrome);
-    color: var(--chrome-text); font-family: var(--font-head); font-size: 0.85rem;
-    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-  }
-  .bc-result-bar {
-    height: 8px; border-radius: 4px;
-    background: linear-gradient(90deg, var(--accent-deep), var(--accent));
-    transition: width 0.4s ease;
-  }
+/* ── EMPTY STATE ── */
+.empty-state { text-align: center; padding: 3rem 1.5rem; color: var(–ink-muted); }
+.empty-state .empty-icon { font-size: 2.5rem; margin-bottom: 0.75rem; opacity: 0.35; }
+.empty-state p { font-style: italic; }
 
-  hr.section { border: none; border-top: 1px solid var(--border); margin: 1rem 0; }
+/* ── MISC ── */
+.text-muted { color: var(–ink-muted); }
+.text-sm { font-size: 0.875rem; }
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+.flex { display: flex; }
+.items-center { align-items: center; }
+.gap-2 { gap: 0.5rem; }
+.gap-3 { gap: 0.75rem; }
+.justify-between { justify-content: space-between; }
+.hidden { display: none !important; }
+.italic { font-style: italic; }
+/* ── BOOK CLUB ── */
+.bc-member-grid { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 0.75rem 0; }
+.bc-member-chip {
+display: flex; align-items: center; gap: 8px;
+background: var(–card); border: 1px solid var(–border);
+border-radius: 24px; padding: 4px 12px 4px 4px;
+font-size: 0.875rem; color: var(–ink-soft);
+}
+.bc-avatar {
+width: 32px; height: 32px; border-radius: 50%; overflow: hidden;
+background: var(–chrome); flex-shrink: 0;
+display: flex; align-items: center; justify-content: center;
+font-family: var(–font-head); font-size: 0.75rem; color: var(–chrome-text);
+}
+.bc-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.bc-avatar-lg { width: 48px; height: 48px; font-size: 1rem; }
+.bc-star-row { display: flex; gap: 3px; }
+.bc-star { font-size: 1.1rem; cursor: pointer; color: var(–paper-mid); transition: color 0.1s; }
+.bc-star.filled { color: var(–highlight); }
+.bc-countdown {
+font-family: var(–font-head); font-size: 1.1rem; color: var(–chrome-text);
+background: var(–chrome); border-radius: var(–radius-lg);
+padding: 0.75rem 1.25rem; display: inline-block; margin-top: 0.5rem;
+}
+.bc-vote-book {
+display: flex; align-items: center; gap: 10px;
+padding: 0.75rem; background: var(–card); border: 1px solid var(–border);
+border-radius: var(–radius-lg); margin-bottom: 0.5rem;
+cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none;
+}
+.bc-vote-book.dragging { opacity: 0.5; cursor: grabbing; }
+.bc-vote-book .rank-badge {
+width: 28px; height: 28px; border-radius: 50%; background: var(–chrome);
+color: var(–chrome-text); font-family: var(–font-head); font-size: 0.85rem;
+display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.bc-result-bar {
+height: 8px; border-radius: 4px;
+background: linear-gradient(90deg, var(–accent-deep), var(–accent));
+transition: width 0.4s ease;
+}
+
+hr.section { border: none; border-top: 1px solid var(–border); margin: 1rem 0; }
 </style>
+
 </head>
 <body>
 <div id="app">
 
   <!-- SIDEBAR (desktop) -->
+
   <aside id="sidebar">
     <div id="sidebar-wordmark">
       <h1>Commonplace</h1>
@@ -682,9 +691,11 @@
   </aside>
 
   <!-- CONTENT COLUMN (right of sidebar on desktop, full-width on mobile) -->
+
   <div id="content-col" style="flex:1;display:flex;flex-direction:column;min-width:0;min-height:100vh">
 
   <!-- MOBILE TOP BAR -->
+
   <div id="mobile-topbar">
     <button class="btn-icon-cream" onclick="openSearch()" style="flex-shrink:0">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -696,6 +707,7 @@
   </div>
 
   <!-- MOBILE BOTTOM TAB BAR -->
+
   <div id="mobile-tabbar">
     <button class="tab-btn active" data-view="home" onclick="showView('home')">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -720,6 +732,7 @@
   </div>
 
   <!-- OVERFLOW DRAWER (mobile, for Notes / To-Read / Stats) -->
+
   <div id="drawer-backdrop" onclick="closeOverflowDrawer()"></div>
   <div id="overflow-drawer">
     <button class="drawer-item" data-view="bookclub" onclick="showView('bookclub');closeOverflowDrawer()">
@@ -738,109 +751,109 @@
   </div>
 
   <!-- MAIN -->
+
   <main id="main">
 
-    <!-- HOME VIEW -->
-    <div id="view-home" class="view active">
-      <div id="home-content"></div>
-    </div>
+```
+<!-- HOME VIEW -->
+<div id="view-home" class="view active">
+  <div id="home-content"></div>
+</div>
 
-    <!-- SHELF VIEW -->
-    <div id="view-shelf" class="view">
-      <div class="section-header">
-        <div>
-          <div class="section-title">Bookshelf</div>
-          <div class="section-sub" id="shelf-count"></div>
-        </div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <div class="view-toggle" id="shelf-view-toggle">
-            <button class="view-toggle-btn active" data-sv="list" onclick="setShelfView('list')" title="List view">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="3" cy="6" r="1" fill="currentColor" stroke="none"/><circle cx="3" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="3" cy="18" r="1" fill="currentColor" stroke="none"/></svg>
-            </button>
-            <button class="view-toggle-btn" data-sv="grid" onclick="setShelfView('grid')" title="Grid view">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-            </button>
-            <button class="view-toggle-btn" data-sv="spine" onclick="setShelfView('spine')" title="Bookshelf view">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="4" height="18" rx="1"/><rect x="8" y="5" width="3" height="16" rx="1"/><rect x="13" y="2" width="5" height="19" rx="1"/><rect x="20" y="4" width="2" height="17" rx="1"/></svg>
-            </button>
-          </div>
-          <button class="btn btn-primary" onclick="openAddBook()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            Add Book
-          </button>
-        </div>
-      </div>
-      <div class="search-wrap">
-        <span class="search-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></span>
-        <input type="text" class="form-group" style="margin:0;padding:0.45rem 0.75rem 0.45rem 2.25rem;width:100%;background:white;border:1px solid var(--border);border-radius:var(--radius);font-family:var(--font-body);font-size:1rem;color:var(--ink)" placeholder="Search your shelf…" id="shelf-search" oninput="renderShelf()">
-      </div>
-      <div class="filter-bar" style="justify-content:space-between;align-items:center">
-        <div style="display:flex;gap:6px;flex-wrap:wrap">
-          <button class="filter-btn active" onclick="setFilter('all')" data-filter="all">All</button>
-          <button class="filter-btn" onclick="setFilter('reading')" data-filter="reading">Reading</button>
-          <button class="filter-btn" onclick="setFilter('read')" data-filter="read">Read</button>
-          <button class="filter-btn" onclick="setFilter('unread')" data-filter="unread">Unread</button>
-          <button class="filter-btn" onclick="setFilter('toread')" data-filter="toread">To-Read</button>
-          <button class="filter-btn" onclick="setFilter('owned')" data-filter="owned">Owned</button>
-          <button class="filter-btn" onclick="setFilter('wishlist')" data-filter="wishlist">Wishlist</button>
-          <button class="filter-btn" onclick="setFilter('notes')" data-filter="notes">Has Notes</button>
-        </div>
-        <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
-          <label style="font-size:0.78rem;color:var(--ink-muted);letter-spacing:0.04em;white-space:nowrap">Sort by</label>
-          <select id="shelf-sort-select" onchange="setSort(this.value)"
-            style="font-family:var(--font-body);font-size:0.875rem;color:var(--ink);background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:4px 8px;cursor:pointer">
-            <option value="status">Status</option>
-            <option value="title">Title (A–Z)</option>
-            <option value="author">Author surname</option>
-            <option value="pubOrig">Year published</option>
-            <option value="dateRead" selected>Year read</option>
-            <option value="added">Date added</option>
-          </select>
-        </div>
-      </div>
-      <div id="shelf-list"></div>
+<!-- SHELF VIEW -->
+<div id="view-shelf" class="view">
+  <div class="section-header">
+    <div>
+      <div class="section-title">Bookshelf</div>
+      <div class="section-sub" id="shelf-count"></div>
     </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div class="view-toggle" id="shelf-view-toggle">
+        <button class="view-toggle-btn active" data-sv="list" onclick="setShelfView('list')" title="List view">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="3" cy="6" r="1" fill="currentColor" stroke="none"/><circle cx="3" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="3" cy="18" r="1" fill="currentColor" stroke="none"/></svg>
+        </button>
+        <button class="view-toggle-btn" data-sv="grid" onclick="setShelfView('grid')" title="Grid view">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        </button>
+      </div>
+      <button class="btn btn-primary" onclick="openAddBook()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Book
+      </button>
+    </div>
+  </div>
+  <div class="search-wrap">
+    <span class="search-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></span>
+    <input type="text" class="form-group" style="margin:0;padding:0.45rem 0.75rem 0.45rem 2.25rem;width:100%;background:white;border:1px solid var(--border);border-radius:var(--radius);font-family:var(--font-body);font-size:1rem;color:var(--ink)" placeholder="Search your shelf…" id="shelf-search" oninput="renderShelf()">
+  </div>
+  <div class="filter-bar" style="justify-content:space-between;align-items:center">
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <button class="filter-btn active" onclick="setFilter('all')" data-filter="all">All</button>
+      <button class="filter-btn" onclick="setFilter('reading')" data-filter="reading">Reading</button>
+      <button class="filter-btn" onclick="setFilter('read')" data-filter="read">Read</button>
+      <button class="filter-btn" onclick="setFilter('toread')" data-filter="toread">To-Read</button>
+      <button class="filter-btn" onclick="setFilter('owned')" data-filter="owned">Owned</button>
+      <button class="filter-btn" onclick="setFilter('wishlist')" data-filter="wishlist">Wishlist</button>
+      <button class="filter-btn" onclick="setFilter('notes')" data-filter="notes">Has Notes</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+      <label style="font-size:0.78rem;color:var(--ink-muted);letter-spacing:0.04em;white-space:nowrap">Sort by</label>
+      <select id="shelf-sort-select" onchange="setSort(this.value)"
+        style="font-family:var(--font-body);font-size:0.875rem;color:var(--ink);background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:4px 8px;cursor:pointer">
+        <option value="lastUpdated" selected>Last updated</option>
+        <option value="status">Status</option>
+        <option value="title">Title (A–Z)</option>
+        <option value="author">Author surname</option>
+        <option value="pubOrig">Year published</option>
+        <option value="dateRead">Year read</option>
+        <option value="added">Date added</option>
+      </select>
+    </div>
+  </div>
+  <div id="shelf-list"></div>
+</div>
 
-    <!-- READING VIEW -->
-    <div id="view-reading" class="view">
-      <div id="reading-content"></div>
-    </div>
+<!-- READING VIEW -->
+<div id="view-reading" class="view">
+  <div id="reading-content"></div>
+</div>
 
-    <!-- TO-READ VIEW -->
-    <div id="view-toread" class="view">
-      <div id="toread-content"></div>
-    </div>
+<!-- TO-READ VIEW -->
+<div id="view-toread" class="view">
+  <div id="toread-content"></div>
+</div>
 
-    <!-- JOURNAL VIEW (Quotes & Notes combined) -->
-    <div id="view-journal" class="view">
-      <div class="section-header">
-        <div><div class="section-title">Quotes &amp; Notes</div></div>
-        <div style="display:flex;gap:8px;align-items:center">
-          <button class="btn btn-secondary" onclick="openAddQuote()" style="font-size:0.85rem;padding:0.35rem 0.85rem">+ Quote</button>
-          <button class="btn btn-primary" onclick="openAddNote()" style="font-size:0.85rem;padding:0.35rem 0.85rem">+ Note</button>
-        </div>
-      </div>
-      <div class="search-wrap">
-        <span class="search-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></span>
-        <input type="text" style="margin:0;padding:0.45rem 0.75rem 0.45rem 2.25rem;width:100%;background:white;border:1px solid var(--border);border-radius:var(--radius);font-family:var(--font-body);font-size:1rem;color:var(--ink)" placeholder="Search quotes and notes…" id="journal-search" oninput="renderJournal()">
-      </div>
-      <div class="filter-bar" id="journal-filter-bar">
-        <button class="filter-btn active" data-jf="all" onclick="setJournalFilter('all')">All</button>
-        <button class="filter-btn" data-jf="quotes" onclick="setJournalFilter('quotes')">Quotes only</button>
-        <button class="filter-btn" data-jf="notes" onclick="setJournalFilter('notes')">Notes only</button>
-      </div>
-      <div id="journal-list"></div>
+<!-- JOURNAL VIEW (Quotes & Notes combined) -->
+<div id="view-journal" class="view">
+  <div class="section-header">
+    <div><div class="section-title">Quotes &amp; Notes</div></div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="btn btn-secondary" onclick="openAddQuote()" style="font-size:0.85rem;padding:0.35rem 0.85rem">+ Quote</button>
+      <button class="btn btn-primary" onclick="openAddNote()" style="font-size:0.85rem;padding:0.35rem 0.85rem">+ Note</button>
     </div>
+  </div>
+  <div class="search-wrap">
+    <span class="search-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></span>
+    <input type="text" style="margin:0;padding:0.45rem 0.75rem 0.45rem 2.25rem;width:100%;background:white;border:1px solid var(--border);border-radius:var(--radius);font-family:var(--font-body);font-size:1rem;color:var(--ink)" placeholder="Search quotes and notes…" id="journal-search" oninput="renderJournal()">
+  </div>
+  <div class="filter-bar" id="journal-filter-bar">
+    <button class="filter-btn active" data-jf="all" onclick="setJournalFilter('all')">All</button>
+    <button class="filter-btn" data-jf="quotes" onclick="setJournalFilter('quotes')">Quotes only</button>
+    <button class="filter-btn" data-jf="notes" onclick="setJournalFilter('notes')">Notes only</button>
+  </div>
+  <div id="journal-list"></div>
+</div>
 
-    <!-- STATS VIEW -->
-    <div id="view-stats" class="view">
-      <div id="stats-content"></div>
-    </div>
+<!-- STATS VIEW -->
+<div id="view-stats" class="view">
+  <div id="stats-content"></div>
+</div>
 
-    <!-- BOOK CLUB VIEW -->
-    <div id="view-bookclub" class="view">
-      <div id="bookclub-content"></div>
-    </div>
+<!-- BOOK CLUB VIEW -->
+<div id="view-bookclub" class="view">
+  <div id="bookclub-content"></div>
+</div>
+```
 
   </main>
   </div><!-- /content-col -->
@@ -851,6 +864,7 @@
 ══════════════════════════════════════════ -->
 
 <!-- ADD / EDIT BOOK MODAL -->
+
 <div id="modal-book" class="modal-backdrop hidden">
   <div class="modal">
     <div class="modal-header">
@@ -862,122 +876,126 @@
     <div class="modal-body">
       <input type="hidden" id="book-edit-id">
 
-      <!-- ISBN LOOKUP -->
-      <div style="background:var(--paper-warm);border:1px solid var(--border);border-radius:var(--radius-lg);padding:0.85rem 1rem;margin-bottom:1.1rem">
-        <div style="font-size:0.75rem;letter-spacing:0.07em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:0.5rem">Auto-fill from ISBN</div>
-        <div style="display:flex;gap:8px;align-items:center">
-          <input type="text" id="isbn-lookup-input" placeholder="Enter ISBN-10 or ISBN-13…"
-            style="flex:1;padding:0.45rem 0.75rem;font-family:var(--font-body);font-size:1rem;color:var(--ink);background:white;border:1px solid var(--border);border-radius:var(--radius);"
-            onkeydown="if(event.key==='Enter'){event.preventDefault();lookupISBN()}">
-          <button class="btn btn-primary" onclick="lookupISBN()" id="isbn-lookup-btn" style="white-space:nowrap;flex-shrink:0">Look up</button>
-        </div>
-        <div id="isbn-lookup-status" style="font-size:0.82rem;margin-top:0.4rem;min-height:1.1em;color:var(--ink-muted);font-style:italic"></div>
-      </div>
+```
+  <!-- ISBN LOOKUP -->
+  <div style="background:var(--paper-warm);border:1px solid var(--border);border-radius:var(--radius-lg);padding:0.85rem 1rem;margin-bottom:1.1rem">
+    <div style="font-size:0.75rem;letter-spacing:0.07em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:0.5rem">Auto-fill from ISBN</div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <input type="text" id="isbn-lookup-input" placeholder="Enter ISBN-10 or ISBN-13…"
+        style="flex:1;padding:0.45rem 0.75rem;font-family:var(--font-body);font-size:1rem;color:var(--ink);background:white;border:1px solid var(--border);border-radius:var(--radius);"
+        onkeydown="if(event.key==='Enter'){event.preventDefault();lookupISBN()}">
+      <button class="btn btn-primary" onclick="lookupISBN()" id="isbn-lookup-btn" style="white-space:nowrap;flex-shrink:0">Look up</button>
+    </div>
+    <div id="isbn-lookup-status" style="font-size:0.82rem;margin-top:0.4rem;min-height:1.1em;color:var(--ink-muted);font-style:italic"></div>
+  </div>
 
-      <div class="form-row">
-        <div class="form-group" style="grid-column:1/-1">
-          <label>Title *</label>
-          <input type="text" id="book-title" placeholder="The name of the book">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Author(s) *</label>
-          <input type="text" id="book-author" placeholder="Author name(s)">
-        </div>
-        <div class="form-group">
-          <label>Translator / Editor</label>
-          <input type="text" id="book-translator" placeholder="If applicable">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Original Published</label>
-          <input type="text" id="book-pub-orig" placeholder="e.g. 1851">
-        </div>
-        <div class="form-group">
-          <label>Edition Year</label>
-          <input type="text" id="book-pub-ed" placeholder="e.g. 2003">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Publisher</label>
-          <input type="text" id="book-publisher" placeholder="Publisher name">
-        </div>
-        <div class="form-group">
-          <label>Pages</label>
-          <input type="number" id="book-pages" placeholder="e.g. 412">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>ISBN</label>
-          <input type="text" id="book-isbn" placeholder="978-...">
-        </div>
-        <div class="form-group">
-          <label>Genre / Category</label>
-          <input type="text" id="book-genre" placeholder="e.g. Fiction, History">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Language</label>
-          <input type="text" id="book-language" placeholder="e.g. English">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Status</label>
-          <select id="book-status">
-            <option value="toread">To-Read</option>
-            <option value="unread">Unread (Owned, not started)</option>
-            <option value="reading">Currently Reading</option>
-            <option value="read">Read</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Ownership</label>
-          <select id="book-owned" onchange="togglePurchaseFields()">
-            <option value="owned">Owned</option>
-            <option value="wishlist">Wishlist / Not Yet Owned</option>
-          </select>
-        </div>
-      </div>
-      <div id="purchase-fields-wrap" class="form-row" style="display:none">
-        <div class="form-group">
-          <label>Where Acquired</label>
-          <input type="text" id="book-purchase-source" placeholder="e.g. Powell's Books, Amazon, gift…">
-        </div>
-        <div class="form-group">
-          <label>Date Acquired</label>
-          <input type="date" id="book-purchase-date">
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Cover Image</label>
-        <div class="cover-upload-area" onclick="document.getElementById('cover-file').click()">
-          <div id="cover-preview-wrap">
-            <div style="font-size:1.5rem;margin-bottom:6px;opacity:0.5">📖</div>
-            <div>Click to upload cover image</div>
-            <div style="font-size:0.8rem;margin-top:4px;opacity:0.7">JPG, PNG, WebP — auto-generates if not provided</div>
-          </div>
-        </div>
-        <input type="file" id="cover-file" accept="image/*" class="hidden" onchange="handleCoverUpload(event)">
-      </div>
-      <div class="form-group">
-        <label>Personal Notes (general)</label>
-        <textarea id="book-notes" placeholder="Any general thoughts about acquiring or reading this book…" rows="3"></textarea>
+  <div class="form-row">
+    <div class="form-group" style="grid-column:1/-1">
+      <label>Title *</label>
+      <input type="text" id="book-title" placeholder="The name of the book">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label>Author(s) *</label>
+      <input type="text" id="book-author" placeholder="Author name(s)">
+    </div>
+    <div class="form-group">
+      <label>Translator / Editor</label>
+      <input type="text" id="book-translator" placeholder="If applicable">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label>Original Published</label>
+      <input type="text" id="book-pub-orig" placeholder="e.g. 1851">
+    </div>
+    <div class="form-group">
+      <label>Edition Year</label>
+      <input type="text" id="book-pub-ed" placeholder="e.g. 2003">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label>Publisher</label>
+      <input type="text" id="book-publisher" placeholder="Publisher name">
+    </div>
+    <div class="form-group">
+      <label>Pages</label>
+      <input type="number" id="book-pages" placeholder="e.g. 412">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label>ISBN</label>
+      <input type="text" id="book-isbn" placeholder="978-...">
+    </div>
+    <div class="form-group">
+      <label>Genre / Category</label>
+      <input type="text" id="book-genre" placeholder="e.g. Fiction, History">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label>Language</label>
+      <input type="text" id="book-language" placeholder="e.g. English">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label>Status</label>
+      <select id="book-status">
+        <option value="toread">To-Read</option>
+        <option value="unread">Unread (Owned, not started)</option>
+        <option value="reading">Currently Reading</option>
+        <option value="read">Read</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Ownership</label>
+      <select id="book-owned" onchange="togglePurchaseFields()">
+        <option value="owned">Owned</option>
+        <option value="wishlist">Wishlist / Not Yet Owned</option>
+      </select>
+    </div>
+  </div>
+  <div id="purchase-fields-wrap" class="form-row" style="display:none">
+    <div class="form-group">
+      <label>Where Acquired</label>
+      <input type="text" id="book-purchase-source" placeholder="e.g. Powell's Books, Amazon, gift…">
+    </div>
+    <div class="form-group">
+      <label>Date Acquired</label>
+      <input type="date" id="book-purchase-date">
+    </div>
+  </div>
+  <div class="form-group">
+    <label>Cover Image</label>
+    <div class="cover-upload-area" onclick="document.getElementById('cover-file').click()">
+      <div id="cover-preview-wrap">
+        <div style="font-size:1.5rem;margin-bottom:6px;opacity:0.5">📖</div>
+        <div>Click to upload cover image</div>
+        <div style="font-size:0.8rem;margin-top:4px;opacity:0.7">JPG, PNG, WebP — auto-generates if not provided</div>
       </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal('modal-book')">Cancel</button>
-      <button class="btn btn-primary" onclick="saveBook()">Save Book</button>
-    </div>
+    <input type="file" id="cover-file" accept="image/*" class="hidden" onchange="handleCoverUpload(event)">
+  </div>
+  <div class="form-group">
+    <label>Personal Notes (general)</label>
+    <textarea id="book-notes" placeholder="Any general thoughts about acquiring or reading this book…" rows="3"></textarea>
+  </div>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-secondary" onclick="closeModal('modal-book')">Cancel</button>
+  <button class="btn btn-primary" onclick="saveBook()">Save Book</button>
+</div>
+```
+
   </div>
 </div>
 
 <!-- BOOK DETAIL MODAL -->
+
 <div id="modal-detail" class="modal-backdrop hidden">
   <div class="modal" style="max-width:680px">
     <div class="modal-header">
@@ -995,6 +1013,7 @@
 </div>
 
 <!-- ADD QUOTE MODAL -->
+
 <div id="modal-quote" class="modal-backdrop hidden">
   <div class="modal">
     <div class="modal-header">
@@ -1036,6 +1055,7 @@
 </div>
 
 <!-- ADD NOTE MODAL -->
+
 <div id="modal-note" class="modal-backdrop hidden">
   <div class="modal">
     <div class="modal-header">
@@ -1079,6 +1099,7 @@
 </div>
 
 <!-- UPDATE PROGRESS MODAL -->
+
 <div id="modal-progress" class="modal-backdrop hidden">
   <div class="modal" style="max-width:420px">
     <div class="modal-header">
@@ -1112,6 +1133,7 @@
 </div>
 
 <!-- BACKUP MODAL -->
+
 <div id="modal-backup" class="modal-backdrop hidden">
   <div class="modal" style="max-width:420px">
     <div class="modal-header">
@@ -1146,6 +1168,7 @@
 </div>
 
 <!-- SEARCH MODAL -->
+
 <div id="modal-search" class="modal-backdrop hidden">
   <div class="modal" style="max-width:600px">
     <div class="modal-header">
@@ -1165,6 +1188,7 @@
 </div>
 
 <!-- AI SUMMARY MODAL -->
+
 <div id="modal-ai" class="modal-backdrop hidden">
   <div class="modal" style="max-width:600px">
     <div class="modal-header">
@@ -1176,50 +1200,54 @@
     <div class="modal-body">
       <input type="hidden" id="ai-book-id">
 
-      <!-- API Key notice (shown when no key is saved) -->
-      <div id="ai-key-notice" style="display:none;background:var(--accent-pale);border:1px solid var(--accent-soft);border-radius:var(--radius-lg);padding:0.85rem 1rem;margin-bottom:1rem">
-        <div style="font-size:0.8rem;font-family:var(--font-head);color:var(--accent);margin-bottom:0.4rem">API Key Required</div>
-        <div style="font-size:0.82rem;color:var(--ink-soft);margin-bottom:0.6rem;line-height:1.5">AI Insights requires a Claude API key. It is stored only on your device and never sent anywhere except Anthropic's API.</div>
-        <div style="display:flex;gap:6px">
-          <input type="password" id="ai-key-input-inline" placeholder="sk-ant-api03-…"
-            style="flex:1;font-family:var(--font-body);font-size:0.9rem;padding:5px 8px;border:1px solid var(--border);border-radius:var(--radius);color:var(--ink);background:var(--card)">
-          <button class="btn btn-primary" style="font-size:0.85rem;padding:5px 12px;flex-shrink:0" onclick="saveAIKey()">Save</button>
-        </div>
-        <div style="font-size:0.75rem;color:var(--ink-muted);margin-top:6px">Get a key at <a href="https://console.anthropic.com" target="_blank" style="color:var(--accent)">console.anthropic.com</a></div>
-      </div>
+```
+  <!-- API Key notice (shown when no key is saved) -->
+  <div id="ai-key-notice" style="display:none;background:var(--accent-pale);border:1px solid var(--accent-soft);border-radius:var(--radius-lg);padding:0.85rem 1rem;margin-bottom:1rem">
+    <div style="font-size:0.8rem;font-family:var(--font-head);color:var(--accent);margin-bottom:0.4rem">API Key Required</div>
+    <div style="font-size:0.82rem;color:var(--ink-soft);margin-bottom:0.6rem;line-height:1.5">AI Insights requires a Claude API key. It is stored only on your device and never sent anywhere except Anthropic's API.</div>
+    <div style="display:flex;gap:6px">
+      <input type="password" id="ai-key-input-inline" placeholder="sk-ant-api03-…"
+        style="flex:1;font-family:var(--font-body);font-size:0.9rem;padding:5px 8px;border:1px solid var(--border);border-radius:var(--radius);color:var(--ink);background:var(--card)">
+      <button class="btn btn-primary" style="font-size:0.85rem;padding:5px 12px;flex-shrink:0" onclick="saveAIKey()">Save</button>
+    </div>
+    <div style="font-size:0.75rem;color:var(--ink-muted);margin-top:6px">Get a key at <a href="https://console.anthropic.com" target="_blank" style="color:var(--accent)">console.anthropic.com</a></div>
+  </div>
 
-      <div class="form-group">
-        <label>Request Type</label>
-        <select id="ai-type">
-          <option value="summary">Overall Book Summary</option>
-          <option value="chapter">Chapter Summary</option>
-          <option value="themes">Thematic Analysis</option>
-          <option value="context">Historical / Literary Context</option>
-          <option value="notes">Synthesize My Notes & Quotes</option>
-          <option value="custom">Custom Prompt</option>
-        </select>
-      </div>
-      <div class="form-group" id="ai-chapter-wrap" style="display:none">
-        <label>Chapter / Section</label>
-        <input type="text" id="ai-chapter-input" placeholder="e.g. Chapter 3, or pages 40-80">
-      </div>
-      <div class="form-group" id="ai-custom-wrap" style="display:none">
-        <label>Your Prompt</label>
-        <textarea id="ai-custom-input" rows="3" placeholder="Ask anything about this book…"></textarea>
-      </div>
-      <div id="ai-result-area" style="margin-top:1rem"></div>
-    </div>
-    <div class="modal-footer" style="justify-content:space-between">
-      <button class="btn-ghost" onclick="clearAIKey()" style="font-size:0.8rem;color:var(--ink-faint)" id="ai-key-clear-btn">Change API key</button>
-      <div style="display:flex;gap:8px">
-        <button class="btn btn-secondary" onclick="closeModal('modal-ai')">Close</button>
-        <button class="btn btn-primary" onclick="runAI()" id="ai-generate-btn">Generate</button>
-      </div>
-    </div>
+  <div class="form-group">
+    <label>Request Type</label>
+    <select id="ai-type">
+      <option value="summary">Overall Book Summary</option>
+      <option value="chapter">Chapter Summary</option>
+      <option value="themes">Thematic Analysis</option>
+      <option value="context">Historical / Literary Context</option>
+      <option value="notes">Synthesize My Notes & Quotes</option>
+      <option value="custom">Custom Prompt</option>
+    </select>
+  </div>
+  <div class="form-group" id="ai-chapter-wrap" style="display:none">
+    <label>Chapter / Section</label>
+    <input type="text" id="ai-chapter-input" placeholder="e.g. Chapter 3, or pages 40-80">
+  </div>
+  <div class="form-group" id="ai-custom-wrap" style="display:none">
+    <label>Your Prompt</label>
+    <textarea id="ai-custom-input" rows="3" placeholder="Ask anything about this book…"></textarea>
+  </div>
+  <div id="ai-result-area" style="margin-top:1rem"></div>
+</div>
+<div class="modal-footer" style="justify-content:space-between">
+  <button class="btn-ghost" onclick="clearAIKey()" style="font-size:0.8rem;color:var(--ink-faint)" id="ai-key-clear-btn">Change API key</button>
+  <div style="display:flex;gap:8px">
+    <button class="btn btn-secondary" onclick="closeModal('modal-ai')">Close</button>
+    <button class="btn btn-primary" onclick="runAI()" id="ai-generate-btn">Generate</button>
+  </div>
+</div>
+```
+
   </div>
 </div>
 
 <!-- BATCH ISBN IMPORT MODAL -->
+
 <div id="modal-batch-isbn" class="modal-backdrop hidden">
   <div class="modal" style="max-width:640px">
     <div class="modal-header">
@@ -1233,47 +1261,51 @@
     </div>
     <div class="modal-body">
 
-      <!-- Scan input -->
-      <div style="display:flex;gap:8px;margin-bottom:1rem">
-        <input type="text" id="batch-isbn-input"
-          placeholder="Scan or type ISBN, press Enter…"
-          style="flex:1;padding:0.55rem 0.85rem;font-family:var(--font-body);font-size:1.05rem;color:var(--ink);background:white;border:2px solid var(--highlight);border-radius:var(--radius);outline:none"
-          onkeydown="if(event.key==='Enter'){event.preventDefault();batchAddISBN()}">
-        <button class="btn btn-primary" onclick="batchAddISBN()" style="flex-shrink:0">Add</button>
-      </div>
+```
+  <!-- Scan input -->
+  <div style="display:flex;gap:8px;margin-bottom:1rem">
+    <input type="text" id="batch-isbn-input"
+      placeholder="Scan or type ISBN, press Enter…"
+      style="flex:1;padding:0.55rem 0.85rem;font-family:var(--font-body);font-size:1.05rem;color:var(--ink);background:white;border:2px solid var(--highlight);border-radius:var(--radius);outline:none"
+      onkeydown="if(event.key==='Enter'){event.preventDefault();batchAddISBN()}">
+    <button class="btn btn-primary" onclick="batchAddISBN()" style="flex-shrink:0">Add</button>
+  </div>
 
-      <!-- Default status for imported books -->
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem;font-size:0.875rem;color:var(--ink-muted)">
-        <label style="white-space:nowrap">Import as:</label>
-        <select id="batch-default-status"
-          style="font-family:var(--font-body);font-size:0.875rem;color:var(--ink);background:white;border:1px solid var(--border);border-radius:var(--radius);padding:4px 8px">
-          <option value="unread">Owned — Unread</option>
-          <option value="toread">To-Read</option>
-          <option value="reading">Currently Reading</option>
-          <option value="read">Read</option>
-        </select>
-        <span id="batch-count-label" style="margin-left:auto;font-style:italic"></span>
-      </div>
+  <!-- Default status for imported books -->
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem;font-size:0.875rem;color:var(--ink-muted)">
+    <label style="white-space:nowrap">Import as:</label>
+    <select id="batch-default-status"
+      style="font-family:var(--font-body);font-size:0.875rem;color:var(--ink);background:white;border:1px solid var(--border);border-radius:var(--radius);padding:4px 8px">
+      <option value="unread">Owned — Unread</option>
+      <option value="toread">To-Read</option>
+      <option value="reading">Currently Reading</option>
+      <option value="read">Read</option>
+    </select>
+    <span id="batch-count-label" style="margin-left:auto;font-style:italic"></span>
+  </div>
 
-      <!-- Queue -->
-      <div id="batch-queue" style="max-height:320px;overflow-y:auto;border:1px solid var(--border-soft);border-radius:var(--radius-lg);background:var(--paper)">
-        <div id="batch-empty" style="padding:2rem;text-align:center;color:var(--ink-faint);font-style:italic;font-size:0.9rem">
-          No ISBNs added yet. Start scanning.
-        </div>
-      </div>
-
+  <!-- Queue -->
+  <div id="batch-queue" style="max-height:320px;overflow-y:auto;border:1px solid var(--border-soft);border-radius:var(--radius-lg);background:var(--paper)">
+    <div id="batch-empty" style="padding:2rem;text-align:center;color:var(--ink-faint);font-style:italic;font-size:0.9rem">
+      No ISBNs added yet. Start scanning.
     </div>
-    <div class="modal-footer" style="justify-content:space-between">
-      <button class="btn btn-danger" onclick="batchClearAll()" id="batch-clear-btn" style="display:none">Clear all</button>
-      <div style="display:flex;gap:8px">
-        <button class="btn btn-secondary" onclick="closeModal('modal-batch-isbn')">Cancel</button>
-        <button class="btn btn-primary" onclick="batchImportAll()" id="batch-import-btn" disabled>Import All</button>
-      </div>
-    </div>
+  </div>
+
+</div>
+<div class="modal-footer" style="justify-content:space-between">
+  <button class="btn btn-danger" onclick="batchClearAll()" id="batch-clear-btn" style="display:none">Clear all</button>
+  <div style="display:flex;gap:8px">
+    <button class="btn btn-secondary" onclick="closeModal('modal-batch-isbn')">Cancel</button>
+    <button class="btn btn-primary" onclick="batchImportAll()" id="batch-import-btn" disabled>Import All</button>
+  </div>
+</div>
+```
+
   </div>
 </div>
 
 <!-- UPDATE WARNING MODAL -->
+
 <div id="modal-update-warning" class="modal-backdrop hidden">
   <div class="modal" style="max-width:440px">
     <div class="modal-header">
@@ -1301,6 +1333,7 @@
 </div>
 
 <!-- BACKUP NUDGE BANNER -->
+
 <div id="backup-nudge" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:90;background:var(--chrome);color:var(--chrome-text);padding:0.65rem 1rem;display:none;align-items:center;gap:10px;font-family:var(--font-body);font-size:0.85rem;border-top:1px solid rgba(255,255,255,0.1)">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--highlight)" stroke-width="2" style="flex-shrink:0"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
   <span class="nudge-msg" style="flex:1;color:rgba(200,224,210,0.85)">It's been a while since your last backup.</span>
@@ -1432,7 +1465,7 @@ let db = loadDB();
 let currentView = 'home';
 let shelfFilter = 'all';
 let shelfView = 'list';
-let shelfSort = 'dateRead';
+let shelfSort = 'lastUpdated';
 let journalFilter = 'all';
 let currentDetailBookId = null;
 
@@ -1505,30 +1538,58 @@ function renderHome() {
 
   let html = '';
 
-  // ── Currently Reading ──
+  // ── Currently Reading — sorted by last progress update ──
   if (reading.length > 0) {
+    // Sort by most recently updated (last readingLog entry, or book.added)
+    const lastUpdate = book => {
+      const logs = db.readingLog.filter(l => l.bookId === book.id);
+      return logs.length ? Math.max(...logs.map(l => l.date)) : (book.added || 0);
+    };
+    const sorted = [...reading].sort((a, b) => lastUpdate(b) - lastUpdate(a));
+    const now = Date.now();
+    const STALE_MS = 14 * 24 * 60 * 60 * 1000;
+
     html += `<div style="margin-bottom:1.5rem">`;
-    html += reading.map(book => {
+    html += sorted.map(book => {
       const pct = book.pages ? Math.round((book.currentPage / book.pages) * 100) : 0;
-      return `
-        <div class="reading-hero" onclick="openDetail('${book.id}')">
-          ${renderCover(book, 'cover-hero')}
-          <div class="reading-hero-info">
-            <div class="reading-hero-label">Currently Reading</div>
-            <div class="reading-hero-title">${escHtml(book.title)}</div>
-            <div class="reading-hero-author">${escHtml(book.author)}</div>
-            <div style="margin-top:0.75rem">
-              <div class="progress-label" style="color:rgba(200,224,210,0.8)">
-                <span>Page ${book.currentPage}${book.pages ? ' of ' + book.pages : ''}</span>
-                <span>${pct}%</span>
-              </div>
-              <div class="progress-track" style="background:rgba(0,0,0,0.25)"><div class="progress-fill ${pct===100?'complete':''}" style="width:${pct}%;background:var(--highlight)"></div></div>
-            </div>
-            <div style="margin-top:0.75rem">
-              <button class="btn" style="background:rgba(255,255,255,0.12);color:var(--chrome-text);border:1px solid rgba(200,224,210,0.35);font-size:0.85rem;padding:0.35rem 0.85rem" onclick="event.stopPropagation();openProgress('${book.id}')">Update Progress</button>
+      const last = lastUpdate(book);
+      const stale = (now - last) > STALE_MS;
+      const daysAgo = Math.floor((now - last) / 86400000);
+
+      if (stale) {
+        // Compact row — less visual weight
+        return `<div class="book-item" onclick="openDetail('${book.id}')" style="margin-bottom:0.5rem;opacity:0.72">
+          ${renderCover(book)}
+          <div class="book-item-info">
+            <div class="book-item-title">${escHtml(book.title)}</div>
+            <div class="book-item-author">${escHtml(book.author)}</div>
+            <div class="book-item-meta">
+              <span class="badge badge-reading">Reading</span>
+              <span style="font-size:0.78rem;color:var(--ink-faint)">p.${book.currentPage}${book.pages ? ' of ' + book.pages : ''} · last updated ${daysAgo}d ago</span>
             </div>
           </div>
+          <button class="btn btn-secondary" style="font-size:0.78rem;padding:0.25rem 0.6rem;flex-shrink:0;align-self:center" onclick="event.stopPropagation();openProgress('${book.id}')">Update</button>
         </div>`;
+      }
+
+      return `<div class="reading-hero" onclick="openDetail('${book.id}')" style="margin-bottom:0.75rem">
+        ${renderCover(book, 'cover-hero')}
+        <div class="reading-hero-info">
+          <div class="reading-hero-label">Currently Reading</div>
+          <div class="reading-hero-title">${escHtml(book.title)}</div>
+          <div class="reading-hero-author">${escHtml(book.author)}</div>
+          <div style="margin-top:0.75rem">
+            <div class="progress-label" style="color:rgba(200,224,210,0.8)">
+              <span>Page ${book.currentPage}${book.pages ? ' of ' + book.pages : ''}</span>
+              <span>${pct}%</span>
+            </div>
+            <div class="progress-track" style="background:rgba(0,0,0,0.25)"><div class="progress-fill ${pct===100?'complete':''}" style="width:${pct}%;background:var(--highlight)"></div></div>
+          </div>
+          <div style="margin-top:0.75rem">
+            <button class="btn" style="background:rgba(255,255,255,0.12);color:var(--chrome-text);border:1px solid rgba(200,224,210,0.35);font-size:0.85rem;padding:0.35rem 0.85rem" onclick="event.stopPropagation();openProgress('${book.id}')">Update Progress</button>
+          </div>
+        </div>
+      </div>`;
     }).join('');
     html += `</div>`;
   } else {
@@ -1616,27 +1677,34 @@ function setSort(s) {
 }
 
 // Sort a book list according to shelfSort.
-// Default 'status' order: reading → read (newest first) → unread → toread → wishlist
 function sortBooks(books) {
   const statusRank = b => {
     if (b.status === 'reading') return 0;
     if (b.status === 'read')    return 1;
-    if (b.status === 'unread')  return 2;
-    if (b.status === 'toread' && b.owned !== 'wishlist') return 3;
+    if (b.status === 'toread' && b.owned !== 'wishlist') return 2;
+    if (b.status === 'unread')  return 3;
     return 4; // wishlist
   };
   const surname = b => b.author.split(',')[0].trim().split(' ').pop().toLowerCase();
+  const lastUpdated = b => {
+    const logs = db.readingLog.filter(l => l.bookId === b.id);
+    return logs.length ? Math.max(...logs.map(l => l.date)) : (b.added || 0);
+  };
 
   const copy = [...books];
   switch (shelfSort) {
+    case 'lastUpdated':
+      return copy.sort((a, b) => {
+        if (a.status === 'reading' && b.status !== 'reading') return -1;
+        if (b.status === 'reading' && a.status !== 'reading') return 1;
+        return lastUpdated(b) - lastUpdated(a);
+      });
     case 'status':
       return copy.sort((a, b) => {
         const rd = statusRank(a) - statusRank(b);
         if (rd !== 0) return rd;
-        // Within 'read', sort newest dateRead first
         if (a.status === 'read' && b.status === 'read') return latestReadDate(b) - latestReadDate(a);
-        // Within reading, sort most recent progress first
-        if (a.status === 'reading') return (b.added||0) - (a.added||0);
+        if (a.status === 'reading') return lastUpdated(b) - lastUpdated(a);
         return (b.added||0) - (a.added||0);
       });
     case 'title':
@@ -1693,8 +1761,7 @@ function renderShelf() {
   }
 
   if (shelfView === 'list') renderShelfList(books);
-  else if (shelfView === 'grid') renderShelfGrid(books);
-  else renderShelfSpine(books);
+  else renderShelfGrid(books);
 }
 
 // ── LIST VIEW ──
@@ -4348,215 +4415,150 @@ function bcOpenRead(readId) {
       <textarea id="bc-read-notes" rows="3"
         style="width:100%;font-family:var(--font-body);font-size:0.95rem;padding:8px;border:1px solid var(--border);border-radius:var(--radius);color:var(--ink);background:var(--card);resize:vertical"
         onchange="bcSaveReadNotes('${readId}',this.value)">${escHtml(read.notes||'')}</textarea>
-    </div>
-    <div style="display:flex;justify-content:space-between;margin-top:1rem">
-      <button class="btn btn-danger" onclick="bcDeleteRead('${readId}')">Delete</button>
-      <button class="btn btn-primary" onclick="closeModal('modal-detail');renderBookClub()">Done</button>
-    </div>`;
-  document.getElementById('modal-detail').classList.remove('hidden');
+
+```
+</div>
+<div style="display:flex;justify-content:space-between;margin-top:1rem">
+  <button class="btn btn-danger" onclick="bcDeleteRead('${readId}')">Delete</button>
+  <button class="btn btn-primary" onclick="closeModal('modal-detail');renderBookClub()">Done</button>
+</div>`;
+```
+
+document.getElementById(‘modal-detail’).classList.remove(‘hidden’);
 }
 
 function bcSaveRating(readId, memberId, val) {
-  const bc = getBC();
-  const read = bc.reads.find(r => r.id === readId);
-  if (!read) return;
-  const num = parseFloat(val);
-  if (val === '' || val == null) {
-    delete read.ratings[memberId];
-  } else if (!isNaN(num) && num >= 0 && num <= 10) {
-    read.ratings[memberId] = Math.round(num * 10) / 10; // store with 1 decimal precision
-  }
-  saveDB();
-  // Update the live average display without re-rendering the whole modal
-  const ratings = Object.values(read.ratings).filter(r => r != null && !isNaN(r));
-  const avg = ratings.length ? (ratings.reduce((s,r)=>s+Number(r),0)/ratings.length).toFixed(1) : null;
-  const avgEl = document.querySelector('#modal-detail .avg-display');
-  if (avgEl) avgEl.textContent = avg ? `★ ${avg}` : '';
+const bc = getBC();
+const read = bc.reads.find(r => r.id === readId);
+if (!read) return;
+const num = parseFloat(val);
+if (val === ‘’ || val == null) {
+delete read.ratings[memberId];
+} else if (!isNaN(num) && num >= 0 && num <= 10) {
+read.ratings[memberId] = Math.round(num * 10) / 10; // store with 1 decimal precision
+}
+saveDB();
+// Update the live average display without re-rendering the whole modal
+const ratings = Object.values(read.ratings).filter(r => r != null && !isNaN(r));
+const avg = ratings.length ? (ratings.reduce((s,r)=>s+Number(r),0)/ratings.length).toFixed(1) : null;
+const avgEl = document.querySelector(’#modal-detail .avg-display’);
+if (avgEl) avgEl.textContent = avg ? `★ ${avg}` : ‘’;
 }
 
 function bcSaveReadNotes(readId, notes) {
-  const bc = getBC();
-  const read = bc.reads.find(r => r.id === readId);
-  if (read) { read.notes = notes; saveDB(); }
+const bc = getBC();
+const read = bc.reads.find(r => r.id === readId);
+if (read) { read.notes = notes; saveDB(); }
 }
 
 function bcDeleteRead(readId) {
-  if (!confirm('Remove this book from past reads?')) return;
-  const bc = getBC();
-  bc.reads = bc.reads.filter(r => r.id !== readId);
-  saveDB();
-  closeModal('modal-detail');
-  renderBookClub();
+if (!confirm(‘Remove this book from past reads?’)) return;
+const bc = getBC();
+bc.reads = bc.reads.filter(r => r.id !== readId);
+saveDB();
+closeModal(‘modal-detail’);
+renderBookClub();
 }
 
 function bcStartVoteSetup() {
-  const bc = getBC();
-  const bookOptions = db.books.map(b =>
-    `<label style="display:flex;align-items:center;gap:10px;padding:7px 0;cursor:pointer;border-bottom:1px solid var(--border-soft)">
-      <input type="checkbox" value="${b.id}" style="width:16px;height:16px;accent-color:var(--accent);flex-shrink:0">
-      ${renderCover(b)}
-      <span style="font-family:var(--font-head);font-size:0.92rem">${escHtml(b.title)}</span>
-    </label>`
-  ).join('');
-  const memberOptions = bc.members.map(m =>
-    `<label style="display:flex;align-items:center;gap:10px;padding:8px 0;cursor:pointer;border-bottom:1px solid var(--border-soft)">
-      <input type="checkbox" value="${m.id}" checked style="width:16px;height:16px;accent-color:var(--accent);flex-shrink:0">
-      <div class="bc-avatar bc-avatar-lg">${m.photo ? `<img src="${m.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">` : escHtml(m.name[0])}</div>
-      <span style="font-family:var(--font-head);font-size:1rem">${escHtml(m.name)}</span>
-    </label>`
-  ).join('');
-  setDetailMode('plain');
-  document.getElementById('detail-title').textContent = 'New Vote — Setup';
-  document.getElementById('detail-body').innerHTML = `
-    <div style="max-height:60vh;overflow-y:auto;padding-right:4px">
-      <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink-muted);margin-bottom:8px">Books to vote on</div>
-      <div id="bc-vote-candidates" style="margin-bottom:1.25rem">${bookOptions}</div>
-      <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink-muted);margin-bottom:8px">Who's voting</div>
-      <div id="bc-vote-participants">${memberOptions}</div>
-    </div>
-    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:1rem;padding-top:0.75rem;border-top:1px solid var(--border)">
-      <button class="btn btn-secondary" onclick="closeModal('modal-detail')">Cancel</button>
-      <button class="btn btn-primary" onclick="bcLaunchVote()">Start Voting</button>
-    </div>`;
-  document.getElementById('modal-detail').classList.remove('hidden');
+const bc = getBC();
+const bookOptions = db.books.map(b =>
+`<label style="display:flex;align-items:center;gap:10px;padding:7px 0;cursor:pointer;border-bottom:1px solid var(--border-soft)"> <input type="checkbox" value="${b.id}" style="width:16px;height:16px;accent-color:var(--accent);flex-shrink:0"> ${renderCover(b)} <span style="font-family:var(--font-head);font-size:0.92rem">${escHtml(b.title)}</span> </label>`
+).join(’’);
+const memberOptions = bc.members.map(m =>
+`<label style="display:flex;align-items:center;gap:10px;padding:8px 0;cursor:pointer;border-bottom:1px solid var(--border-soft)"> <input type="checkbox" value="${m.id}" checked style="width:16px;height:16px;accent-color:var(--accent);flex-shrink:0"> <div class="bc-avatar bc-avatar-lg">${m.photo ? `<img src="${m.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">` : escHtml(m.name[0])}</div> <span style="font-family:var(--font-head);font-size:1rem">${escHtml(m.name)}</span> </label>`
+).join(’’);
+setDetailMode(‘plain’);
+document.getElementById(‘detail-title’).textContent = ‘New Vote — Setup’;
+document.getElementById(‘detail-body’).innerHTML = ` <div style="max-height:60vh;overflow-y:auto;padding-right:4px"> <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink-muted);margin-bottom:8px">Books to vote on</div> <div id="bc-vote-candidates" style="margin-bottom:1.25rem">${bookOptions}</div> <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink-muted);margin-bottom:8px">Who's voting</div> <div id="bc-vote-participants">${memberOptions}</div> </div> <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:1rem;padding-top:0.75rem;border-top:1px solid var(--border)"> <button class="btn btn-secondary" onclick="closeModal('modal-detail')">Cancel</button> <button class="btn btn-primary" onclick="bcLaunchVote()">Start Voting</button> </div>`;
+document.getElementById(‘modal-detail’).classList.remove(‘hidden’);
 }
 
 function bcOpenVoteModal(voteId) {
-  const bc = getBC();
-  const vote = bc.votes.find(v => v.id === voteId);
-  if (!vote) return;
+const bc = getBC();
+const vote = bc.votes.find(v => v.id === voteId);
+if (!vote) return;
 
-  const ballotDone = vote.ballots.map(b => b.memberId);
-  const remaining = vote.participants.filter(id => !ballotDone.includes(id));
+const ballotDone = vote.ballots.map(b => b.memberId);
+const remaining = vote.participants.filter(id => !ballotDone.includes(id));
 
-  if (remaining.length === 0) {
-    // All done — show tally button
-    setDetailMode('plain');
-    document.getElementById('detail-title').textContent = 'Voting Complete';
-    document.getElementById('detail-body').innerHTML = `
-      <div style="text-align:center;padding:1.5rem 0">
-        <div style="font-size:1.5rem;margin-bottom:0.5rem">🗳️</div>
-        <div style="font-family:var(--font-head);font-size:1.05rem;margin-bottom:1.25rem">All ${vote.ballots.length} members have submitted their rankings.</div>
-        <button class="btn btn-primary" onclick="bcTallyVote('${voteId}')">Calculate Results</button>
-      </div>`;
-    document.getElementById('modal-detail').classList.remove('hidden');
-    return;
-  }
+if (remaining.length === 0) {
+// All done — show tally button
+setDetailMode(‘plain’);
+document.getElementById(‘detail-title’).textContent = ‘Voting Complete’;
+document.getElementById(‘detail-body’).innerHTML = ` <div style="text-align:center;padding:1.5rem 0"> <div style="font-size:1.5rem;margin-bottom:0.5rem">🗳️</div> <div style="font-family:var(--font-head);font-size:1.05rem;margin-bottom:1.25rem">All ${vote.ballots.length} members have submitted their rankings.</div> <button class="btn btn-primary" onclick="bcTallyVote('${voteId}')">Calculate Results</button> </div>`;
+document.getElementById(‘modal-detail’).classList.remove(‘hidden’);
+return;
+}
 
-  const currentMemberId = remaining[0];
-  const member = bc.members.find(m => m.id === currentMemberId);
-  const ranked = vote._tempRanking || [...vote.candidates];
+const currentMemberId = remaining[0];
+const member = bc.members.find(m => m.id === currentMemberId);
+const ranked = vote._tempRanking || […vote.candidates];
 
-  let ballotRows = ranked.map((bookId, i) => {
-    const book = db.books.find(b => b.id === bookId);
-    return `<div class="bc-vote-book" data-id="${bookId}" draggable="true">
-      <div class="rank-badge">${i+1}</div>
-      ${book ? renderCover(book) : ''}
-      <div style="flex:1;min-width:0">
-        <div style="font-family:var(--font-head);font-size:0.92rem;line-height:1.3">${book ? escHtml(book.title) : bookId}</div>
-        <div style="font-size:0.78rem;color:var(--ink-muted);font-style:italic">${book ? escHtml(book.author) : ''}</div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:2px;flex-shrink:0">
-        <button onclick="bcMoveVoteItem(this,'up')" class="btn-icon" style="padding:2px" title="Move up">▲</button>
-        <button onclick="bcMoveVoteItem(this,'down')" class="btn-icon" style="padding:2px" title="Move down">▼</button>
-      </div>
-    </div>`;
-  }).join('');
+let ballotRows = ranked.map((bookId, i) => {
+const book = db.books.find(b => b.id === bookId);
+return `<div class="bc-vote-book" data-id="${bookId}" draggable="true"> <div class="rank-badge">${i+1}</div> ${book ? renderCover(book) : ''} <div style="flex:1;min-width:0"> <div style="font-family:var(--font-head);font-size:0.92rem;line-height:1.3">${book ? escHtml(book.title) : bookId}</div> <div style="font-size:0.78rem;color:var(--ink-muted);font-style:italic">${book ? escHtml(book.author) : ''}</div> </div> <div style="display:flex;flex-direction:column;gap:2px;flex-shrink:0"> <button onclick="bcMoveVoteItem(this,'up')" class="btn-icon" style="padding:2px" title="Move up">▲</button> <button onclick="bcMoveVoteItem(this,'down')" class="btn-icon" style="padding:2px" title="Move down">▼</button> </div> </div>`;
+}).join(’’);
 
-  setDetailMode('plain');
-  document.getElementById('detail-title').textContent = `${member ? member.name + "'s" : ''} Ballot`;
-  document.getElementById('detail-body').innerHTML = `
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border-soft)">
-      <div class="bc-avatar bc-avatar-lg">${member?.photo ? `<img src="${member.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">` : escHtml(member?.name[0]||'?')}</div>
-      <div>
-        <div style="font-family:var(--font-head);font-size:1.1rem">${escHtml(member?.name||'')}</div>
-        <div style="font-size:0.82rem;color:var(--ink-muted)">${vote.ballots.length} of ${vote.participants.length} submitted · Drag or use arrows to rank</div>
-      </div>
-    </div>
-    <div id="bc-vote-list" style="margin-bottom:1rem">${ballotRows}</div>
-    <div style="display:flex;justify-content:space-between;align-items:center;padding-top:0.75rem;border-top:1px solid var(--border)">
-      <button class="btn btn-secondary" onclick="closeModal('modal-detail')">Save &amp; Close</button>
-      <button class="btn btn-primary" onclick="bcSubmitBallot('${voteId}','${currentMemberId}')">Submit Ranking →</button>
-    </div>`;
-  document.getElementById('modal-detail').classList.remove('hidden');
-  // Re-bind drag events since we just wrote new HTML
-  requestAnimationFrame(() => bcBindEvents());
+setDetailMode(‘plain’);
+document.getElementById(‘detail-title’).textContent = `${member ? member.name + "'s" : ''} Ballot`;
+document.getElementById(‘detail-body’).innerHTML = `<div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border-soft)"> <div class="bc-avatar bc-avatar-lg">${member?.photo ?`<img src="${member.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">` : escHtml(member?.name[0]||'?')}</div> <div> <div style="font-family:var(--font-head);font-size:1.1rem">${escHtml(member?.name||'')}</div> <div style="font-size:0.82rem;color:var(--ink-muted)">${vote.ballots.length} of ${vote.participants.length} submitted · Drag or use arrows to rank</div> </div> </div> <div id="bc-vote-list" style="margin-bottom:1rem">${ballotRows}</div> <div style="display:flex;justify-content:space-between;align-items:center;padding-top:0.75rem;border-top:1px solid var(--border)"> <button class="btn btn-secondary" onclick="closeModal('modal-detail')">Save &amp; Close</button> <button class="btn btn-primary" onclick="bcSubmitBallot('${voteId}','${currentMemberId}')">Submit Ranking →</button> </div>`;
+document.getElementById(‘modal-detail’).classList.remove(‘hidden’);
+// Re-bind drag events since we just wrote new HTML
+requestAnimationFrame(() => bcBindEvents());
 }
 
 function bcLaunchVote() {
-  const bc = getBC();
-  const candidates = [...document.querySelectorAll('#bc-vote-candidates input:checked')].map(el => el.value);
-  const participants = [...document.querySelectorAll('#bc-vote-participants input:checked')].map(el => el.value);
-  if (candidates.length < 2) { alert('Select at least 2 books.'); return; }
-  if (participants.length < 1) { alert('Select at least 1 member.'); return; }
-  const vote = { id: uid(), date: null, candidates, participants, ballots: [], result: [], complete: false };
-  bc.votes.push(vote);
-  bc.activeVoteId = vote.id;
-  saveDB();
-  renderBookClub(); // update the page backdrop
-  bcOpenVoteModal(vote.id); // open ballot immediately
+const bc = getBC();
+const candidates = […document.querySelectorAll(’#bc-vote-candidates input:checked’)].map(el => el.value);
+const participants = […document.querySelectorAll(’#bc-vote-participants input:checked’)].map(el => el.value);
+if (candidates.length < 2) { alert(‘Select at least 2 books.’); return; }
+if (participants.length < 1) { alert(‘Select at least 1 member.’); return; }
+const vote = { id: uid(), date: null, candidates, participants, ballots: [], result: [], complete: false };
+bc.votes.push(vote);
+bc.activeVoteId = vote.id;
+saveDB();
+renderBookClub(); // update the page backdrop
+bcOpenVoteModal(vote.id); // open ballot immediately
 }
 
 function bcOpenSettings() {
-  const bc = getBC();
-  setDetailMode('plain');
-  document.getElementById('detail-title').textContent = 'Book Club Settings';
-  document.getElementById('detail-body').innerHTML = `
-    <div class="form-group"><label>Name</label>
-      <input type="text" id="bc-set-name" value="${escHtml(bc.name)}"
-        style="width:100%;font-family:var(--font-body);font-size:1rem;padding:8px;border:1px solid var(--border);border-radius:var(--radius);color:var(--ink);background:var(--card)">
-    </div>
-    <div class="form-group"><label>Meeting Frequency</label>
-      <select id="bc-set-freq" style="width:100%;font-family:var(--font-body);font-size:1rem;padding:8px;border:1px solid var(--border);border-radius:var(--radius);color:var(--ink);background:var(--card)">
-        <option value="weekly" ${bc.frequency==='weekly'?'selected':''}>Weekly</option>
-        <option value="biweekly" ${bc.frequency==='biweekly'?'selected':''}>Bi-weekly</option>
-        <option value="monthly" ${bc.frequency==='monthly'?'selected':''}>Monthly</option>
-        <option value="bimonthly" ${bc.frequency==='bimonthly'?'selected':''}>Every two months</option>
-        <option value="quarterly" ${bc.frequency==='quarterly'?'selected':''}>Quarterly</option>
-      </select>
-    </div>
-    <hr class="section">
-    <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-muted);margin-bottom:6px">Members</div>
-    <div id="bc-members-list">
-      ${bc.members.map(m => `<div id="bcm-${m.id}" style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-        <div class="bc-avatar" id="bcav-${m.id}" onclick="bcPickPhoto('${m.id}')" style="cursor:pointer;flex-shrink:0" title="Change photo">
-          ${m.photo ? `<img src="${m.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">` : escHtml(m.name[0])}
-        </div>
-        <input type="hidden" id="bcph-${m.id}" value="${escHtml(m.photo||'')}">
-        <input type="text" value="${escHtml(m.name)}" id="bcn-${m.id}"
-          style="flex:1;font-family:var(--font-body);font-size:1rem;padding:6px 10px;border:1px solid var(--border);border-radius:var(--radius);color:var(--ink);background:var(--card)">
-        <button class="btn-icon" onclick="document.getElementById('bcm-${m.id}').remove()" title="Remove">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-      </div>`).join('')}
-    </div>
-    <button class="btn btn-secondary" style="font-size:0.875rem;margin-bottom:1rem" onclick="bcAddMemberRow()">+ Add Member</button>
-    <div style="display:flex;justify-content:flex-end;gap:8px">
-      <button class="btn btn-secondary" onclick="closeModal('modal-detail')">Cancel</button>
-      <button class="btn btn-primary" onclick="bcSaveSettings()">Save</button>
-    </div>`;
-  document.getElementById('modal-detail').classList.remove('hidden');
+const bc = getBC();
+setDetailMode(‘plain’);
+document.getElementById(‘detail-title’).textContent = ‘Book Club Settings’;
+document.getElementById(‘detail-body’).innerHTML = `<div class="form-group"><label>Name</label> <input type="text" id="bc-set-name" value="${escHtml(bc.name)}" style="width:100%;font-family:var(--font-body);font-size:1rem;padding:8px;border:1px solid var(--border);border-radius:var(--radius);color:var(--ink);background:var(--card)"> </div> <div class="form-group"><label>Meeting Frequency</label> <select id="bc-set-freq" style="width:100%;font-family:var(--font-body);font-size:1rem;padding:8px;border:1px solid var(--border);border-radius:var(--radius);color:var(--ink);background:var(--card)"> <option value="weekly" ${bc.frequency==='weekly'?'selected':''}>Weekly</option> <option value="biweekly" ${bc.frequency==='biweekly'?'selected':''}>Bi-weekly</option> <option value="monthly" ${bc.frequency==='monthly'?'selected':''}>Monthly</option> <option value="bimonthly" ${bc.frequency==='bimonthly'?'selected':''}>Every two months</option> <option value="quarterly" ${bc.frequency==='quarterly'?'selected':''}>Quarterly</option> </select> </div> <hr class="section"> <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-muted);margin-bottom:6px">Members</div> <div id="bc-members-list"> ${bc.members.map(m =>`<div id="bcm-${m.id}" style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+<div class="bc-avatar" id="bcav-${m.id}" onclick="bcPickPhoto('${m.id}')" style="cursor:pointer;flex-shrink:0" title="Change photo">
+${m.photo ? `<img src="${m.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">` : escHtml(m.name[0])}
+</div>
+<input type="hidden" id="bcph-${m.id}" value="${escHtml(m.photo||'')}">
+<input type="text" value="${escHtml(m.name)}" id="bcn-${m.id}"
+style="flex:1;font-family:var(--font-body);font-size:1rem;padding:6px 10px;border:1px solid var(--border);border-radius:var(--radius);color:var(--ink);background:var(--card)">
+<button class="btn-icon" onclick="document.getElementById('bcm-${m.id}').remove()" title="Remove">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+</button>
+</div>`).join('')} </div> <button class="btn btn-secondary" style="font-size:0.875rem;margin-bottom:1rem" onclick="bcAddMemberRow()">+ Add Member</button> <div style="display:flex;justify-content:flex-end;gap:8px"> <button class="btn btn-secondary" onclick="closeModal('modal-detail')">Cancel</button> <button class="btn btn-primary" onclick="bcSaveSettings()">Save</button> </div>`;
+document.getElementById(‘modal-detail’).classList.remove(‘hidden’);
 }
 
 function bcSaveSettings() {
-  const bc = getBC();
-  bc.name = document.getElementById('bc-set-name').value.trim() || bc.name;
-  bc.frequency = document.getElementById('bc-set-freq').value;
-  // Update members
-  const updated = [];
-  document.querySelectorAll('[id^="bcm-"]').forEach(row => {
-    const id = row.id.replace('bcm-','');
-    const name = document.getElementById(`bcn-${id}`)?.value.trim();
-    const photo = document.getElementById(`bcph-${id}`)?.value || '';
-    if (name) {
-      const existing = bc.members.find(m => m.id === id);
-      updated.push({ id: existing ? id : uid(), name, photo });
-    }
-  });
-  if (updated.length >= 1) bc.members = updated;
-  saveDB();
-  closeModal('modal-detail');
-  renderBookClub();
+const bc = getBC();
+bc.name = document.getElementById(‘bc-set-name’).value.trim() || bc.name;
+bc.frequency = document.getElementById(‘bc-set-freq’).value;
+// Update members
+const updated = [];
+document.querySelectorAll(’[id^=“bcm-”]’).forEach(row => {
+const id = row.id.replace(‘bcm-’,’’);
+const name = document.getElementById(`bcn-${id}`)?.value.trim();
+const photo = document.getElementById(`bcph-${id}`)?.value || ‘’;
+if (name) {
+const existing = bc.members.find(m => m.id === id);
+updated.push({ id: existing ? id : uid(), name, photo });
+}
+});
+if (updated.length >= 1) bc.members = updated;
+saveDB();
+closeModal(‘modal-detail’);
+renderBookClub();
 }
 // ══════════════════════════════════════════
 //  INIT
@@ -4565,5 +4567,6 @@ renderHome();
 checkDataSafety();
 reconcileStorage();
 </script>
+
 </body>
 </html>
