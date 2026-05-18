@@ -252,6 +252,7 @@
   .form-group input[type="date"] {
     width: 100%; max-width: 100%; box-sizing: border-box;
     -webkit-appearance: none; appearance: none;
+    padding: 0.5rem 0.75rem; min-height: 2.4rem;
   }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
   .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
@@ -488,23 +489,50 @@
     border-left: 3px solid var(--accent); padding: 0.75rem 1rem;
     background: var(--card-warm); border-radius: 0 var(--radius) var(--radius) 0;
     border-top: 1px solid var(--border-soft); border-right: 1px solid var(--border-soft); border-bottom: 1px solid var(--border-soft);
-    margin-bottom: 0.75rem; position: relative;
+    margin-bottom: 0.75rem;
   }
   .quote-text { font-size: 1rem; line-height: 1.65; color: var(--ink-soft); }
   .quote-meta { font-size: 0.8rem; color: var(--ink-muted); margin-top: 0.4rem; }
-  .quote-actions { position: absolute; top: 6px; right: 6px; display: flex; gap: 4px; }
+  .quote-actions { display: flex; gap: 4px; justify-content: flex-end; margin-top: 0.5rem; padding-top: 0.35rem; border-top: 1px solid var(--border-soft); }
 
   /* ── NOTE ITEM ── */
   .note-item {
     background: var(--card-warm); border: 1px solid var(--border-soft);
     border-left: 3px solid var(--parchment);
     border-radius: 0 var(--radius) var(--radius) 0;
-    padding: 0.75rem 1rem; margin-bottom: 0.75rem; position: relative;
+    padding: 0.75rem 1rem; margin-bottom: 0.75rem;
   }
   .note-text { font-size: 0.95rem; line-height: 1.65; color: var(--ink-soft); }
   .note-meta { font-size: 0.8rem; color: var(--ink-muted); margin-top: 0.4rem; }
+  .note-actions { display: flex; gap: 4px; justify-content: flex-end; margin-top: 0.5rem; padding-top: 0.35rem; border-top: 1px solid var(--border-soft); }
 
-  /* ── SEARCH ── */
+  /* ── BOOK SEARCH WIDGET ── */
+  .book-search-widget { position: relative; }
+  .book-search-widget input {
+    width: 100%; background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 0.5rem 0.75rem;
+    font-family: var(--font-body); font-size: 1rem; color: var(--ink);
+  }
+  .book-search-widget input:focus { outline: none; border-color: var(--chrome-lift); box-shadow: 0 0 0 2px rgba(30,58,47,0.12); }
+  .bsw-selected { display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: var(--paper-warm); border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; }
+  .bsw-selected-title { font-family: var(--font-head); font-size: 0.92rem; flex: 1; }
+  .bsw-dropdown {
+    position: absolute; top: 100%; left: 0; right: 0; z-index: 300;
+    background: var(--card); border: 1px solid var(--border); border-top: none;
+    border-radius: 0 0 var(--radius) var(--radius);
+    max-height: 280px; overflow-y: auto;
+    box-shadow: 0 4px 12px var(--shadow-md);
+  }
+  .bsw-item {
+    display: flex; align-items: center; gap: 8px; padding: 8px 10px;
+    cursor: pointer; border-bottom: 1px solid var(--border-soft);
+    transition: background 0.1s;
+  }
+  .bsw-item:hover { background: var(--paper-warm); }
+  .bsw-item:last-child { border-bottom: none; }
+  .bsw-item-title { font-family: var(--font-head); font-size: 0.9rem; }
+  .bsw-item-author { font-size: 0.78rem; color: var(--ink-muted); font-style: italic; }
+  .bsw-section-label { padding: 5px 10px 3px; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--ink-faint); background: var(--paper); border-bottom: 1px solid var(--border-soft); }
   .search-wrap { position: relative; margin-bottom: 1.25rem; }
   .search-wrap input { padding-left: 2.25rem; }
   .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--ink-faint); pointer-events: none; }
@@ -1016,7 +1044,8 @@
       <input type="hidden" id="quote-edit-id">
       <div class="form-group">
         <label>Book</label>
-        <select id="quote-book"></select>
+        <div id="quote-book-search-wrap" class="book-search-widget" data-target="quote-book-id"></div>
+        <input type="hidden" id="quote-book-id">
       </div>
       <div class="form-group">
         <label>Quote *</label>
@@ -1057,7 +1086,8 @@
       <input type="hidden" id="note-edit-id">
       <div class="form-group">
         <label>Book</label>
-        <select id="note-book"></select>
+        <div id="note-book-search-wrap" class="book-search-widget" data-target="note-book-id"></div>
+        <input type="hidden" id="note-book-id">
       </div>
       <div class="form-row">
         <div class="form-group">
@@ -1508,11 +1538,47 @@ function renderCover(book, sizeClass = '') {
 // ══════════════════════════════════════════
 //  HOME VIEW
 // ══════════════════════════════════════════
+function showRandomQuote() {
+  const q = getDailyQuote(true);
+  if (!q) return;
+  const book = db.books.find(b => b.id === q.bookId);
+  const block = document.getElementById('daily-quote-block');
+  if (!block) return;
+  block.querySelector('.quote-text').innerHTML = renderMarkdown(q.text);
+  block.querySelector('.quote-meta').innerHTML = `— <em>${book ? escHtml(book.title) : 'Unknown'}${q.page ? ', p. ' + q.page : ''}</em>`;
+}
+
+function getDailyQuote(forceRandom = false) {
+  if (db.quotes.length === 0) return null;
+  if (forceRandom) {
+    return db.quotes[Math.floor(Math.random() * db.quotes.length)];
+  }
+  // Seed from today's date so it changes daily
+  const today = new Date();
+  const seed = today.getFullYear() * 10000 + (today.getMonth()+1) * 100 + today.getDate();
+  const idx = seed % db.quotes.length;
+  return db.quotes[idx];
+}
+
 function renderHome() {
   const reading = db.books.filter(b => b.status === 'reading');
   const recentQuotes = [...db.quotes].sort((a,b) => b.added - a.added).slice(0, 2);
 
   let html = '';
+
+  // ── Daily Quote ──
+  const dailyQ = getDailyQuote();
+  if (dailyQ) {
+    const qBook = db.books.find(b => b.id === dailyQ.bookId);
+    html += `<div id="daily-quote-block" class="quote-item" style="margin-bottom:1.5rem;background:var(--gold-pale,var(--paper-warm));border-left-color:var(--highlight)">
+      <div style="font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:0.5rem;display:flex;justify-content:space-between;align-items:center">
+        <span>Quote of the Day</span>
+        <button class="btn-ghost" style="font-size:0.75rem;padding:2px 8px" onclick="showRandomQuote()">↻ Shuffle</button>
+      </div>
+      <div class="quote-text md-content">${renderMarkdown(dailyQ.text)}</div>
+      <div class="quote-meta">— <em>${qBook ? escHtml(qBook.title) : 'Unknown'}${dailyQ.page ? ', p. ' + dailyQ.page : ''}</em></div>
+    </div>`;
+  }
 
   // ── Currently Reading — sorted by last progress update ──
   if (reading.length > 0) {
@@ -1541,7 +1607,7 @@ function renderHome() {
             <div class="book-item-author">${escHtml(book.author)}</div>
             <div class="book-item-meta">
               <span class="badge badge-reading">Reading</span>
-              <span style="font-size:0.78rem;color:var(--ink-faint)">p.${book.currentPage}${book.pages ? ' of ' + book.pages : ''} · last updated ${daysAgo}d ago</span>
+              <span style="font-size:0.78rem;color:var(--ink-faint)">p. ${book.currentPage}${book.pages ? ' of ' + book.pages : ''} · last updated ${daysAgo}d ago</span>
             </div>
           </div>
           <button class="btn btn-secondary" style="font-size:0.78rem;padding:0.25rem 0.6rem;flex-shrink:0;align-self:center" onclick="event.stopPropagation();openProgress('${book.id}')">Update</button>
@@ -1916,7 +1982,7 @@ function spineHtml(book) {
 
   const hasNotes = db.quotes.some(q => q.bookId === book.id) || db.notes.some(n => n.bookId === book.id);
   const tooltipStatus = book.status === 'reading'
-    ? `Reading · p.${book.currentPage}${book.pages?' of '+book.pages:''}`
+    ? `Reading · p. ${book.currentPage}${book.pages?' of '+book.pages:''}`
     : book.status === 'read' ? 'Finished'
     : book.status === 'toread' ? 'To read'
     : 'Unread';
@@ -1966,7 +2032,7 @@ function bookItemHtml(book) {
         ${hasNotes ? '<span class="badge badge-notes">Notes</span>' : ''}
         ${book.pages ? `<span style="font-size:0.78rem;color:var(--ink-faint)">${book.pages}pp</span>` : ''}
       </div>
-      ${book.status === 'reading' ? `<div class="progress-wrap" style="margin-top:6px"><div class="progress-label"><span>p.${book.currentPage}</span><span>${pct}%</span></div><div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div></div>` : ''}
+      ${book.status === 'reading' ? `<div class="progress-wrap" style="margin-top:6px"><div class="progress-label"><span>p. ${book.currentPage}</span><span>${pct}%</span></div><div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div></div>` : ''}
     </div>
   </div>`;
 }
@@ -2046,7 +2112,7 @@ function renderReading() {
           const pagesRead = prev ? l.page - prev.page : l.page;
           return `<div class="log-item">
             <span class="log-date">${fmtDate(l.date)}</span>
-            <span class="log-pages">p.${l.page}</span>
+            <span class="log-pages">p. ${l.page}</span>
             ${pagesRead > 0 ? `<span style="font-size:0.8rem;color:var(--ink-muted)">+${pagesRead} pages</span>` : ''}
           </div>`;
         }).join('')}
@@ -2139,13 +2205,13 @@ function renderJournal(filterBookId = null) {
 
     bNotes.forEach(n => {
       html += `<div class="note-item">
-        <div style="position:absolute;top:8px;right:8px;display:flex;gap:4px">
-          <button class="btn-icon" onclick="editNote('${n.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-          <button class="btn-icon" onclick="deleteNote('${n.id}');renderJournal()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
-        </div>
         <div style="font-size:0.72rem;color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px">${typeLabels[n.type]||'Note'}${n.ref ? ' · ' + escHtml(n.ref) : ''}</div>
         <div class="note-text md-content">${renderMarkdown(n.text)}</div>
         <div class="note-meta">${fmtDate(n.added)}</div>
+        <div class="note-actions">
+          <button class="btn-icon" onclick="editNote('${n.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+          <button class="btn-icon" onclick="deleteNote('${n.id}');renderJournal()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
+        </div>
       </div>`;
     });
 
@@ -2427,7 +2493,7 @@ function openDetail(bookId) {
         ${quotes.length>0?'<span class="badge badge-notes">'+quotes.length+' quotes</span>':''}
         ${notes.length>0?'<span class="badge" style="background:#eef0f5;color:#2a3a5a;border:1px solid #b8c8d8">'+notes.length+' notes</span>':''}
       </div>
-      ${book.status==='reading'?`<div class="progress-wrap" style="margin-top:0.75rem"><div class="progress-label"><span>p.${book.currentPage}${book.pages?' of '+book.pages:''}</span><span>${pct}%</span></div><div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div></div>`:''}
+      ${book.status==='reading'?`<div class="progress-wrap" style="margin-top:0.75rem"><div class="progress-label"><span>p. ${book.currentPage}${book.pages?' of '+book.pages:''}</span><span>${pct}%</span></div><div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div></div>`:''}
       <div style="margin-top:0.75rem;display:flex;gap:6px;flex-wrap:wrap">
         ${book.status==='reading'?`<button class="btn btn-primary" style="font-size:0.85rem;padding:0.3rem 0.75rem" onclick="openProgress('${book.id}')">Update Progress</button>`:''}
         <button class="btn btn-secondary" style="font-size:0.85rem;padding:0.3rem 0.75rem" onclick="openAI('${book.id}')">✦ AI Insights</button>      </div>
@@ -2480,13 +2546,12 @@ function openDetail(bookId) {
       notes.map(n => {
         const typeLabels = { general:'General', chapter:'Chapter Summary', theme:'Thematic', reflection:'Reflection', question:'Question' };
         return `<div class="note-item">
-          <div style="position:absolute;top:8px;right:8px;display:flex;gap:4px">
+          <div class="note-text md-content">${renderMarkdown(n.text)}</div>
+          <div class="note-meta">${fmtDate(n.added)}</div>
+          <div class="note-actions">
             <button class="btn-icon" onclick="editNote('${n.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
             <button class="btn-icon" onclick="deleteNote('${n.id}');openDetail('${book.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
           </div>
-          <div style="font-size:0.75rem;color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px">${typeLabels[n.type]||'Note'}${n.ref?' · '+escHtml(n.ref):''}</div>
-          <div class="note-text md-content">${renderMarkdown(n.text)}</div>
-          <div class="note-meta">${fmtDate(n.added)}</div>
         </div>`;
       }).join('')
     }
@@ -2507,7 +2572,7 @@ function openDetail(bookId) {
           const pagesRead = prev ? l.page - prev.page : l.page;
           return `<div class="log-item">
             <span class="log-date">${fmtDate(l.date)}</span>
-            <span class="log-pages">p.${l.page}</span>
+            <span class="log-pages">p. ${l.page}</span>
             ${pagesRead > 0 ? `<span style="font-size:0.8rem;color:var(--ink-muted)">+${pagesRead} pages</span>` : ''}
           </div>`;
         }).join('')}
@@ -3237,7 +3302,7 @@ function updateProgressPreview(book) {
   if (!pageEl || !book.pages) return;
   const page = parseInt(pageEl.value) || 0;
   const pct = Math.min(100, Math.round((page / book.pages) * 100));
-  document.getElementById('progress-bar-preview').innerHTML = `<div class="progress-label"><span>p.${page} of ${book.pages}</span><span>${pct}%</span></div><div class="progress-track"><div class="progress-fill ${pct===100?'complete':''}" style="width:${pct}%"></div></div>`;
+  document.getElementById('progress-bar-preview').innerHTML = `<div class="progress-label"><span>p. ${page} of ${book.pages}</span><span>${pct}%</span></div><div class="progress-track"><div class="progress-fill ${pct===100?'complete':''}" style="width:${pct}%"></div></div>`;
 }
 
 function saveProgress() {
@@ -3287,7 +3352,7 @@ function openAddQuote(presetBookId = null) {
   document.getElementById('quote-page').value = '';
   document.getElementById('quote-chapter').value = '';
   document.getElementById('quote-note').value = '';
-  populateBookSelect('quote-book', presetBookId);
+  initBookSearchWidget('quote-book-search-wrap', 'quote-book-id', presetBookId);
   document.getElementById('modal-quote').classList.remove('hidden');
 }
 
@@ -3299,7 +3364,7 @@ function editQuote(quoteId) {
   document.getElementById('quote-page').value = qt.page || '';
   document.getElementById('quote-chapter').value = qt.chapter || '';
   document.getElementById('quote-note').value = qt.note || '';
-  populateBookSelect('quote-book', qt.bookId);
+  initBookSearchWidget('quote-book-search-wrap', 'quote-book-id', qt.bookId);
   document.getElementById('modal-quote').classList.remove('hidden');
 }
 
@@ -3308,7 +3373,7 @@ function saveQuote() {
   if (!text) { alert('Quote text is required.'); return; }
   const editId = document.getElementById('quote-edit-id').value;
   const qt = {
-    bookId: document.getElementById('quote-book').value,
+    bookId: document.getElementById('quote-book-id').value,
     text,
     page: parseInt(document.getElementById('quote-page').value) || null,
     chapter: document.getElementById('quote-chapter').value.trim(),
@@ -3344,7 +3409,7 @@ function openAddNote(presetBookId = null) {
   document.getElementById('note-text').value = '';
   document.getElementById('note-ref').value = '';
   document.getElementById('note-type').value = 'general';
-  populateBookSelect('note-book', presetBookId);
+  initBookSearchWidget('note-book-search-wrap', 'note-book-id', presetBookId);
   document.getElementById('modal-note').classList.remove('hidden');
 }
 
@@ -3355,7 +3420,7 @@ function editNote(noteId) {
   document.getElementById('note-text').value = n.text;
   document.getElementById('note-ref').value = n.ref || '';
   document.getElementById('note-type').value = n.type || 'general';
-  populateBookSelect('note-book', n.bookId);
+  initBookSearchWidget('note-book-search-wrap', 'note-book-id', n.bookId);
   document.getElementById('modal-note').classList.remove('hidden');
 }
 
@@ -3364,7 +3429,7 @@ function saveNote() {
   if (!text) { alert('Note text is required.'); return; }
   const editId = document.getElementById('note-edit-id').value;
   const n = {
-    bookId: document.getElementById('note-book').value,
+    bookId: document.getElementById('note-book-id').value,
     type: document.getElementById('note-type').value,
     ref: document.getElementById('note-ref').value.trim(),
     text,
@@ -3455,7 +3520,7 @@ async function runAI() {
   const chapterRef = document.getElementById('ai-chapter-input').value.trim();
   const customPrompt = document.getElementById('ai-custom-input').value.trim();
 
-  const quotes = db.quotes.filter(q => q.bookId === bookId).map(q => `"${q.text}" (p.${q.page||'?'})`).join('\n');
+  const quotes = db.quotes.filter(q => q.bookId === bookId).map(q => `"${q.text}" (p. ${q.page||'?'})`).join('\n');
   const notes = db.notes.filter(n => n.bookId === bookId).map(n => `[${n.type}${n.ref?' · '+n.ref:''}] ${n.text}`).join('\n');
 
   let prompt = '';
@@ -3667,9 +3732,113 @@ function closeModal(id) {
   document.getElementById(id).classList.add('hidden');
 }
 
+function lastUpdatedTs(book) {
+  const logs = db.readingLog.filter(l => l.bookId === book.id);
+  return logs.length ? Math.max(...logs.map(l => l.date)) : (book.added || 0);
+}
+
+function initBookSearchWidget(wrapId, hiddenId, presetId = null) {
+  const wrap = document.getElementById(wrapId);
+  if (!wrap) return;
+
+  const recentBooks = [...db.books]
+    .sort((a, b) => lastUpdatedTs(b) - lastUpdatedTs(a))
+    .slice(0, 3);
+
+  let selectedId = presetId || null;
+  let selectedBook = selectedId ? db.books.find(b => b.id === selectedId) : null;
+
+  function setHidden(id) {
+    const h = document.getElementById(hiddenId);
+    if (h) h.value = id || '';
+  }
+
+  function renderWidget(searchTerm = '') {
+    const term = searchTerm.toLowerCase();
+    const results = term.length > 0
+      ? db.books.filter(b => b.title.toLowerCase().includes(term) || b.author.toLowerCase().includes(term)).slice(0, 8)
+      : [];
+
+    let html = '';
+    if (selectedBook && !searchTerm) {
+      html = `<div class="bsw-selected" onclick="bswClear('${wrapId}','${hiddenId}')">
+        ${renderCover(selectedBook)}
+        <div style="flex:1;min-width:0">
+          <div class="bsw-selected-title">${escHtml(selectedBook.title)}</div>
+          <div style="font-size:0.78rem;color:var(--ink-muted);font-style:italic">${escHtml(selectedBook.author)}</div>
+        </div>
+        <span style="font-size:0.75rem;color:var(--ink-faint)">change</span>
+      </div>`;
+    } else {
+      html = `<input type="text" placeholder="Search books…" id="${wrapId}-input" value="${escHtml(searchTerm)}"
+        oninput="bswSearch('${wrapId}','${hiddenId}',this.value)"
+        autocomplete="off">`;
+      
+      let dropdownItems = '';
+      if (results.length > 0) {
+        dropdownItems = results.map(b => bswItem(b, wrapId, hiddenId)).join('');
+      } else if (!term) {
+        dropdownItems = `<div class="bsw-section-label">Recently updated</div>` +
+          recentBooks.map(b => bswItem(b, wrapId, hiddenId)).join('');
+      } else {
+        dropdownItems = `<div class="bsw-item" style="color:var(--ink-faint);font-style:italic;cursor:default">No books found</div>`;
+      }
+      if (dropdownItems) {
+        html += `<div class="bsw-dropdown">${dropdownItems}</div>`;
+      }
+    }
+    wrap.innerHTML = html;
+    if (!selectedBook || searchTerm) {
+      const inp = document.getElementById(`${wrapId}-input`);
+      if (inp && document.activeElement !== inp) inp.focus();
+    }
+    setHidden(selectedId);
+  }
+
+  // Expose methods via a registry so onclick handlers can call them
+  window._bswRegistry = window._bswRegistry || {};
+  window._bswRegistry[wrapId] = { render: renderWidget, setBook: (id) => {
+    selectedId = id;
+    selectedBook = db.books.find(b => b.id === id) || null;
+    renderWidget();
+  }};
+
+  renderWidget();
+}
+
+function bswItem(book, wrapId, hiddenId) {
+  return `<div class="bsw-item" onclick="bswSelect('${wrapId}','${hiddenId}','${book.id}')">
+    ${renderCover(book)}
+    <div style="min-width:0">
+      <div class="bsw-item-title">${escHtml(book.title)}</div>
+      <div class="bsw-item-author">${escHtml(book.author)}</div>
+    </div>
+  </div>`;
+}
+
+function bswSearch(wrapId, hiddenId, term) {
+  const reg = window._bswRegistry?.[wrapId];
+  if (reg) reg.render(term);
+}
+
+function bswSelect(wrapId, hiddenId, bookId) {
+  const reg = window._bswRegistry?.[wrapId];
+  if (reg) reg.setBook(bookId);
+}
+
+function bswClear(wrapId, hiddenId) {
+  const reg = window._bswRegistry?.[wrapId];
+  if (reg) { reg.setBook(null); reg.render(''); }
+}
+
+// Keep legacy populateBookSelect for BC selects that still use <select>
 function populateBookSelect(selectId, presetId = null) {
   const sel = document.getElementById(selectId);
-  sel.innerHTML = db.books.map(b => `<option value="${b.id}" ${b.id === presetId ? 'selected' : ''}>${escHtml(b.title)}</option>`).join('');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">— Select a book —</option>' +
+    db.books.sort((a,b) => a.title.localeCompare(b.title)).map(b =>
+      `<option value="${b.id}" ${b.id === presetId ? 'selected' : ''}>${escHtml(b.title)}</option>`
+    ).join('');
 }
 
 function uid() {
