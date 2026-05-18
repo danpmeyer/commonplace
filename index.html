@@ -1547,7 +1547,7 @@ function showRandomQuote() {
   const block = document.getElementById('daily-quote-block');
   if (!block) return;
   block.querySelector('.quote-text').innerHTML = renderMarkdown(q.text);
-  block.querySelector('.quote-meta').innerHTML = `— <em>${book ? escHtml(book.title) : 'Unknown'}${q.page ? ', p. ' + q.page : ''}</em>`;
+  block.querySelector('.quote-meta').innerHTML = `— <em>${book ? escHtml(book.title) : 'Unknown'}</em>${book?.author ? `, ${escHtml(book.author)}` : ''}${q.page ? ` · p. ${q.page}` : ''}`;
 }
 
 function getDailyQuote(forceRandom = false) {
@@ -1578,7 +1578,7 @@ function renderHome() {
         <button class="btn-ghost" style="font-size:0.75rem;padding:2px 8px" onclick="showRandomQuote()">↻ Shuffle</button>
       </div>
       <div class="quote-text md-content">${renderMarkdown(dailyQ.text)}</div>
-      <div class="quote-meta">— <em>${qBook ? escHtml(qBook.title) : 'Unknown'}${dailyQ.page ? ', p. ' + dailyQ.page : ''}</em></div>
+      <div class="quote-meta">— <em>${qBook ? escHtml(qBook.title) : 'Unknown'}</em>${qBook?.author ? `, ${escHtml(qBook.author)}` : ''}${dailyQ.page ? ` · p. ${dailyQ.page}` : ''}</div>
     </div>`;
   }
 
@@ -2191,7 +2191,7 @@ function renderJournal(filterBookId = null) {
     if (!bQuotes.length && !bNotes.length) return;
 
     html += `<div style="margin-bottom:1.75rem">
-      <div style="font-family:var(--font-head);font-size:1rem;color:var(--ink-soft);margin-bottom:0.6rem;padding-bottom:0.35rem;border-bottom:1px solid var(--border-soft);font-style:italic">${book ? escHtml(book.title) : 'Unknown'}</div>`;
+      <div style="font-family:var(--font-head);font-size:1rem;color:var(--ink-soft);margin-bottom:0.6rem;padding-bottom:0.35rem;border-bottom:1px solid var(--border-soft)"><em>${book ? escHtml(book.title) : 'Unknown'}</em>${book?.author ? `<span style="font-size:0.85rem;color:var(--ink-muted);font-style:normal;margin-left:0.5rem">— ${escHtml(book.author)}</span>` : ''}</div>`;
 
     bQuotes.forEach(qt => {
       html += `<div class="quote-item">
