@@ -492,8 +492,9 @@
     margin-bottom: 0.75rem;
   }
   .quote-text { font-size: 1rem; line-height: 1.65; color: var(--ink-soft); }
-  .quote-meta { font-size: 0.8rem; color: var(--ink-muted); margin-top: 0.4rem; }
-  .quote-actions { display: flex; gap: 4px; justify-content: flex-end; margin-top: 0.5rem; padding-top: 0.35rem; border-top: 1px solid var(--border-soft); }
+  .quote-meta-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 0.4rem; }
+  .quote-meta { font-size: 0.8rem; color: var(--ink-muted); flex: 1; }
+  .quote-actions { display: flex; gap: 2px; flex-shrink: 0; }
 
   /* ── NOTE ITEM ── */
   .note-item {
@@ -503,8 +504,9 @@
     padding: 0.75rem 1rem; margin-bottom: 0.75rem;
   }
   .note-text { font-size: 0.95rem; line-height: 1.65; color: var(--ink-soft); }
-  .note-meta { font-size: 0.8rem; color: var(--ink-muted); margin-top: 0.4rem; }
-  .note-actions { display: flex; gap: 4px; justify-content: flex-end; margin-top: 0.5rem; padding-top: 0.35rem; border-top: 1px solid var(--border-soft); }
+  .note-meta-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 0.4rem; }
+  .note-meta { font-size: 0.8rem; color: var(--ink-muted); flex: 1; }
+  .note-actions { display: flex; gap: 2px; flex-shrink: 0; }
 
   /* ── BOOK SEARCH WIDGET ── */
   .book-search-widget { position: relative; }
@@ -794,10 +796,10 @@
         </div>
         <div style="display:flex;align-items:center;gap:8px">
           <div class="view-toggle" id="shelf-view-toggle">
-            <button class="view-toggle-btn active" data-sv="list" onclick="setShelfView('list')" title="List view">
+            <button class="view-toggle-btn" data-sv="list" onclick="setShelfView('list')" title="List view">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="3" cy="6" r="1" fill="currentColor" stroke="none"/><circle cx="3" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="3" cy="18" r="1" fill="currentColor" stroke="none"/></svg>
             </button>
-            <button class="view-toggle-btn" data-sv="grid" onclick="setShelfView('grid')" title="Grid view">
+            <button class="view-toggle-btn active" data-sv="grid" onclick="setShelfView('grid')" title="Grid view">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
             </button>
           </div>
@@ -1470,7 +1472,7 @@ let db = loadDB();
 // ══════════════════════════════════════════
 let currentView = 'home';
 let shelfFilter = 'all';
-let shelfView = 'list';
+let shelfView = 'grid';
 let shelfSort = 'lastUpdated';
 let journalFilter = 'all';
 let currentDetailBookId = null;
@@ -2193,13 +2195,15 @@ function renderJournal(filterBookId = null) {
 
     bQuotes.forEach(qt => {
       html += `<div class="quote-item">
-        <div class="quote-actions">
-          <button class="btn-icon" onclick="editQuote('${qt.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-          <button class="btn-icon" onclick="deleteQuote('${qt.id}');renderJournal()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
-        </div>
         <div class="quote-text md-content">${renderMarkdown(qt.text)}</div>
-        <div class="quote-meta">${qt.page ? 'p.' + qt.page : ''}${qt.chapter ? ' · ' + escHtml(qt.chapter) : ''}</div>
         ${qt.note ? `<div style="font-size:0.875rem;color:var(--ink-soft);margin-top:0.4rem;padding-top:0.4rem;border-top:1px solid var(--border-soft)">${renderMarkdown(qt.note)}</div>` : ''}
+        <div class="quote-meta-row">
+          <div class="quote-meta">${qt.page ? 'p. ' + qt.page : ''}${qt.chapter ? ' · ' + escHtml(qt.chapter) : ''}</div>
+          <div class="quote-actions">
+            <button class="btn-icon" onclick="editQuote('${qt.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+            <button class="btn-icon" onclick="deleteQuote('${qt.id}');renderJournal()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
+          </div>
+        </div>
       </div>`;
     });
 
@@ -2207,10 +2211,12 @@ function renderJournal(filterBookId = null) {
       html += `<div class="note-item">
         <div style="font-size:0.72rem;color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px">${typeLabels[n.type]||'Note'}${n.ref ? ' · ' + escHtml(n.ref) : ''}</div>
         <div class="note-text md-content">${renderMarkdown(n.text)}</div>
-        <div class="note-meta">${fmtDate(n.added)}</div>
-        <div class="note-actions">
-          <button class="btn-icon" onclick="editNote('${n.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-          <button class="btn-icon" onclick="deleteNote('${n.id}');renderJournal()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
+        <div class="note-meta-row">
+          <div class="note-meta">${fmtDate(n.added)}</div>
+          <div class="note-actions">
+            <button class="btn-icon" onclick="editNote('${n.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+            <button class="btn-icon" onclick="deleteNote('${n.id}');renderJournal()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
+          </div>
         </div>
       </div>`;
     });
@@ -2526,13 +2532,15 @@ function openDetail(bookId) {
     </div>
     ${quotes.length === 0 ? '<div class="empty-state" style="padding:1.5rem"><p>No quotes yet for this book.</p></div>' :
       quotes.map(qt => `<div class="quote-item">
-        <div class="quote-actions">
-          <button class="btn-icon" onclick="editQuote('${qt.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-          <button class="btn-icon" onclick="deleteQuote('${qt.id}');openDetail('${book.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
-        </div>
         <div class="quote-text md-content">${renderMarkdown(qt.text)}</div>
-        <div class="quote-meta">${qt.page?'p.'+qt.page:''}${qt.chapter?' · '+escHtml(qt.chapter):''}</div>
         ${qt.note?`<div style="font-size:0.875rem;color:var(--ink-soft);margin-top:0.4rem;padding-top:0.4rem;border-top:1px solid var(--border-soft)">${renderMarkdown(qt.note)}</div>`:''}
+        <div class="quote-meta-row">
+          <div class="quote-meta">${qt.page ? 'p. ' + qt.page : ''}${qt.chapter ? ' · ' + escHtml(qt.chapter) : ''}</div>
+          <div class="quote-actions">
+            <button class="btn-icon" onclick="editQuote('${qt.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+            <button class="btn-icon" onclick="deleteQuote('${qt.id}');openDetail('${book.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
+          </div>
+        </div>
       </div>`).join('')
     }
   </div>
@@ -2546,11 +2554,14 @@ function openDetail(bookId) {
       notes.map(n => {
         const typeLabels = { general:'General', chapter:'Chapter Summary', theme:'Thematic', reflection:'Reflection', question:'Question' };
         return `<div class="note-item">
+          <div style="font-size:0.72rem;color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px">${typeLabels[n.type]||'Note'}${n.ref?' · '+escHtml(n.ref):''}</div>
           <div class="note-text md-content">${renderMarkdown(n.text)}</div>
-          <div class="note-meta">${fmtDate(n.added)}</div>
-          <div class="note-actions">
-            <button class="btn-icon" onclick="editNote('${n.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-            <button class="btn-icon" onclick="deleteNote('${n.id}');openDetail('${book.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
+          <div class="note-meta-row">
+            <div class="note-meta">${fmtDate(n.added)}</div>
+            <div class="note-actions">
+              <button class="btn-icon" onclick="editNote('${n.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+              <button class="btn-icon" onclick="deleteNote('${n.id}');openDetail('${book.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
+            </div>
           </div>
         </div>`;
       }).join('')
