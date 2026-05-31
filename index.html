@@ -4176,13 +4176,26 @@ function renderBCMain() {
     const book = db.books.find(b => b.id === bc.currentRead.bookId);
     const meetDate = bc.currentRead.meetingDate ? new Date(bc.currentRead.meetingDate) : null;
     const daysLeft = meetDate ? Math.ceil((meetDate - Date.now()) / 86400000) : null;
+    const poster = bc.currentRead.posterImage;
+
+    // Visual: poster image if uploaded, otherwise book cover
+    const heroVisual = poster
+      ? `<div style="position:relative;flex-shrink:0">
+           <img src="${poster}" style="width:86px;height:120px;object-fit:cover;border-radius:var(--radius);box-shadow:3px 3px 10px rgba(0,0,0,0.3)">
+           <button title="Change poster" onclick="bcUploadPoster()" style="position:absolute;bottom:2px;right:2px;background:rgba(0,0,0,0.55);border:none;border-radius:var(--radius);padding:3px 5px;color:#fff;font-size:0.65rem;cursor:pointer;line-height:1">✎</button>
+         </div>`
+      : `<div style="position:relative;flex-shrink:0">
+           ${book ? renderCover(book, 'cover-hero') : ''}
+           <button title="Upload meeting poster" onclick="bcUploadPoster()" style="position:absolute;bottom:2px;right:2px;background:rgba(0,0,0,0.55);border:none;border-radius:var(--radius);padding:3px 6px;color:#fff;font-size:0.65rem;cursor:pointer;line-height:1.2">+ poster</button>
+         </div>`;
+
     html += `<div class="reading-hero" style="margin-bottom:1.5rem">
-      ${book ? renderCover(book, 'cover-hero') : ''}
+      ${heroVisual}
       <div class="reading-hero-info">
         <div class="reading-hero-label">Currently Reading</div>
         <div class="reading-hero-title">${book ? escHtml(book.title) : 'Unknown'}</div>
         <div class="reading-hero-author">${book ? escHtml(book.author) : ''}</div>
-        ${meetDate ? `<div class="bc-countdown">${daysLeft > 0 ? daysLeft + ' days until meeting' : daysLeft === 0 ? 'Meeting today!' : 'Meeting was ' + Math.abs(daysLeft) + ' day' + (Math.abs(daysLeft)!==1?'s':'')+' ago'}</div>` : ''}
+        ${meetDate ? `<div class="bc-countdown">${daysLeft > 0 ? daysLeft + ' day' + (daysLeft!==1?'s':'') + ' until meeting' : daysLeft === 0 ? 'Meeting today!' : 'Meeting was ' + Math.abs(daysLeft) + ' day' + (Math.abs(daysLeft)!==1?'s':'')+' ago'}</div>` : ''}
         <div style="margin-top:0.75rem;display:flex;gap:6px;flex-wrap:wrap">
           <button class="btn" style="background:rgba(255,255,255,0.12);color:var(--chrome-text);border:1px solid rgba(200,224,210,0.35);font-size:0.82rem;padding:0.3rem 0.75rem" onclick="bcSetCurrentRead()">Edit</button>
           <button class="btn" style="background:rgba(255,255,255,0.12);color:var(--chrome-text);border:1px solid rgba(200,224,210,0.35);font-size:0.82rem;padding:0.3rem 0.75rem" onclick="bcFinishCurrentRead()">Mark as Finished</button>
@@ -4362,16 +4375,8 @@ function bcTallyVote(voteId) {
   const bc = getBC();
   const vote = bc.votes.find(v => v.id === voteId);
   if (!vote) return;
-  // Borda count: n-1 points for 1st, n-2 for 2nd, etc.
-  const n = vote.candidates.length;
-  const scores = {};
-  vote.candidates.forEach(id => { scores[id] = 0; });
-  vote.ballots.forEach(ballot => {
-    ballot.ranking.forEach((bookId, i) => {
-      if (scores[bookId] !== undefined) scores[bookId] += (n - 1 - i);
-    });
-  });
-  vote.result = Object.entries(scores).sort((a,b) => b[1]-a[1]).map(([id]) => id);
+  const scores = bcCalcScores(vote);
+  vote.result = [...vote.candidates].sort((a, b) => (scores[b]||0) - (scores[a]||0));
   vote.complete = true;
   vote.date = Date.now();
   bc.activeVoteId = null;
@@ -4380,46 +4385,168 @@ function bcTallyVote(voteId) {
   bcShowVoteResult(voteId);
 }
 
-function bcShowVoteResult(voteId) {
-  const bc = getBC();
-  const vote = bc.votes.find(v => v.id === voteId);
-  if (!vote) return;
+function bcCalcScores(vote) {
   const n = vote.candidates.length;
-  // Recalculate scores for display
   const scores = {};
   vote.candidates.forEach(id => { scores[id] = 0; });
   vote.ballots.forEach(ballot => {
     ballot.ranking.forEach((bookId, i) => {
-      if (scores[bookId] !== undefined) scores[bookId] += (n - 1 - i);
+      if (bookId in scores) scores[bookId] += (n - 1 - i);
     });
   });
-  const maxScore = Math.max(...Object.values(scores));
-  let html = `<div style="max-height:70vh;overflow-y:auto">
-    <div style="font-family:var(--font-head);font-size:1rem;margin-bottom:1rem">Final Rankings</div>`;
-  (vote.result || []).forEach((bookId, i) => {
+  return scores;
+}
+
+function bcShowVoteResult(voteId) {
+  const bc = getBC();
+  const vote = bc.votes.find(v => v.id === voteId);
+  if (!vote) return;
+
+  const scores = bcCalcScores(vote);
+  const maxScore = Math.max(1, ...Object.values(scores));
+  const ranked = [...vote.candidates].sort((a, b) => (scores[b]||0) - (scores[a]||0));
+
+  // ── Results chart ──
+  let html = `<div style="max-height:75vh;overflow-y:auto;padding-right:2px">
+    <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink-muted);margin-bottom:0.75rem">Results</div>`;
+  ranked.forEach((bookId, i) => {
     const book = db.books.find(b => b.id === bookId);
     const score = scores[bookId] || 0;
-    const pct = maxScore > 0 ? Math.round((score / maxScore) * 100) : 0;
-    html += `<div style="margin-bottom:0.75rem">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-        <span style="font-family:var(--font-head);color:${i===0?'var(--highlight)':'var(--ink-muted)'};width:20px">${i===0?'🏆':i+1}.</span>
-        <span style="font-size:0.9rem;flex:1">${book ? escHtml(book.title) : bookId}</span>
-        <span style="font-size:0.78rem;color:var(--ink-faint)">${score} pts</span>
+    const pct = Math.round((score / maxScore) * 100);
+    html += `<div style="margin-bottom:0.65rem">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
+        <span style="font-family:var(--font-head);color:${i===0?'var(--highlight)':'var(--ink-muted)'};width:20px;flex-shrink:0">${i===0?'🏆':(i+1)+'.'}</span>
+        <span style="font-size:0.9rem;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${book ? escHtml(book.title) : bookId}</span>
+        <span style="font-size:0.75rem;color:var(--ink-faint);flex-shrink:0">${score} pts</span>
       </div>
-      <div style="background:var(--paper-mid);border-radius:4px;height:8px;overflow:hidden">
+      <div style="background:var(--paper-mid);border-radius:4px;height:7px;overflow:hidden;margin-left:28px">
         <div class="bc-result-bar" style="width:${pct}%"></div>
       </div>
     </div>`;
   });
-  html += `<div style="display:flex;justify-content:space-between;align-items:center;margin-top:1rem;padding-top:0.75rem;border-top:1px solid var(--border-soft)">
+
+  // ── Ballots (editable) ──
+  html += `<hr class="section"><div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink-muted);margin-bottom:0.75rem">
+    Ballots <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink-faint)">(drag to edit)</span>
+  </div>`;
+
+  vote.ballots.forEach((ballot, bi) => {
+    const member = bc.members.find(m => m.id === ballot.memberId);
+    html += `<div style="margin-bottom:1rem">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <div class="bc-avatar">${member?.photo ? `<img src="${member.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">` : escHtml(member?.name?.[0]||'?')}</div>
+        <span style="font-family:var(--font-head);font-size:0.95rem">${escHtml(member?.name||'Unknown')}</span>
+      </div>
+      <div id="bc-edit-ballot-${bi}" style="padding-left:40px">`;
+    ballot.ranking.forEach((bookId, ri) => {
+      const book = db.books.find(b => b.id === bookId);
+      html += `<div class="bc-vote-book" data-id="${bookId}" data-bi="${bi}" draggable="true" style="padding:6px 8px;margin-bottom:4px">
+        <div class="rank-badge" style="width:22px;height:22px;font-size:0.78rem">${ri+1}</div>
+        <span style="font-size:0.88rem;flex:1">${book ? escHtml(book.title) : bookId}</span>
+        <div style="display:flex;flex-direction:column;gap:1px">
+          <button onclick="bcEditBallotMove(${bi},${ri},'up','${voteId}')" class="btn-icon" style="padding:1px" title="Up">▲</button>
+          <button onclick="bcEditBallotMove(${bi},${ri},'down','${voteId}')" class="btn-icon" style="padding:1px" title="Down">▼</button>
+        </div>
+      </div>`;
+    });
+    html += `</div></div>`;
+  });
+
+  // ── Add voter ──
+  const voted = new Set(vote.ballots.map(b => b.memberId));
+  const unvoted = bc.members.filter(m => !voted.has(m.id));
+  if (unvoted.length > 0) {
+    const memberOpts = unvoted.map(m =>
+      `<option value="${m.id}">${escHtml(m.name)}</option>`).join('');
+    html += `<div style="margin-top:0.5rem;display:flex;gap:8px;align-items:center">
+      <select id="bc-add-voter-sel" style="flex:1;font-family:var(--font-body);font-size:0.9rem;padding:5px 8px;border:1px solid var(--border);border-radius:var(--radius);color:var(--ink);background:var(--card)">
+        ${memberOpts}
+      </select>
+      <button class="btn btn-secondary" style="font-size:0.85rem" onclick="bcAddVoter('${voteId}')">Add Voter</button>
+    </div>`;
+  }
+
+  html += `<div style="display:flex;justify-content:space-between;align-items:center;margin-top:1.25rem;padding-top:0.75rem;border-top:1px solid var(--border-soft)">
     <button class="btn btn-danger" onclick="bcDeleteVote('${voteId}')">Delete Vote</button>
-    <button class="btn btn-secondary" onclick="closeModal('modal-detail')">Close</button>
+    <button class="btn btn-primary" onclick="bcRetally('${voteId}')">Save &amp; Recalculate</button>
   </div></div>`;
-  // Show in a simple modal using detail modal
+
   setDetailMode('plain');
-  document.getElementById('detail-title').textContent = 'Vote Results';
+  document.getElementById('detail-title').textContent = 'Vote — ' + (vote.date ? fmtDate(vote.date) : 'In Progress');
   document.getElementById('detail-body').innerHTML = html;
   document.getElementById('modal-detail').classList.remove('hidden');
+  requestAnimationFrame(() => bcBindEditBallotDrag(voteId));
+}
+
+function bcEditBallotMove(ballotIndex, rankIndex, dir, voteId) {
+  const bc = getBC();
+  const vote = bc.votes.find(v => v.id === voteId);
+  if (!vote || !vote.ballots[ballotIndex]) return;
+  const ranking = vote.ballots[ballotIndex].ranking;
+  const swapWith = dir === 'up' ? rankIndex - 1 : rankIndex + 1;
+  if (swapWith < 0 || swapWith >= ranking.length) return;
+  [ranking[rankIndex], ranking[swapWith]] = [ranking[swapWith], ranking[rankIndex]];
+  // Don't save yet — let user save manually; just re-render the modal
+  bcShowVoteResult(voteId);
+}
+
+function bcBindEditBallotDrag(voteId) {
+  const bc = getBC();
+  const vote = bc.votes.find(v => v.id === voteId);
+  if (!vote) return;
+  vote.ballots.forEach((ballot, bi) => {
+    const container = document.getElementById(`bc-edit-ballot-${bi}`);
+    if (!container) return;
+    let dragSrc = null;
+    container.querySelectorAll('.bc-vote-book').forEach(item => {
+      item.addEventListener('dragstart', () => { dragSrc = item; item.classList.add('dragging'); });
+      item.addEventListener('dragend', () => {
+        dragSrc = null;
+        container.querySelectorAll('.bc-vote-book').forEach(i => i.classList.remove('dragging'));
+        // Update the in-memory ballot ranking from DOM order
+        const newRanking = [...container.querySelectorAll('.bc-vote-book')].map(el => el.dataset.id);
+        vote.ballots[bi].ranking = newRanking;
+        // Update rank badge numbers
+        container.querySelectorAll('.bc-vote-book').forEach((el, i) => {
+          const badge = el.querySelector('.rank-badge');
+          if (badge) badge.textContent = i + 1;
+        });
+      });
+      item.addEventListener('dragover', e => {
+        e.preventDefault();
+        if (dragSrc && dragSrc !== item) {
+          const r = item.getBoundingClientRect();
+          if (e.clientY < r.top + r.height / 2) container.insertBefore(dragSrc, item);
+          else item.after(dragSrc);
+        }
+      });
+    });
+  });
+}
+
+function bcAddVoter(voteId) {
+  const bc = getBC();
+  const vote = bc.votes.find(v => v.id === voteId);
+  const sel = document.getElementById('bc-add-voter-sel');
+  if (!vote || !sel || !sel.value) return;
+  const memberId = sel.value;
+  // Open the vote ballot modal for this new voter
+  vote.participants = [...new Set([...vote.participants, memberId])];
+  saveDB();
+  closeModal('modal-detail');
+  bcOpenVoteModal(voteId); // opens the ballot for the next unvoted member
+}
+
+function bcRetally(voteId) {
+  const bc = getBC();
+  const vote = bc.votes.find(v => v.id === voteId);
+  if (!vote) return;
+  const scores = bcCalcScores(vote);
+  vote.result = [...vote.candidates].sort((a, b) => (scores[b]||0) - (scores[a]||0));
+  vote.complete = true;
+  if (!vote.date) vote.date = Date.now();
+  saveDB();
+  bcShowVoteResult(voteId); // re-render with updated results
 }
 
 function bcDeleteVote(voteId) {
@@ -4458,12 +4585,31 @@ function bcSetCurrentRead() {
   document.getElementById('modal-detail').classList.remove('hidden');
 }
 
+function bcUploadPoster() {
+  const bc = getBC();
+  if (!bc.currentRead) return;
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = 'image/*';
+  input.onchange = e => {
+    const file = e.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      bc.currentRead.posterImage = ev.target.result;
+      saveDB();
+      renderBookClub();
+    };
+    reader.readAsDataURL(file);
+  };
+  input.click();
+}
+
 function bcSaveCurrentRead() {
   const bookId = document.getElementById('bc-cur-book').value;
   if (!bookId) { alert('Select a book.'); return; }
   const dateVal = document.getElementById('bc-cur-date').value;
   const bc = getBC();
-  bc.currentRead = { bookId, meetingDate: dateVal ? new Date(dateVal).getTime() : null };
+  const existingPoster = bc.currentRead?.posterImage || null;
+  bc.currentRead = { bookId, meetingDate: dateVal ? new Date(dateVal).getTime() : null, posterImage: existingPoster };
   saveDB();
   closeModal('modal-detail');
   renderBookClub();
