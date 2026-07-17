@@ -961,6 +961,38 @@
           <input type="number" id="book-pages" placeholder="e.g. 412">
         </div>
       </div>
+
+      <!-- ANTHOLOGY -->
+      <div class="form-group" style="margin-bottom:0.5rem">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:400">
+          <input type="checkbox" id="book-is-anthology" style="width:16px;height:16px;accent-color:var(--accent);cursor:pointer" onchange="toggleAnthologyFields()">
+          <span>This is an anthology / collected work</span>
+        </label>
+      </div>
+      <div id="anthology-fields" style="display:none;background:var(--paper-warm);border:1px solid var(--border-soft);border-radius:var(--radius-lg);padding:0.85rem 1rem;margin-bottom:1rem">
+        <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink-muted);margin-bottom:0.65rem">Anthology Details</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Anthology / Collection Title</label>
+            <input type="text" id="book-anthology-title" placeholder="e.g. The Norton Anthology of Poetry">
+          </div>
+          <div class="form-group">
+            <label>Editor(s)</label>
+            <input type="text" id="book-anthology-editor" placeholder="e.g. Ferguson, Salter, Stallworthy">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Start Page in Volume</label>
+            <input type="number" id="book-page-start" placeholder="e.g. 142" min="1">
+          </div>
+          <div class="form-group">
+            <label>End Page in Volume</label>
+            <input type="number" id="book-page-end" placeholder="e.g. 289" min="1">
+          </div>
+        </div>
+        <div style="font-size:0.8rem;color:var(--ink-muted);font-style:italic;margin-top:0.25rem">Progress will be tracked from start to end page within the volume.</div>
+      </div>
       <div class="form-row">
         <div class="form-group">
           <label>ISBN</label>
@@ -1606,7 +1638,7 @@ function renderHome() {
 
     html += `<div style="margin-bottom:1.5rem">`;
     html += sorted.map(book => {
-      const pct = book.pages ? Math.round((book.currentPage / book.pages) * 100) : 0;
+      const pct = effectivePct(book);
       const last = lastUpdate(book);
       const stale = (now - last) > STALE_MS;
       const daysAgo = Math.floor((now - last) / 86400000);
@@ -1635,7 +1667,7 @@ function renderHome() {
           <div class="reading-hero-author">${escHtml(book.author)}</div>
           <div style="margin-top:0.75rem">
             <div class="progress-label" style="color:rgba(200,224,210,0.8)">
-              <span>Page ${book.currentPage}${book.pages ? ' of ' + book.pages : ''}</span>
+              <span>${book.anthology && book.pageStart != null ? `p. ${book.currentPage} (${book.pageStart}–${book.pageEnd})` : `Page ${book.currentPage}${book.pages ? ' of ' + book.pages : ''}`}</span>
               <span>${pct}%</span>
             </div>
             <div class="progress-track" style="background:rgba(0,0,0,0.25)"><div class="progress-fill ${pct===100?'complete':''}" style="width:${pct}%;background:var(--highlight)"></div></div>
@@ -2030,7 +2062,7 @@ function spineHtml(book) {
 
 function bookItemHtml(book) {
   const hasNotes = db.quotes.some(q => q.bookId === book.id) || db.notes.some(n => n.bookId === book.id);
-  const pct = book.pages ? Math.round((book.currentPage / book.pages) * 100) : 0;
+  const pct = effectivePct(book);
   const statusBadge = book.status === 'reading' ? '<span class="badge badge-reading">Reading</span>'
     : book.status === 'read' ? '<span class="badge badge-read">Read</span>'
     : book.status === 'toread' ? '<span class="badge badge-toread">To-Read</span>'
@@ -2098,7 +2130,7 @@ function renderReading() {
     html += `<div class="empty-state"><div class="empty-icon">📖</div><p>No books currently in progress</p></div>`;
   } else {
     reading.forEach(book => {
-      const pct = book.pages ? Math.round((book.currentPage / book.pages) * 100) : 0;
+      const pct = effectivePct(book);
       const log = db.readingLog.filter(l => l.bookId === book.id).sort((a,b) => b.date - a.date);
 
       html += `<div class="card" style="margin-bottom:1rem">
@@ -2109,7 +2141,7 @@ function renderReading() {
             <div style="font-size:0.875rem;font-style:italic;color:var(--ink-muted)">${escHtml(book.author)}</div>
             <div class="progress-wrap" style="margin-top:0.75rem">
               <div class="progress-label">
-                <span>Page ${book.currentPage}${book.pages ? ' of ' + book.pages : ''}</span>
+                <span>${book.anthology && book.pageStart != null ? `p. ${book.currentPage} (${book.pageStart}–${book.pageEnd})` : `Page ${book.currentPage}${book.pages ? ' of ' + book.pages : ''}`}</span>
                 <span style="font-weight:500;color:var(--accent-deep)">${pct}%</span>
               </div>
               <div class="progress-track" style="height:10px"><div class="progress-fill ${pct===100?'complete':''}" style="width:${pct}%"></div></div>
@@ -2420,11 +2452,14 @@ function openDetail(bookId) {
 
   const quotes = db.quotes.filter(q => q.bookId === bookId).sort((a,b) => (a.page||0)-(b.page||0));
   const notes = db.notes.filter(n => n.bookId === bookId);
-  const pct = book.pages ? Math.round((book.currentPage / book.pages) * 100) : 0;
+  const pct = effectivePct(book);
 
   const metaRows = [
     ['Author', book.author],
     book.translator ? ['Translator / Editor', book.translator] : null,
+    book.anthology && book.anthologyTitle ? ['Anthology', book.anthologyTitle] : null,
+    book.anthology && book.anthologyEditor ? ['Anthology Editor', book.anthologyEditor] : null,
+    book.anthology && book.pageStart != null ? ['Pages in Volume', `${book.pageStart}–${book.pageEnd}`] : null,
     book.pubOrig ? ['Originally Published', book.pubOrig] : null,
     book.pubEd ? ['Edition Year', book.pubEd] : null,
     book.publisher ? ['Publisher', book.publisher] : null,
@@ -3148,6 +3183,11 @@ async function batchImportAll() {
 }
 
 // Pre-fills the ISBN field in the add book modal
+function toggleAnthologyFields() {
+  const checked = document.getElementById('book-is-anthology').checked;
+  document.getElementById('anthology-fields').style.display = checked ? 'block' : 'none';
+}
+
 function openAddBookWithISBN(isbn) {
   openAddBook();
   document.getElementById('isbn-lookup-input').value = isbn;
@@ -3172,6 +3212,13 @@ function openAddBook(editId = null) {
   document.getElementById('book-purchase-date').value = '';
   document.getElementById('isbn-lookup-input').value = '';
   document.getElementById('isbn-lookup-status').textContent = '';
+  // Reset anthology fields
+  document.getElementById('book-is-anthology').checked = false;
+  document.getElementById('anthology-fields').style.display = 'none';
+  document.getElementById('book-anthology-title').value = '';
+  document.getElementById('book-anthology-editor').value = '';
+  document.getElementById('book-page-start').value = '';
+  document.getElementById('book-page-end').value = '';
   togglePurchaseFields();
   document.getElementById('book-edit-id').value = '';
   document.getElementById('cover-preview-wrap').innerHTML = `<div style="font-size:1.5rem;margin-bottom:6px;opacity:0.5">📖</div><div>Click to upload cover image</div><div style="font-size:0.8rem;margin-top:4px;opacity:0.7">JPG, PNG, WebP — auto-generates if not provided</div>`;
@@ -3197,6 +3244,15 @@ function openAddBook(editId = null) {
       document.getElementById('book-purchase-date').value = book.purchaseDate || '';
       togglePurchaseFields();
       document.getElementById('book-notes').value = book.notes || '';
+      // Populate anthology fields
+      if (book.anthology) {
+        document.getElementById('book-is-anthology').checked = true;
+        document.getElementById('anthology-fields').style.display = 'block';
+        document.getElementById('book-anthology-title').value = book.anthologyTitle || '';
+        document.getElementById('book-anthology-editor').value = book.anthologyEditor || '';
+        document.getElementById('book-page-start').value = book.pageStart || '';
+        document.getElementById('book-page-end').value = book.pageEnd || '';
+      }
       if (book.cover) {
         pendingCoverData = book.cover;
         document.getElementById('cover-preview-wrap').innerHTML = `<img src="${book.cover}" style="max-height:80px;border-radius:4px">`;
@@ -3227,6 +3283,12 @@ function saveBook() {
   const status = document.getElementById('book-status').value;
   const owned = document.getElementById('book-owned').value;
 
+  const isAnthology = document.getElementById('book-is-anthology').checked;
+  const anthologyTitle = isAnthology ? document.getElementById('book-anthology-title').value.trim() : '';
+  const anthologyEditor = isAnthology ? document.getElementById('book-anthology-editor').value.trim() : '';
+  const pageStart = isAnthology ? (parseInt(document.getElementById('book-page-start').value) || null) : null;
+  const pageEnd = isAnthology ? (parseInt(document.getElementById('book-page-end').value) || null) : null;
+
   if (editId) {
     const book = db.books.find(b => b.id === editId);
     if (book) {
@@ -3245,6 +3307,11 @@ function saveBook() {
       book.purchaseSource = owned === 'owned' ? document.getElementById('book-purchase-source').value.trim() : '';
       book.purchaseDate = owned === 'owned' ? document.getElementById('book-purchase-date').value : '';
       book.notes = document.getElementById('book-notes').value.trim();
+      book.anthology = isAnthology;
+      book.anthologyTitle = anthologyTitle;
+      book.anthologyEditor = anthologyEditor;
+      book.pageStart = pageStart;
+      book.pageEnd = pageEnd;
       if (pendingCoverData) book.cover = pendingCoverData;
       if (status === 'read' && book.currentPage < pages) book.currentPage = pages;
       if (status === 'reading' && !book.startDate) book.startDate = Date.now();
@@ -3253,7 +3320,6 @@ function saveBook() {
         book.readDates.push({ startDate: book.startDate || null, date: Date.now(), note: '' });
         book.startDate = null;
       }
-      // If moved away from reading, clear startDate
       if (status !== 'reading' && status !== 'read') book.startDate = null;
     }
   } else {
@@ -3271,12 +3337,17 @@ function saveBook() {
       owned,
       purchaseSource: owned === 'owned' ? document.getElementById('book-purchase-source').value.trim() : '',
       purchaseDate: owned === 'owned' ? document.getElementById('book-purchase-date').value : '',
-      currentPage: status === 'read' ? pages : 0,
+      currentPage: status === 'read' ? (pageEnd || pages) : (pageStart || 0),
       cover: pendingCoverData || null,
       notes: document.getElementById('book-notes').value.trim(),
       added: Date.now(),
       startDate: status === 'reading' ? Date.now() : null,
       readDates: status === 'read' ? [{ startDate: null, date: Date.now(), note: '' }] : [],
+      anthology: isAnthology,
+      anthologyTitle,
+      anthologyEditor,
+      pageStart,
+      pageEnd,
     };
     db.books.push(book);
   }
@@ -3291,20 +3362,48 @@ function saveBook() {
 // ══════════════════════════════════════════
 //  PROGRESS
 // ══════════════════════════════════════════
+
+// For anthologies, progress is calculated within the pageStart→pageEnd range.
+// effectiveTotal: the number of pages to read (range length, or full pages for normal books)
+// effectivePct: 0–100 based on position within the range
+function effectiveTotal(book) {
+  if (book.anthology && book.pageStart != null && book.pageEnd != null) {
+    return book.pageEnd - book.pageStart;
+  }
+  return book.pages || 0;
+}
+
+function effectivePct(book) {
+  if (!book.pages && !book.pageEnd) return 0;
+  if (book.anthology && book.pageStart != null && book.pageEnd != null) {
+    const rangeLen = book.pageEnd - book.pageStart;
+    if (rangeLen <= 0) return 0;
+    const progress = Math.max(0, (book.currentPage || 0) - book.pageStart);
+    return Math.min(100, Math.round((progress / rangeLen) * 100));
+  }
+  return book.pages ? Math.min(100, Math.round(((book.currentPage || 0) / book.pages) * 100)) : 0;
+}
+
+function isAtEnd(book, page) {
+  if (book.anthology && book.pageEnd != null) return page >= book.pageEnd;
+  return book.pages && page >= book.pages;
+}
 function openProgress(bookId) {
   const book = db.books.find(b => b.id === bookId);
   if (!book) return;
   document.getElementById('progress-book-id').value = bookId;
-  document.getElementById('progress-book-info').textContent = book.title + (book.pages ? ' · ' + book.pages + ' pages' : '');
+  // Show range context for anthologies
+  const rangeNote = book.anthology && book.pageStart != null && book.pageEnd != null
+    ? ` · pp. ${book.pageStart}–${book.pageEnd}`
+    : (book.pages ? ' · ' + book.pages + ' pages' : '');
+  document.getElementById('progress-book-info').textContent = book.title + rangeNote;
   document.getElementById('progress-page').value = book.currentPage || '';
-  // Populate start date
   const startEl = document.getElementById('progress-start-date');
   startEl.value = book.startDate ? toInputDate(book.startDate) : toInputDate(Date.now());
-  // Show finish date only if already at last page
   const finishWrap = document.getElementById('progress-finish-wrap');
   const finishEl = document.getElementById('progress-finish-date');
   finishEl.value = toInputDate(Date.now());
-  finishWrap.style.display = (book.pages && book.currentPage >= book.pages) ? 'block' : 'none';
+  finishWrap.style.display = isAtEnd(book, book.currentPage || 0) ? 'block' : 'none';
   updateProgressPreview(book);
   document.getElementById('modal-progress').classList.remove('hidden');
 }
@@ -3318,16 +3417,23 @@ document.addEventListener('input', e => {
     updateProgressPreview(book);
     const page = parseInt(e.target.value) || 0;
     const finishWrap = document.getElementById('progress-finish-wrap');
-    if (finishWrap) finishWrap.style.display = (book.pages && page >= book.pages) ? 'block' : 'none';
+    if (finishWrap) finishWrap.style.display = isAtEnd(book, page) ? 'block' : 'none';
   }
 });
 
 function updateProgressPreview(book) {
   const pageEl = document.getElementById('progress-page');
-  if (!pageEl || !book.pages) return;
+  if (!pageEl) return;
   const page = parseInt(pageEl.value) || 0;
-  const pct = Math.min(100, Math.round((page / book.pages) * 100));
-  document.getElementById('progress-bar-preview').innerHTML = `<div class="progress-label"><span>p. ${page} of ${book.pages}</span><span>${pct}%</span></div><div class="progress-track"><div class="progress-fill ${pct===100?'complete':''}" style="width:${pct}%"></div></div>`;
+  const tempBook = { ...book, currentPage: page };
+  const pct = effectivePct(tempBook);
+  const total = effectiveTotal(book);
+  const pageLabel = book.anthology && book.pageStart != null
+    ? `p. ${page} (of pp. ${book.pageStart}–${book.pageEnd})`
+    : `p. ${page}${book.pages ? ' of ' + book.pages : ''}`;
+  document.getElementById('progress-bar-preview').innerHTML = total
+    ? `<div class="progress-label"><span>${pageLabel}</span><span>${pct}%</span></div><div class="progress-track"><div class="progress-fill ${pct===100?'complete':''}" style="width:${pct}%"></div></div>`
+    : `<div class="progress-label"><span>${pageLabel}</span></div>`;
 }
 
 function saveProgress() {
@@ -3343,7 +3449,7 @@ function saveProgress() {
   book.currentPage = page;
   book.startDate = startTs;
 
-  if (book.pages && page >= book.pages) {
+  if (isAtEnd(book, page)) {
     book.status = 'read';
     if (!book.readDates) book.readDates = [];
     // Read finish date from modal if shown
